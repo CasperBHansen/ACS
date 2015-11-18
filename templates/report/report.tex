@@ -1,0 +1,87 @@
+\documentclass[11pt,a4paper]{article}
+
+
+%==============================================================================%
+% PACKAGES                                                                     %
+%==============================================================================%
+
+\usepackage{a4wide}
+\usepackage[utf8]{inputenc}
+\usepackage{multicol}
+
+
+%==============================================================================%
+% DEFINITIONS                                                                  %
+%==============================================================================%
+
+\newcommand{\assignmentnumber}{1}
+
+\newcommand{\theabstract}
+{
+    ...
+}
+
+
+%==============================================================================%
+% COMMANDS                                                                     %
+%==============================================================================%
+
+\newcommand{\authform}[2]
+{
+    #1\\ % full name
+    Department of Computer Science\\
+    University of Copenhagen\\
+    {\tt #2@alumni.ku.dk}\\ % student id
+}
+
+\newcommand{\colbreak}{{\ }\vfill\columnbreak}
+
+
+%==============================================================================%
+% META                                                                         %
+%==============================================================================%
+
+\title
+{
+    Advanced Computer Systems \\
+    {\Large Assignment \assignmentnumber}
+}
+
+\author
+{
+    \authform{Hans J. T. Stephensen}{abc123}
+    \and
+    \authform{?}{abc123}
+    \and
+    \authform{Casper B. Hansen}{fvx507}
+}
+
+\date{\today}
+
+
+%==============================================================================%
+% DOCUMENT                                                                     %
+%==============================================================================%
+
+\begin{document}
+
+\clearpage
+\maketitle
+\thispagestyle{empty}
+
+\begin{multicols}{2}
+    \abstract{\theabstract}
+    \colbreak
+    \tableofcontents
+\end{multicols}
+\clearpage
+
+
+%==============================================================================%
+% SECTION 1                                                                    %
+%==============================================================================%
+
+\section{A Section}
+...
+
+\end{document}
