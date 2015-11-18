@@ -6,9 +6,27 @@
 %==============================================================================%
 
 \usepackage{a4wide}
+\usepackage{color}
+\usepackage{float}
 \usepackage[utf8]{inputenc}
 \usepackage{lipsum}
+\usepackage{listings}
 \usepackage{multicol}
+
+
+%==============================================================================%
+% SETTINGS                                                                     %
+%==============================================================================%
+
+\lstset
+{
+    basicstyle=\footnotesize\ttfamily,
+    breaklines=true,
+    frame=single,
+    language=java,
+    numbers=left,
+    numbersep=8pt,
+}
 
 
 %==============================================================================%
@@ -16,6 +34,7 @@
 %==============================================================================%
 
 \newcommand{\assignmentnumber}{1}
+\newcommand{\srcroot}{../src/com/acertainbookstore/}
 
 \newcommand{\theabstract}
 {
@@ -37,6 +56,15 @@
 }
 
 \newcommand{\colbreak}{{\ }\vfill\columnbreak}
+
+% usage: \codeexcerpt{<file path (relative)>}{<begin line>}{<end line>}
+\newcommand{\codeexcerpt}[3]
+{
+\begin{figure}[H]
+\lstinputlisting[firstline=#2,lastline=#3]{\srcroot/#1}
+\caption{Code excerpt of {\it ../#1}, lines #2--#3}
+\end{figure}
+}
 
 
 %==============================================================================%
@@ -103,5 +131,16 @@
 
 \section{Discussion on Architecture}
 ...
+
+
+%==============================================================================%
+% PROGRAMMING TASK                                                             %
+%==============================================================================%
+
+\section{Programming Task}
+...
+
+\subsection{\tt rateBooks}
+\codeexcerpt{business/CertainBookStore.java}{289}{311}
 
 \end{document}
