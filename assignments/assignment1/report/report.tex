@@ -115,8 +115,33 @@
 %==============================================================================%
 
 \section{Fundamental Abstractions}
-...
 
+\subsection{Question 1}
+
+Making no assumptions on the size of memory machines, given a address in our single address space we require a lookup table of some sort to pass on the request to the correct machine storing the data of that address. A simple mapping from an address in the single address space to an address in on of the $k$ machines, would be storing the first $0 \dots m_1-1$ address in the first machine, $m_i$ being the space of the $i$'th machine, and the next addresses $m_1, m_1+m_2-1$ in the next machine. To do this we require a centralized machine with a lookup table to find the appropriate machine. For small $k$, a linear search would be fine. For larger $k$, one way is to use a binary search. This has the potential to increase the latency significantly, since each request would take logarithmic time.
+
+If the central machine breaks, everything breaks. To alleviate this we could add redundancy by having multiple machines play the role of serving cached versions of the lookup table. This solution could also be implemented by having a set of proxies relaying requests to the appropriate machine. This type of redundancy breaks the atomicity of the write operation, since a write operation, followed by a read operation might be send to different proxies, and processed at a rate in which the {\tt READ} reply arrives first.
+
+If one of the $k$ machines in not available (busy, down or broken), the central machine(s) could implement a timeout timer for when the reply from the machine should have arrived and reply to the client that the request failed with a timeout. Replies that arrived too late should be discarded.
+
+\subsection{Question 2}
+
+\begin{lstlisting}
+READ(ADDR) -> VALUE
+    let M_ADDR = proxy.lookup(ADDR)
+    read_request(M_ADDR, ADDR)
+    let response = wait_for_reply(M_ADDR, timeout)  // Dark magic function
+    case response of
+        exception e -> raise request_failure (to_string (e) )
+        value -> return value
+    end
+end
+
+WRITE(ADDR, VALUE)
+    let M_ADDR = proxy.lookup(ADDR)
+    write_request(M_ADDR, ADDR, VALUE)
+
+\end{lstlisting}
 
 %==============================================================================%
 % QUESTION 2                                                                   %
