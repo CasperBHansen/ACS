@@ -6,7 +6,6 @@ package com.acertainbookstore.utils;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
-import java.util.Comparator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +14,6 @@ import org.eclipse.jetty.client.ContentExchange;
 import org.eclipse.jetty.client.HttpClient;
 import org.eclipse.jetty.client.HttpExchange;
 
-import com.acertainbookstore.business.BookRating;
 import com.acertainbookstore.client.BookStoreClientConstants;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
@@ -32,8 +30,7 @@ public final class BookStoreUtility {
 	}
 
 	public static boolean isInvalidRating(int rating) {
-		return (rating < BookStoreConstants.RATING_MIN ||
-				rating > BookStoreConstants.RATING_MAX);
+		return (rating < 0 || rating > 5);
 	}
 
 	public static boolean isInvalidNoCopies(int copies) {
