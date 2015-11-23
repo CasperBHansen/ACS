@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.acertainbookstore.client;
 
@@ -23,9 +23,9 @@ import com.acertainbookstore.utils.BookStoreUtility;
 /**
  * StockManagerHTTPProxy implements the client level synchronous
  * CertainBookStore API declared in the BookStore class
- * 
+ *
  * Uses the HTTP protocol for communication with the server
- * 
+ *
  */
 public class StockManagerHTTPProxy implements StockManager {
 
@@ -132,7 +132,10 @@ public class StockManagerHTTPProxy implements StockManager {
 
 	@Override
 	public List<StockBook> getBooksInDemand() throws BookStoreException {
-		throw new BookStoreException("Not implemented");
+
+
+
+		//throw new BookStoreException("Not implemented");
 	}
 
 	public void removeAllBooks() throws BookStoreException {
@@ -140,7 +143,7 @@ public class StockManagerHTTPProxy implements StockManager {
 		String urlString;
 		urlString = serverAddress + "/" + BookStoreMessageTag.REMOVEALLBOOKS;
 
-		String test = "test";
+		String test = "test"; // Hans: What is this supposed to do?
 		exchange.setMethod("POST");
 		exchange.setURL(urlString);
 		Buffer requestContent = new ByteArrayBuffer(test);

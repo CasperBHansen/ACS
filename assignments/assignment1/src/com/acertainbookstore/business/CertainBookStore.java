@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.acertainbookstore.business;
 
@@ -283,6 +283,16 @@ public class CertainBookStore implements BookStore, StockManager {
 	@Override
 	public synchronized List<StockBook> getBooksInDemand()
 			throws BookStoreException {
+
+			// Make an empty List<Book>
+			// for each book in Bookmap (?)
+				// check getSaleMisses() > 0; ie, someone tried to buy a book not in supply
+					// add book to List<Book>
+			// Return List<Book>
+
+			// What errors can happen
+			//
+
 		throw new BookStoreException("Not implemented");
 	}
 
