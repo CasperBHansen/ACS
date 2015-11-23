@@ -321,6 +321,9 @@ public class CertainBookStore implements BookStore, StockManager {
 				listBooks.add(book.immutableStockBook());
 			}
 		}
+		
+		listBooks.get(0).getAverageRating();
+		
 		return listBooks;
 
 		// What errors can happen

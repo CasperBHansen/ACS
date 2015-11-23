@@ -24,6 +24,8 @@ import com.acertainbookstore.utils.BookStoreMessageTag;
 import com.acertainbookstore.utils.BookStoreResponse;
 import com.acertainbookstore.utils.BookStoreUtility;
 
+import com.acertainbookstore.business.BookRating;
+
 /**
  * BookStoreHTTPMessageHandler implements the message handler class which is
  * invoked to handle messages received by the BookStoreHTTPServerUtility. It
@@ -238,6 +240,42 @@ public class BookStoreHTTPMessageHandler extends AbstractHandler {
 				try {
 					bookStoreResponse.setList(myBookStore
 							.getBooksByISBN(isbnSet));
+				} catch (BookStoreException ex) {
+					bookStoreResponse.setException(ex);
+				}
+				listBooksxmlString = BookStoreUtility
+						.serializeObjectToXMLString(bookStoreResponse);
+				response.getWriter().println(listBooksxmlString);
+				break;
+				
+			case RATEBOOKS:
+				xml = BookStoreUtility.extractPOSTDataFromRequest(request);
+				Set<BookRating> ratingSet = (Set<BookRating>) BookStoreUtility
+						.deserializeXMLStringToObject(xml);
+				
+				bookStoreResponse = new BookStoreResponse();
+				try {
+					myBookStore.rateBooks(ratingSet);
+				}
+				catch (BookStoreException ex) {
+					bookStoreResponse.setException(ex);
+				}
+				listBooksxmlString = BookStoreUtility
+						.serializeObjectToXMLString(bookStoreResponse);
+				response.getWriter().println(listBooksxmlString);
+				break;
+				
+			case GETTOPRATEDBOOKS:
+				numBooksString = URLDecoder
+				.decode(request
+						.getParameter(BookStoreConstants.BOOK_NUM_PARAM),
+						"UTF-8");
+				bookStoreResponse = new BookStoreResponse();
+				try {
+					numBooks = BookStoreUtility
+							.convertStringToInt(numBooksString);
+					bookStoreResponse.setList(myBookStore
+							.getTopRatedBooks(numBooks));
 				} catch (BookStoreException ex) {
 					bookStoreResponse.setException(ex);
 				}
