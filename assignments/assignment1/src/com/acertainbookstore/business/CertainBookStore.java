@@ -314,7 +314,7 @@ public class CertainBookStore implements BookStore, StockManager {
 	public synchronized List<ImmutableStockBook> getBooksInDemand()
 			throws BookStoreException {
 
-		List<StockBook> listBooks = new ArrayList<StockBook>();
+		List<ImmutableStockBook> listBooks = new ArrayList<ImmutableStockBook>();
 		Collection<BookStoreBook> bookMapValues = bookMap.values();
 		for (BookStoreBook book : bookMapValues) {
 			if (book.getSaleMisses() > 0) {
