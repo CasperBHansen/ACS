@@ -289,25 +289,41 @@ public class CertainBookStore implements BookStore, StockManager {
 	@Override
 	public synchronized void rateBooks(Set<BookRating> bookRating)
 			throws BookStoreException {
-        // BEGIN EDIT: CASPER
  		if (bookRating == null) {
 			throw new BookStoreException(BookStoreConstants.NULL_INPUT);
         }
 
-        // validate ISBN
-        int ISBN;
+        // validate
+        int ISBN, rating;
 		BookStoreBook book;
 		for (BookRating bookRatingToRate : bookRating) {
 			ISBN = bookRatingToRate.getISBN();
+			rating = bookRatingToRate.getRating();
+			
+			// validate ISBN
             if (BookStoreUtility.isInvalidISBN(ISBN))
 				throw new BookStoreException(BookStoreConstants.ISBN + ISBN
 						+ BookStoreConstants.INVALID);
+			
+			// validate in store
 			if (!bookMap.containsKey(ISBN))
 				throw new BookStoreException(BookStoreConstants.ISBN + ISBN
 						+ BookStoreConstants.NOT_AVAILABLE);
+			
+			// validate rating
+			if (BookStoreUtility.isInvalidRating(rating))
+				throw new BookStoreException(BookStoreConstants.RATING + rating
+						+ BookStoreConstants.INVALID);
 		}
-        // END EDIT:
-		throw new BookStoreException("Not implemented");
+		
+		// rate all books
+		for (BookRating bookRatingToRate : bookRating) {
+			book = bookMap.get(bookRatingToRate.getISBN());
+			rating = bookRatingToRate.getRating();
+			book.addRating(rating);
+		}
+		
+		return;
 	}
 
 	public synchronized void removeAllBooks() throws BookStoreException {
