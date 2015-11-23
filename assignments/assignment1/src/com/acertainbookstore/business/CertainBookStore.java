@@ -5,6 +5,7 @@ package com.acertainbookstore.business;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -13,6 +14,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
+import java.util.Comparator;
 
 import com.acertainbookstore.interfaces.BookStore;
 import com.acertainbookstore.interfaces.StockManager;
@@ -277,7 +279,34 @@ public class CertainBookStore implements BookStore, StockManager {
 	@Override
 	public synchronized List<Book> getTopRatedBooks(int numBooks)
 			throws BookStoreException {
-		throw new BookStoreException("Not implemented");
+		if (numBooks < 0) {
+			throw new BookStoreException("numBooks = " + numBooks
+					+ ", but it must be positive");
+		}
+		
+		// get the list of books
+		List<StockBook> listBooks = new ArrayList<StockBook>();
+		Collection<BookStoreBook> bookMapValues = bookMap.values();
+		for (BookStoreBook book : bookMapValues) {
+			listBooks.add(book.immutableStockBook());
+		}
+		
+		// sort the list
+		Collections.sort(listBooks, new Comparator<StockBook>() {
+			public int compare(StockBook a, StockBook b) {
+				return a.getAverageRating() >= b.getAverageRating() ? 1 : -1;
+			}
+		});
+		
+		listBooks = listBooks.subList(0, numBooks);
+		
+		// needs prettification
+		List<Book> books = new ArrayList<Book>();
+		for (StockBook book : listBooks) {
+			books.add((Book)book);
+		}
+		
+		return books;
 	}
 
 	@Override

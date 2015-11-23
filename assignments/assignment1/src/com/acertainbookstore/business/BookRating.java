@@ -1,10 +1,13 @@
 package com.acertainbookstore.business;
 
+import java.util.Comparator;
+
 /**
  * Simple class for giving book ratings.
  * 
  */
 public class BookRating {
+	
 	private int ISBN;
 	private int rating;
 
