@@ -311,10 +311,10 @@ public class CertainBookStore implements BookStore, StockManager {
 
 	// HANS ADD: BEGIN
 	@Override
-	public synchronized List<ImmutableStockBook> getBooksInDemand()
+	public synchronized List<StockBook> getBooksInDemand()
 			throws BookStoreException {
 
-		List<ImmutableStockBook> listBooks = new ArrayList<ImmutableStockBook>();
+		List<StockBook> listBooks = new ArrayList<StockBook>();
 		Collection<BookStoreBook> bookMapValues = bookMap.values();
 		for (BookStoreBook book : bookMapValues) {
 			if (book.getSaleMisses() > 0) {
