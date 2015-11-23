@@ -280,21 +280,24 @@ public class CertainBookStore implements BookStore, StockManager {
 		throw new BookStoreException("Not implemented");
 	}
 
+	// HANS ADD: BEGIN
 	@Override
-	public synchronized List<StockBook> getBooksInDemand()
+	public synchronized List<ImmutableStockBook> getBooksInDemand()
 			throws BookStoreException {
 
-			// Make an empty List<Book>
-			// for each book in Bookmap (?)
-				// check getSaleMisses() > 0; ie, someone tried to buy a book not in supply
-					// add book to List<Book>
-			// Return List<Book>
+		List<StockBook> listBooks = new ArrayList<StockBook>();
+		Collection<BookStoreBook> bookMapValues = bookMap.values();
+		for (BookStoreBook book : bookMapValues) {
+			if (book.getSaleMisses() > 0) {
+				listBooks.add(book.immutableStockBook());
+			}
+		}
+		return listBooks;
 
-			// What errors can happen
-			//
-
-		throw new BookStoreException("Not implemented");
+		// What errors can happen
+		// throw new BookStoreException("Not implemented");
 	}
+	// HANS ADD: END
 
 	@Override
 	public synchronized void rateBooks(Set<BookRating> bookRating)
@@ -309,30 +312,30 @@ public class CertainBookStore implements BookStore, StockManager {
 		for (BookRating bookRatingToRate : bookRating) {
 			ISBN = bookRatingToRate.getISBN();
 			rating = bookRatingToRate.getRating();
-			
+
 			// validate ISBN
             if (BookStoreUtility.isInvalidISBN(ISBN))
 				throw new BookStoreException(BookStoreConstants.ISBN + ISBN
 						+ BookStoreConstants.INVALID);
-			
+
 			// validate in store
 			if (!bookMap.containsKey(ISBN))
 				throw new BookStoreException(BookStoreConstants.ISBN + ISBN
 						+ BookStoreConstants.NOT_AVAILABLE);
-			
+
 			// validate rating
 			if (BookStoreUtility.isInvalidRating(rating))
 				throw new BookStoreException(BookStoreConstants.RATING + rating
 						+ BookStoreConstants.INVALID);
 		}
-		
+
 		// rate all books
 		for (BookRating bookRatingToRate : bookRating) {
 			book = bookMap.get(bookRatingToRate.getISBN());
 			rating = bookRatingToRate.getRating();
 			book.addRating(rating);
 		}
-		
+
 		return;
 	}
 

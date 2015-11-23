@@ -130,13 +130,20 @@ public class StockManagerHTTPProxy implements StockManager {
 
 	}
 
+	// HANS ADD: BEGIN
 	@Override
 	public List<StockBook> getBooksInDemand() throws BookStoreException {
+		ContentExchange exchange = new ContentExchange();
+		String urlString = serverAddress + "/" + BookStoreMessageTag.GETBOOKSINDEMAND;
 
+		exchange.setURL(urlString);
 
+		BookStoreUtility.SendAndRecv(this.client, exchange);
 
-		//throw new BookStoreException("Not implemented");
+		return (List<StockBook>) BookStoreUtility.SendAndRecv(this.client,
+				exchange);
 	}
+	// HANS ADD: END
 
 	public void removeAllBooks() throws BookStoreException {
 		ContentExchange exchange = new ContentExchange();
