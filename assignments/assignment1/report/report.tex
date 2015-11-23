@@ -113,16 +113,70 @@
 %==============================================================================%
 
 \section{Fundamental Abstractions}
-...
 
+\subsection{Question 1}
+
+Making no assumptions on the size of memory machines, given an address in our single address space we require a lookup table of some sort to pass on the request to the correct machine storing the data of that address. A simple mapping from an address in the single address space to an address in on of the $k$ machines, would be storing the first $0 \dots m_1-1$ address in the first machine, $m_i$ being the space of the $i$'th machine, and the next addresses $m_1, m_1+m_2-1$ in the next machine. To do this we require a centralized machine with a lookup table to find the appropriate machine. For small $k$, a linear search would be fine. For larger $k$, one way is to use a binary search. This has the potential to increase the latency significantly, since each request would take logarithmic time.
+
+If the central machine breaks, everything breaks. To alleviate this we could add redundancy by having multiple machines play the role of serving cached versions of the lookup table. This solution could also be implemented by having a set of proxies relaying requests to the appropriate machine. This type of redundancy breaks the atomicity of the write operation, since a write operation, followed by a read operation might be send to different proxies, and processed at a rate in which the {\tt READ} reply arrives first.
+
+If one of the $k$ machines in not available (busy, down or broken), the central machine(s) could implement a timeout timer for when the reply from the machine should have arrived and reply to the client that the request failed with a timeout. Replies that arrived too late should be discarded.
+
+\subsection{Question 2}
+
+\begin{lstlisting}
+READ(ADDR) -> VALUE
+    let M_ADDR = proxy.lookup(ADDR)
+    read_request(M_ADDR, ADDR)
+    let response = wait_for_reply(M_ADDR, CONST_TIMEOUT)
+    case response of
+        exception e -> raise request_failure (to_string (e) )
+        value -> return value
+    end
+end
+
+WRITE(ADDR, VALUE)
+    let M_ADDR = proxy.lookup(ADDR)
+    write_request(M_ADDR, ADDR, VALUE)
+    let response = wait_for_reply(M_ADDR, CONST_TIMEOUT)
+    case reponse of
+        exception e -> raise request_failure (to_string (e) )
+        OK -> return
+    end
+end
+\end{lstlisting}
+
+In each of the functions, we first lookup the IP of the machine storing the memory at the given address, send a reply and wait for the reply before returning. The {\tt wait\_for\_reply} function could contain a loop looking for a reply in the reply buffer. This loop breaks if time {\tt CONST\_TIMEOUT} has passed. Similarly, we catch any exceptions that the machine might throw at us --- thus ensuring that higher level abstractions can handle any failure that may occur.
+
+\subsection{Question 3}
+
+In regular main memory atomicity is required. Had it not been, any higher level abstractions that use main memory ---such as the example discussed--- could not be designed for atomicity, if required by such a design. In our design we believe that atomicity is key if we are to expect consistency in an environment with multiple clients. In this case, we could extend the implementation of our request API with locking mechanisms, that block reads from taking place whenever a write request is received. In the event that we do not require strict consistency, we could allow this proxy method, where some policy loosely allow for acceptable irregularities within some constraint. Whilst if we do require such strict consistency, we must either use just one main machine that process requests, ensuring that the lookup table is always up-to-date, and reads cannot occur if the {\it write flag} is set on that particular machine.
+
+\subsection{Question 4}
+
+If a machine is unreachable we are covered since we raise a timeout exception, and since the data is unrecoverable in any case we can do little better. For efficiency, the central machine would keep track of unreachable machines, such as a flag in the lookup table. If new machines are added we can simply extend the single address space and lookup table with the new machine. The lookup table may become increasingly cluttered with unreachable machines. There's numerous ways to handle this (remapping addresses, moving data, etc.) each appropriate for different applications with different advantages and drawbacks.
 
 %==============================================================================%
 % QUESTION 2                                                                   %
 %==============================================================================%
 
 \section{Techniques for Performance}
-...
 
+\subsection{Question 1}
+
+Under the assumption that the workload is balanced evenly across processes, then latency is expected to decrease. Conversely, if workload is small, the overhead of doing the work concurrently outweighs the benefits.
+
+\subsection{Question 2}
+
+Dallying builds up buffer of operations to run creating an artificial delay before performing them all, whilst batching executes immediately, but ordering the operations to run batches of them together. Thus for batching preservation of the order is not guaranteed.
+
+An example of dallying is OpenGL, that builds up a command buffer, which upon flushing the buffer sends the buffer to the graphics processing unit for execution.
+
+An example batching is the scan algorithm in a classic hard disks. The read/write head moves up and down reversing direction at the top and bottom, reading and writing to the disk only when it passes over the area.
+
+\subsection{Question 3}
+
+Caching is indeed a case of fast path optimization, as it attempts to eliminate the need reads and writes to lower level memory, and only travels deeper if it needs to.
 
 %==============================================================================%
 % DISCUSSION ON ARCHITECTURE                                                   %
