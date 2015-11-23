@@ -9,7 +9,10 @@ package com.acertainbookstore.utils;
  * 
  */
 public final class BookStoreConstants {
-
+	
+	public static final int RATING_MIN = 0;
+	public static final int RATING_MAX = 5;
+	
 	// Constants used when creating URLs	
 	public static final String BOOKISBN_PARAM = "ISBN";
 	public static final String BOOK_NUM_PARAM = "number_of_books";
