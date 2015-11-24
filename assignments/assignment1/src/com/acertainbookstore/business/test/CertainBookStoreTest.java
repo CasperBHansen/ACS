@@ -3,6 +3,7 @@ package com.acertainbookstore.business.test;
 import static org.junit.Assert.*;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.After;
@@ -11,6 +12,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.acertainbookstore.business.Book;
 import com.acertainbookstore.business.BookRating;
 import com.acertainbookstore.business.CertainBookStore;
 import com.acertainbookstore.business.ImmutableStockBook;
@@ -100,8 +102,49 @@ public class CertainBookStoreTest {
 	}
 
 	@Test
-	public void testGetTopRatedBooks() {
-		fail("Not yet implemented");
+	public void testGetTopRatedBooksNegativeNumber() throws BookStoreException {
+		try {
+			client.getTopRatedBooks(-1);
+			fail();
+		}
+		catch (BookStoreException ex) {
+			; // we expect this to happen
+		}
+	}
+
+	@Test
+	public void testGetTopRatedBooks() throws BookStoreException {
+		Set<StockBook> booksAdded = new HashSet<StockBook>();
+		booksAdded.add(getDefaultBook());
+
+		Set<StockBook> booksToAdd = new HashSet<StockBook>();
+		booksToAdd.add(new ImmutableStockBook(TEST_ISBN + 1,
+				"The Art of Computer Programming", "Donald Knuth", (float) 300,
+				NUM_COPIES, 0, 2, 10, false));
+		booksToAdd.add(new ImmutableStockBook(TEST_ISBN + 2,
+				"The C Programming Language",
+				"Dennis Ritchie and Brian Kerninghan", (float) 50,
+				NUM_COPIES, 0, 1, 5, false));
+		booksToAdd.add(new ImmutableStockBook(TEST_ISBN + 3,
+				"Some Book",
+				"Some Author", (float) 150, NUM_COPIES,
+				0, 1, 1, false));
+		booksToAdd.add(new ImmutableStockBook(TEST_ISBN + 4,
+				"Another Book",
+				"Another Author", (float) 80, NUM_COPIES,
+				0, 1, 3, false));
+		booksToAdd.add(new ImmutableStockBook(TEST_ISBN + 5,
+				"An Entirely Different Book",
+				"An Entirely Different Author", (float) 200, NUM_COPIES,
+				0, 1, 2, false));
+
+		booksAdded.addAll(booksToAdd);
+
+		storeManager.addBooks(booksToAdd);
+		
+		int num = 3;
+		List<Book> listBooks = client.getTopRatedBooks(num);
+		assertTrue(listBooks.size() == num);
 	}
 
 	@Test
