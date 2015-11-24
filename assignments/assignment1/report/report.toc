@@ -17,11 +17,19 @@
 \contentsline {subsubsection}{\numberline {c)}}{4}
 \contentsline {subsection}{\numberline {3.3}Question 3}{4}
 \contentsline {subsubsection}{\numberline {a)}}{4}
+\contentsline {subsubsection}{\numberline {b)}}{4}
 \contentsline {subsection}{\numberline {3.4}Question 4}{4}
-\contentsline {subsection}{\numberline {3.5}Question 5}{4}
-\contentsline {subsection}{\numberline {3.6}Question 6}{4}
-\contentsline {subsection}{\numberline {3.7}Question 7}{4}
-\contentsline {section}{\numberline {4}Programming Tasks}{5}
-\contentsline {subsection}{\numberline {4.1}\tt rateBooks}{5}
-\contentsline {subsection}{\numberline {4.2}\tt getTopRatedBooks}{6}
-\contentsline {subsection}{\numberline {4.3}\tt getBooksInDemand}{8}
+\contentsline {subsection}{\numberline {3.5}Question 5}{5}
+\contentsline {subsubsection}{\numberline {a)}}{5}
+\contentsline {subsubsection}{\numberline {b)}}{5}
+\contentsline {subsection}{\numberline {3.6}Question 6}{5}
+\contentsline {subsubsection}{\numberline {a)}}{5}
+\contentsline {subsubsection}{\numberline {b)}}{5}
+\contentsline {subsection}{\numberline {3.7}Question 7}{5}
+\contentsline {subsubsection}{\numberline {a)}}{5}
+\contentsline {subsubsection}{\numberline {b)}}{5}
+\contentsline {subsubsection}{\numberline {c)}}{5}
+\contentsline {section}{\numberline {4}Programming Tasks}{6}
+\contentsline {subsection}{\numberline {4.1}\tt rateBooks}{6}
+\contentsline {subsection}{\numberline {4.2}\tt getTopRatedBooks}{7}
+\contentsline {subsection}{\numberline {4.3}\tt getBooksInDemand}{9}

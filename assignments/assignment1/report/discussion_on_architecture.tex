@@ -22,20 +22,20 @@ Tasks} section.
 \subsection{Question 2}
 
 \subsubsection{}
-The architecture is strongly modular because it is based on message tags, which
+The architecture is strongly modular due to two main design choices.  One is the use of message tags, which
 allows different stores to handle each request differently. There is a very
 clear separation between messages and the action being performed, which greatly
 increases the overall extensibility and ease of maintenance of the system.
-Another powerfull advantage of the modularity in this design is that it also
+Another powerful advantage of the modularity in this design is that it also
 allows us to implement features that aren't necessarily exposed to the client or
 business, before all components work properly, by way of simply not exposing the
 message tag. Hence we can test in a live environment, without risking the client
-or business to be affected by any anomalies as we do so.
+or business to be affected by any anomalies as we do so. The second design choice is due to the powerful usage of interfaces in the RPC design. The interfaces together define everything we want the bookstore to do, thus the bookstore implements both interfaces. Each interface then define the two different ways to interact with the bookstore. We recognize how the server is central to the HTTP RPC design but stress that since the proxies at the end of the message pathways as well implement the interface, the RPC architecture is hidden from users of the bookstore creating an illusion that they interface directly with the bookstore.
 
 \subsubsection{}
 There is a clear separation between the client and the service, as neither
-communicates directly with eachother. Both rely on the server to receive and
-process each and every request performed by either.
+communicates directly with each other. Both rely on the server to receive and
+process each and every request performed by either. As mentioned above, the interfaces define what is possible for the different users of the bookstore. Besides this, the return types, such as the {\tt ImmutableStockBook} prevents unintended use. The simple solution would simply be to return the StockBook, but then {\tt ``clever users''} could access the information only intended for server-side operations.
 
 \subsubsection{}
 Yes it is, as there is no way of communicating directly between the client and
