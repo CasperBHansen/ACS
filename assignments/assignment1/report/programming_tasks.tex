@@ -32,7 +32,7 @@ Firstly, we parse the serialized XML from the received POST request. Then we
 attempt to perform the rating using the set of book ratings. If this fails we
 catch the generated exception. And lastly, if all went well, we respond
 accordingly.
-\codeexcerpt{server/BookStoreHTTPMessageHandler.java}{251}{266}
+\codeexcerpt{server/BookStoreHTTPMessageHandler.java}{249}{264}
 
 Now the server is able to process book ratings, so all we have to do is to
 expose the client-side to this API. To do so, we simply serialize the book
@@ -55,7 +55,7 @@ The server now needs to recognize and handle the message. We do so by
 extracting and decoding the {\tt BOOK\_NUM\_PARAM} parameter and pass it to the
 book store object, which performs the retrieveal, and then we serialize the
 returned object into XML and then write it to the response object.
-\codeexcerpt{server/BookStoreHTTPMessageHandler.java}{268}{285}
+\codeexcerpt{server/BookStoreHTTPMessageHandler.java}{266}{283}
 
 To finish things up, we implement the client-side, which initiates the action.
 In this, we encode the number of toprated books to be fetched and use it to
@@ -71,4 +71,4 @@ Much of the work is done for us here already. A case for the new massage tag was
 
 >>SOMETHING ABOUT THE EXCEPTION HERE<<
 
-\codeexcerpt{business/CertainBookStore.java}{312}{329}
+\codeexcerpt{business/CertainBookStore.java}{315}{340}
