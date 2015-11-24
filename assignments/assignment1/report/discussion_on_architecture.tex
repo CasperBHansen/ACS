@@ -45,15 +45,52 @@ The locality has no effect on the outcome.
 \subsection{Question 3}
 
 \subsubsection{}
+Indeed, there is. The naming service is the communication bridge between the
+client and business, which is based on so-called message tags located in \\
+{\tt com.acertainbookstore.server.BookStoreHTTPMessageHandler}. Each tag defines
+a request, which is relayed by the server to the recipient, processed and then
+a response is then given back.
 
+\subsubsection{}
+...
 
 \subsection{Question 4}
 In the architecture, this can be seen from the way HTTP communication is handled. Clients send and receive messages to the bookstore using the Jetty 8 HTML client/server library, wrapped in the {\tt SendAndRecv} method. Since the client does not attempt to resend messages, and since the bookstore servers plan for handling errors is simply to pass the on to the client, the architecture exhibits an {\it ``At most once''} behavior.
 
 \subsection{Question 5}
 
+\subsubsection{}
+...
+
+\subsubsection{}
+...
+
 \subsection{Question 6}
 
+\subsubsection{}
+While there can be multiple instances of clients, there is only one instance of
+the server. So the bottleneck occurs in the server.
+
+\subsubsection{}
+...
+
 \subsection{Question 7}
+
+\subsubsection{}
+Yes, as certain actions performed on a web proxy can be handled different in
+such events.
+
+\subsubsection{}
+Definitely. For mere retrieval of objects, this could mask server-side
+failures. However, in order to perform other actions, such as buying books,
+may require more features of the underlaying API. Specifically, in such cases
+there should be an order status present, that once an order was submitted would
+be marked as pending --- that is, the server has yet to verify that such an
+order can be processed.
+
+\subsubsection{}
+As pointed out in the previous question, it would require some notion of
+yet-to-be-determined responses, and as such, a reflection of this should be
+present in the book store API.
 
 
