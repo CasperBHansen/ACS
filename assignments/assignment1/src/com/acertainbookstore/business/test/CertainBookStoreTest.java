@@ -32,7 +32,7 @@ public class CertainBookStoreTest {
 	private static int ISBN_COUNTER = 0;
 	private static final int TEST_ISBN = 3044560;
 	private static final int NUM_COPIES = 5;
-	private static boolean localTest = false;
+	private static boolean localTest = true;
 	private static StockManager storeManager;
 	private static BookStore client;
 
@@ -66,7 +66,7 @@ public class CertainBookStoreTest {
 			((StockManagerHTTPProxy) storeManager).stop();
 		}
 	}
-
+	
 	/**
 	 * Method to add a book, executed before every test case is run
 	 */
