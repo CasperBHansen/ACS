@@ -139,6 +139,11 @@ public class CertainBookStoreTest {
 		catch (BookStoreException ex) {
 			; // we expect this to fail
 		}
+		
+		// no books should have been rated
+		for (StockBook book : booksToAdd) {
+			assertTrue(book.getTimesRated() == 0);
+		}
 	}
 
 	@Test
@@ -169,6 +174,11 @@ public class CertainBookStoreTest {
 		}
 		catch (BookStoreException ex) {
 			; // we expect this to fail
+		}
+		
+		// no books should have been rated
+		for (StockBook book : booksToAdd) {
+			assertTrue(book.getTimesRated() == 0);
 		}
 	}
 
@@ -201,6 +211,11 @@ public class CertainBookStoreTest {
 		}
 		catch (BookStoreException ex) {
 			; // we expect this to fail
+		}
+		
+		// no books should have been rated
+		for (StockBook book : booksToAdd) {
+			assertTrue(book.getTimesRated() == 0);
 		}
 	}
 
