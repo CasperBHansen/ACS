@@ -32,7 +32,7 @@ public class CertainBookStoreTest {
 	private static int ISBN_COUNTER = 0;
 	private static final int TEST_ISBN = 3044560;
 	private static final int NUM_COPIES = 5;
-	private static boolean localTest = true;
+	private static boolean localTest = false;
 	private static StockManager storeManager;
 	private static BookStore client;
 
@@ -49,8 +49,7 @@ public class CertainBookStoreTest {
 				storeManager = store;
 				client = store;
 			} else {
-				storeManager = new StockManagerHTTPProxy(
-						"http://localhost:8081/stock");
+				storeManager = new StockManagerHTTPProxy("http://localhost:8081/stock");
 				client = new BookStoreHTTPProxy("http://localhost:8081");
 			}
 			storeManager.removeAllBooks();

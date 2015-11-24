@@ -66,16 +66,21 @@ In the architecture, this can be seen from the way HTTP communication is handled
 Yes the proposed architecture handles multiple clients quite well, and since the the server is multi-threaded and with thread-safe calls t the bookstore (importantly), concurrency is already supported by the architecture.
 
 \subsubsection{}
-...
+The proxies in the current implementation have the role of exposing the relavant
+API of the server to the service or client, but none of the method calls are
+actually performed by the proxies. They merely serialize and request that the
+server performed them --- hence, they are proxies of the server.
 
 \subsection{Question 6}
 
 \subsubsection{}
-While there can be multiple instances of clients, there is only one instance of
-the server. So the bottleneck occurs in the server.
+Yes.
 
 \subsubsection{}
-...
+If the server is depleted of threads, then the available resources that are to be
+queries by any web proxies would have to wait for threads to become available.
+Likewise, if web proxies are depleted of threads, then clients or services would
+also have to wait for threads to become available.
 
 \subsection{Question 7}
 
