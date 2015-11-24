@@ -52,7 +52,10 @@ a request, which is relayed by the server to the recipient, processed and then
 a response is then given back.
 
 \subsubsection{}
-...
+The naming scheme used is the concept of message tags, and is central to the
+architecture as a whole. It allows the server to take requests from clients and
+services, relaying such requests by way of the tags, process them and in turn
+respond to the client or service.
 
 \subsection{Question 4}
 In the architecture, this can be seen from the way HTTP communication is handled. Clients send and receive messages to the bookstore using the Jetty 8 HTML client/server library, wrapped in the {\tt SendAndRecv} method. Since the client does not attempt to resend messages, and since the bookstore servers plan for handling errors is simply to pass the on to the client, the architecture exhibits an {\it ``At most once''} behavior.
