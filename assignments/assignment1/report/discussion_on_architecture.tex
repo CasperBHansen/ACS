@@ -5,6 +5,9 @@
 \section{Discussion on Architecture}
 
 \subsection{Question 1}
+We follow the {\it all-or-nothing} semantics by way of exceptions; whenever an
+exception occurs, nothing is changed. All checks occur beforehand, and only when
+everything has been validated we perform the requested action.
 
 \subsection{Question 2}
 
