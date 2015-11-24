@@ -11,9 +11,9 @@
     desired functions to {\tt BookStoreMessageTags} --- namely
     {\tt GETBOOKSINDEMAND}, {\tt RATEBOOKS} and {\tt GETTOPRATEDBOOKS}, as
     shown in excerpt \ref{code:utils/BookStoreMessageTag.java}.
-    
+
     \colbreak
-    
+
     \codeexcerpt{utils/BookStoreMessageTag.java}{12}{14}
 \end{multicols}
 \setlength\columnsep{10pt}
@@ -63,6 +63,12 @@ produce the URL parameter {\tt BOOK\_NUM\_PARAM}, and then sending the request
 and wait for a response.
 \codeexcerpt{client/BookStoreHTTPProxy.java}{148}{166}
 
-\subsection{\tt getTopRatedBooks}
-TODO: explain
+\subsection{\tt getBooksInDemand}
+
+The implementation of this method mirrors the {\tt getBooks} method to a large degree. The difference boils down to checking if the book has had a sales miss using the {\tt StockBook} method {\tt getSaleMisses} and adding the book if this value is positive. As in the {\tt getBooks} method, we convert the book to the safer immutable {\tt ImmutableStockBook} type before returning. More interestingly, the {\tt StockManagerHTTPProxy.java} now implements the interface method {\tt getBooksInDemand}. This again mirrors the {getBooks} implementation, as the details were exactly the same. A unique message tag for this bookstore operation {\tt GETBOOKSINDEMAND} was added to be handled in the {\tt BooksStoreHTTPMessageHandle.java} file.
+
+Much of the work is done for us here already. A case for the new massage tag was added and an implementation similar to the {\tt GETBOOKS} case was carried out.
+
+>>SOMETHING ABOUT THE EXCEPTION HERE<<
+
 \codeexcerpt{business/CertainBookStore.java}{312}{329}

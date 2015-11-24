@@ -1,0 +1,27 @@
+\contentsline {section}{\numberline {1}Fundamental Abstractions}{2}
+\contentsline {subsection}{\numberline {1.1}Question 1}{2}
+\contentsline {subsection}{\numberline {1.2}Question 2}{2}
+\contentsline {subsection}{\numberline {1.3}Question 3}{2}
+\contentsline {subsection}{\numberline {1.4}Question 4}{3}
+\contentsline {section}{\numberline {2}Techniques for Performance}{3}
+\contentsline {subsection}{\numberline {2.1}Question 1}{3}
+\contentsline {subsection}{\numberline {2.2}Question 2}{3}
+\contentsline {subsection}{\numberline {2.3}Question 3}{3}
+\contentsline {section}{\numberline {3}Discussion on Architecture}{3}
+\contentsline {subsection}{\numberline {3.1}Question 1}{3}
+\contentsline {subsubsection}{\numberline {a)}}{3}
+\contentsline {subsubsection}{\numberline {b)}}{4}
+\contentsline {subsection}{\numberline {3.2}Question 2}{4}
+\contentsline {subsubsection}{\numberline {a)}}{4}
+\contentsline {subsubsection}{\numberline {b)}}{4}
+\contentsline {subsubsection}{\numberline {c)}}{4}
+\contentsline {subsection}{\numberline {3.3}Question 3}{4}
+\contentsline {subsubsection}{\numberline {a)}}{4}
+\contentsline {subsection}{\numberline {3.4}Question 4}{4}
+\contentsline {subsection}{\numberline {3.5}Question 5}{4}
+\contentsline {subsection}{\numberline {3.6}Question 6}{4}
+\contentsline {subsection}{\numberline {3.7}Question 7}{4}
+\contentsline {section}{\numberline {4}Programming Tasks}{5}
+\contentsline {subsection}{\numberline {4.1}\tt rateBooks}{5}
+\contentsline {subsection}{\numberline {4.2}\tt getTopRatedBooks}{6}
+\contentsline {subsection}{\numberline {4.3}\tt getBooksInDemand}{8}
