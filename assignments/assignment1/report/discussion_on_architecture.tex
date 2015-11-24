@@ -19,7 +19,6 @@ exception for cases where it can fail.
 \subsection{Question 2}
 
 \subsubsection{}
-
 The architecture is strongly modular because it is based on message tags, which
 allows different stores to handle each request differently. There is a very
 clear separation between messages and the action being performed, which greatly
@@ -35,11 +34,18 @@ There is a clear separation between the client and the service, as neither
 communicates directly with eachother. Both rely on the server to receive and
 process each and every request performed by either.
 
+\subsubsection{}
+Yes it is, as there is no way of communicating directly between the client and
+the bookstore. All messages are passed through the locally instantiated server.
+The locality has no effect on the outcome.
+
 \subsection{Question 3}
 
-\subsection{Question 4}
+\subsubsection{}
 
-In the architecture, this can be seen from the way HTTP communication is handled. Clients send and receive messages to the bookstore using the Jetty 8 html client/server library, wrapped in the {\tt SendAndRecv} method. Since the client does not attempt to resend messages, and since the bookstore servers plan for handling errors is simply to pass the on to the client, the architecture exhibits an {\it ``At most once''} behavior.
+
+\subsection{Question 4}
+In the architecture, this can be seen from the way HTTP communication is handled. Clients send and receive messages to the bookstore using the Jetty 8 HTML client/server library, wrapped in the {\tt SendAndRecv} method. Since the client does not attempt to resend messages, and since the bookstore servers plan for handling errors is simply to pass the on to the client, the architecture exhibits an {\it ``At most once''} behavior.
 
 \subsection{Question 5}
 
