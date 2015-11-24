@@ -5,15 +5,20 @@
 \section{Discussion on Architecture}
 
 \subsection{Question 1}
+
+\subsubsection{}
 We follow the {\it all-or-nothing} semantics by way of exceptions; whenever an
 exception occurs, nothing is changed. All checks occur beforehand, and only when
 everything has been validated we perform the requested action. With regards to
 testing this, our tests are oriented towards failing by producing such an
 exception for cases where it can fail.
 
+\subsubsection{}
+...
+
 \subsection{Question 2}
 
-\subsubsection{Sub-Question a}
+\subsubsection{}
 
 The architecture is strongly modular because it is based on message tags, which
 allows different stores to handle each request differently. There is a very
@@ -25,9 +30,10 @@ business, before all components work properly, by way of simply not exposing the
 message tag. Hence we can test in a live environment, without risking the client
 or business to be affected by any anomalies as we do so.
 
-\subsubsection{Sub-Question b}
-
-There's two main design decisions
+\subsubsection{}
+There is a clear separation between the client and the service, as neither
+communicates directly with eachother. Both rely on the server to receive and
+process each and every request performed by either.
 
 \subsection{Question 3}
 
