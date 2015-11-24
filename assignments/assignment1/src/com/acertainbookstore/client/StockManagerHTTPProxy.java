@@ -130,7 +130,7 @@ public class StockManagerHTTPProxy implements StockManager {
 
 	}
 
-	// HANS ADD: BEGIN
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<StockBook> getBooksInDemand() throws BookStoreException {
 		ContentExchange exchange = new ContentExchange();
@@ -143,7 +143,6 @@ public class StockManagerHTTPProxy implements StockManager {
 		return (List<StockBook>) BookStoreUtility.SendAndRecv(this.client,
 				exchange);
 	}
-	// HANS ADD: END
 
 	public void removeAllBooks() throws BookStoreException {
 		ContentExchange exchange = new ContentExchange();

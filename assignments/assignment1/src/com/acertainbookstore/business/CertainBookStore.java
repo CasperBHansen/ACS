@@ -309,7 +309,6 @@ public class CertainBookStore implements BookStore, StockManager {
 		return books;
 	}
 
-	// HANS ADD: BEGIN
 	@Override
 	public synchronized List<StockBook> getBooksInDemand()
 			throws BookStoreException {
@@ -329,7 +328,6 @@ public class CertainBookStore implements BookStore, StockManager {
 		// What errors can happen
 		// throw new BookStoreException("Not implemented");
 	}
-	// HANS ADD: END
 
 	@Override
 	public synchronized void rateBooks(Set<BookRating> bookRating)
