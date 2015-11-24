@@ -1,3 +1,9 @@
 *.class
 
 *.jar
+
+*.aux
+*.log
+*.toc
+*.out
+*.pdf
