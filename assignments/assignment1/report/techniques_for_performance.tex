@@ -1,0 +1,23 @@
+%==============================================================================%
+% TECHNIQUES FOR PERFORMANCE                                                   %
+%==============================================================================%
+
+\section{Techniques for Performance}
+
+\subsection{Question 1}
+
+Under the assumption that the workload is balanced evenly across processes, then latency is expected to decrease. Conversely, if workload is small, the overhead of doing the work concurrently outweighs the benefits.
+
+\subsection{Question 2}
+
+Dallying builds up buffer of operations to run creating an artificial delay before performing them all, whilst batching executes immediately, but ordering the operations to run batches of them together. Thus for batching preservation of the order is not guaranteed.
+
+An example of dallying is OpenGL, that builds up a command buffer, which upon flushing the buffer sends the buffer to the graphics processing unit for execution.
+
+An example batching is the scan algorithm in a classic hard disks. The read/write head moves up and down reversing direction at the top and bottom, reading and writing to the disk only when it passes over the area.
+
+\subsection{Question 3}
+
+Caching is indeed a case of fast path optimization, as it attempts to eliminate the need reads and writes to lower level memory, and only travels deeper if it needs to.
+
+
