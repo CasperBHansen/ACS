@@ -2,8 +2,47 @@
 % PROGRAMMING TASKS                                                            %
 %==============================================================================%
 
+\newpage
 \section{Programming Tasks}
-...
+
+\setlength\columnsep{30pt}
+\begin{multicols}{2}
+    In order to implement the functionality, we added the message tags for the
+    desired functions to {\tt BookStoreMessageTags} --- namely
+    {\tt GETBOOKSINDEMAND}, {\tt RATEBOOKS} and {\tt GETTOPRATEDBOOKS}, as
+    shown in excerpt \ref{code:utils/BookStoreMessageTag.java}.
+    
+    \colbreak
+    
+    \codeexcerpt{utils/BookStoreMessageTag.java}{12}{14}
+\end{multicols}
+\setlength\columnsep{10pt}
 
 \subsection{\tt rateBooks}
-\codeexcerpt{business/CertainBookStore.java}{289}{311}
+The implementation of {\tt rateBooks} is rather straight forward. First we check
+that the argument isn't null. Then, for each of the ratings passed to us, we
+validate that the ISBN is valid and contained within the book map, and lastly
+that the rating is actually valid. If any of these fails, we throw an exception.
+If not, we proceed to perform the rating.
+\codeexcerpt{business/CertainBookStore.java}{333}{370}
+
+Now that the functionality is implemented, we can add the message handling code.
+
+Firstly, we parse the serialized XML from the received POST request. Then we
+attempt to perform the rating using the set of book ratings. If this fails we
+catch the generated exception. And lastly, if all went well, we respond
+accordingly.
+\codeexcerpt{server/BookStoreHTTPMessageHandler.java}{251}{266}
+
+Now the server is able to process book ratings, so all we have to do is to
+expose the client-side to this API. To do so, we simply serialize the book
+ratings and send the POST request with it and wait for a response from the
+server.
+\codeexcerpt{client/BookStoreHTTPProxy.java}{132}{144}
+
+\subsection{\tt getTopRatedBooks}
+
+\codeexcerpt{business/CertainBookStore.java}{280}{311}
+
+\subsection{\tt getTopRatedBooks}
+\codeexcerpt{business/CertainBookStore.java}{313}{330}
