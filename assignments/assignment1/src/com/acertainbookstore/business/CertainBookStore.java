@@ -300,13 +300,12 @@ public class CertainBookStore implements BookStore, StockManager {
 		
 		listBooks = listBooks.subList(0, numBooks);
 		
-		// needs prettification
-		List<Book> books = new ArrayList<Book>();
+		Set<Integer> listISBNs = new HashSet<Integer>();
 		for (StockBook book : listBooks) {
-			books.add((Book)book);
+			listISBNs.add(book.getISBN());
 		}
 		
-		return books;
+		return getBooks(listISBNs);
 	}
 
 	@Override

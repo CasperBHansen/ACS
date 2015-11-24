@@ -41,8 +41,27 @@ server.
 \codeexcerpt{client/BookStoreHTTPProxy.java}{132}{144}
 
 \subsection{\tt getTopRatedBooks}
-TODO: explain
+To implement this, we first check that we are being asked for a valid number of
+books to retrieve. If not, we produce an exception. Then we make a
+{\tt Collection} containing the values of the book map, such that we can sort
+the values based on the output of a {\tt Comparator} that compares the {\tt
+getAverageRating} method. Once sorted, we merely need to cut the upper entries
+of the resultant list to get the requested number of toprated books. We then
+make a set of the ISBN numbers and use the {\tt getBooks} functionality to
+produce and return the books.
 \codeexcerpt{business/CertainBookStore.java}{280}{311}
+
+The server now needs to recognize and handle the message. We do so by
+extracting and decoding the {\tt BOOK\_NUM\_PARAM} parameter and pass it to the
+book store object, which performs the retrieveal, and then we serialize the
+returned object into XML and then write it to the response object.
+\codeexcerpt{server/BookStoreHTTPMessageHandler.java}{268}{285}
+
+To finish things up, we implement the client-side, which initiates the action.
+In this, we encode the number of toprated books to be fetched and use it to
+produce the URL parameter {\tt BOOK\_NUM\_PARAM}, and then sending the request
+and wait for a response.
+\codeexcerpt{client/BookStoreHTTPProxy.java}{148}{166}
 
 \subsection{\tt getTopRatedBooks}
 TODO: explain
