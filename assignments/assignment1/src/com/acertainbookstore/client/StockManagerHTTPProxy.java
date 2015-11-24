@@ -138,8 +138,6 @@ public class StockManagerHTTPProxy implements StockManager {
 
 		exchange.setURL(urlString);
 
-		BookStoreUtility.SendAndRecv(this.client, exchange);
-
 		return (List<StockBook>) BookStoreUtility.SendAndRecv(this.client,
 				exchange);
 	}

@@ -164,7 +164,6 @@ public class BookStoreHTTPMessageHandler extends AbstractHandler {
 				response.getWriter().println(listBooksxmlString);
 				break;
 
-			// HANS ADD: BEGIN
 			case GETBOOKSINDEMAND:
 				bookStoreResponse = new BookStoreResponse();
 				try {
@@ -177,7 +176,6 @@ public class BookStoreHTTPMessageHandler extends AbstractHandler {
 						.serializeObjectToXMLString(bookStoreResponse);
 				response.getWriter().println(listBooksxmlString);
 				break;
-			// HANS ADD: END
 
 			case BUYBOOKS:
 				xml = BookStoreUtility.extractPOSTDataFromRequest(request);

@@ -12,7 +12,10 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import com.acertainbookstore.business.Book;
+import java.util.Random;
+import java.util.ArrayList;
+
+import com.acertainbookstore.business.BookCopy;
 import com.acertainbookstore.business.BookRating;
 import com.acertainbookstore.business.CertainBookStore;
 import com.acertainbookstore.business.ImmutableStockBook;
@@ -26,6 +29,7 @@ import com.acertainbookstore.utils.BookStoreException;
 
 public class CertainBookStoreTest {
 
+	private static int ISBN_COUNTER = 0;
 	private static final int TEST_ISBN = 3044560;
 	private static final int NUM_COPIES = 5;
 	private static boolean localTest = true;
@@ -54,6 +58,15 @@ public class CertainBookStoreTest {
 			e.printStackTrace();
 		}
 	}
+	
+	@AfterClass
+	public static void tearDownAfterClass() throws BookStoreException {
+		storeManager.removeAllBooks();
+		if (!localTest) {
+			((BookStoreHTTPProxy) client).stop();
+			((StockManagerHTTPProxy) storeManager).stop();
+		}
+	}
 
 	/**
 	 * Method to add a book, executed before every test case is run
@@ -72,15 +85,6 @@ public class CertainBookStoreTest {
 	public void cleanupBooks() throws BookStoreException {
 		storeManager.removeAllBooks();
 	}
-	
-	@AfterClass
-	public static void tearDownAfterClass() throws BookStoreException {
-		storeManager.removeAllBooks();
-		if (!localTest) {
-			((BookStoreHTTPProxy) client).stop();
-			((StockManagerHTTPProxy) storeManager).stop();
-		}
-	}
 
 	/**
 	 * Helper method to add some books
@@ -91,6 +95,46 @@ public class CertainBookStoreTest {
 				"George RR Testin'", (float) 10, copies, 0, 0, 0, false);
 		booksToAdd.add(book);
 		storeManager.addBooks(booksToAdd);
+	}
+	
+	/**
+	 * 
+	 */
+	public static int getNextISBN() {
+		return TEST_ISBN + (++ISBN_COUNTER);
+	}
+	
+	/**
+	 * Produces a random book.
+	 */
+	public static StockBook makeRandomBook() {
+		Random random = new Random();
+		
+		ImmutableStockBook book = new ImmutableStockBook(
+				getNextISBN(),
+				"A Random Book", // title
+				"A Random Author", // author
+				(float)random.nextFloat(),	// price
+				random.nextInt(10) + 1, // copies
+				random.nextInt(11), // misses
+				random.nextInt(11), // times rated
+				random.nextInt(11 * 5), // total rating
+				random.nextBoolean()
+				);
+		
+		return book;
+	}
+	
+	/**
+	 * Produces a list of random books
+	 */
+	public static Set<StockBook> makeRandomBooks(int num) {
+
+		Set<StockBook> list = new HashSet<StockBook>();
+		for (int i = 0; i < num; ++i) {
+			list.add(makeRandomBook());
+		}
+		return list;
 	}
 
 	/**
@@ -113,7 +157,7 @@ public class CertainBookStoreTest {
 	}
 
 	@Test
-	public void testGetTopRatedBooks() throws BookStoreException {
+	public void testGetTopRatedBooksKEqualN() throws BookStoreException {
 		Set<StockBook> booksAdded = new HashSet<StockBook>();
 		booksAdded.add(getDefaultBook());
 
@@ -142,14 +186,53 @@ public class CertainBookStoreTest {
 
 		storeManager.addBooks(booksToAdd);
 		
-		int num = 3;
-		List<Book> listBooks = client.getTopRatedBooks(num);
-		assertTrue(listBooks.size() == num);
+		try {
+			int num = booksAdded.size();
+			client.getTopRatedBooks(num);
+		}
+		catch (BookStoreException ex) {
+			fail();
+		}
 	}
 
 	@Test
-	public void testGetBooksInDemand() {
-		fail("Not yet implemented");
+	public void testGetTopRatedBooksTooMany() throws BookStoreException {
+		Set<StockBook> booksAdded = new HashSet<StockBook>();
+		booksAdded.add(getDefaultBook());
+
+		Set<StockBook> booksToAdd = new HashSet<StockBook>();
+		booksToAdd.add(new ImmutableStockBook(TEST_ISBN + 1,
+				"The Art of Computer Programming", "Donald Knuth", (float) 300,
+				NUM_COPIES, 0, 2, 10, false));
+		booksToAdd.add(new ImmutableStockBook(TEST_ISBN + 2,
+				"The C Programming Language",
+				"Dennis Ritchie and Brian Kerninghan", (float) 50,
+				NUM_COPIES, 0, 1, 5, false));
+		booksToAdd.add(new ImmutableStockBook(TEST_ISBN + 3,
+				"Some Book",
+				"Some Author", (float) 150, NUM_COPIES,
+				0, 1, 1, false));
+		booksToAdd.add(new ImmutableStockBook(TEST_ISBN + 4,
+				"Another Book",
+				"Another Author", (float) 80, NUM_COPIES,
+				0, 1, 3, false));
+		booksToAdd.add(new ImmutableStockBook(TEST_ISBN + 5,
+				"An Entirely Different Book",
+				"An Entirely Different Author", (float) 200, NUM_COPIES,
+				0, 1, 2, false));
+
+		booksAdded.addAll(booksToAdd);
+
+		storeManager.addBooks(booksToAdd);
+		
+		try {
+			int num = 8;
+			client.getTopRatedBooks(num);
+			fail();
+		}
+		catch (BookStoreException ex) {
+			; // we expect this to happen
+		}
 	}
 
 	@Test
@@ -259,6 +342,62 @@ public class CertainBookStoreTest {
 		// no books should have been rated
 		for (StockBook book : booksToAdd) {
 			assertTrue(book.getTimesRated() == 0);
+		}
+	}
+
+	@Test
+	public void testGetBooksInDemand() throws BookStoreException {
+		Set<StockBook> booksAdded = new HashSet<StockBook>();
+		booksAdded.add(getDefaultBook());
+
+		Set<StockBook> booksToAdd = makeRandomBooks(5);
+		
+		int someOutOfStockBookISBN = getNextISBN();
+		booksToAdd.add(new ImmutableStockBook(someOutOfStockBookISBN,
+				"The C Programming Language",
+				"Dennis Ritchie and Brian Kerninghan", (float) 50, 1,
+				0, 0, 0, false));
+
+		booksAdded.addAll(booksToAdd);
+
+		storeManager.addBooks(booksToAdd);
+		
+		Set<BookCopy> failBuy = new HashSet<BookCopy>();
+		failBuy.add(new BookCopy(someOutOfStockBookISBN, 1));
+		
+		// first time it should work
+		try {
+			client.buyBooks(failBuy);
+		}
+		catch (BookStoreException ex) {
+			fail();
+		}
+		
+		// next time, uuuh, bad times...
+		try {
+			client.buyBooks(failBuy);
+			fail();
+		}
+		catch (BookStoreException ex) {
+			Set<Integer> isbn = new HashSet<Integer>();
+			isbn.add(someOutOfStockBookISBN);
+			
+			List<StockBook> books = storeManager.getBooksByISBN(isbn);
+			StockBook outOfStockBook = books.get(0);
+			
+			assertTrue(outOfStockBook.getSaleMisses() > 0);
+		}
+
+		Set<Integer> inDemandISBNs = new HashSet<Integer>();
+		for (StockBook book : storeManager.getBooks()) {
+			if (book.getSaleMisses() > 0) {
+				inDemandISBNs.add(book.getISBN());
+			}
+		}
+
+		List<StockBook> inDemand = storeManager.getBooksInDemand();
+		for (StockBook demanded : inDemand) {
+			assertTrue(inDemandISBNs.contains(demanded.getISBN()));
 		}
 	}
 

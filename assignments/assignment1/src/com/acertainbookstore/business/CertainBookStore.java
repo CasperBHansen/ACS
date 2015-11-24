@@ -298,11 +298,14 @@ public class CertainBookStore implements BookStore, StockManager {
 			}
 		});
 		
-		listBooks = listBooks.subList(0, numBooks);
+		if (numBooks > listBooks.size()) {
+			throw new BookStoreException("numBooks = " + numBooks
+					+ ", but it must be less than or equal to number of books in store");
+		}
 		
 		Set<Integer> listISBNs = new HashSet<Integer>();
-		for (StockBook book : listBooks) {
-			listISBNs.add(book.getISBN());
+		for (int i = 0; i < numBooks; ++i) {
+			listISBNs.add(listBooks.get(i).getISBN());
 		}
 		
 		return getBooks(listISBNs);
@@ -311,21 +314,29 @@ public class CertainBookStore implements BookStore, StockManager {
 	@Override
 	public synchronized List<StockBook> getBooksInDemand()
 			throws BookStoreException {
-
 		List<StockBook> listBooks = new ArrayList<StockBook>();
 		Collection<BookStoreBook> bookMapValues = bookMap.values();
+		
+		int ISBN;
 		for (BookStoreBook book : bookMapValues) {
+			ISBN = book.getISBN();
+			
+			// validate ISBN
+            if (BookStoreUtility.isInvalidISBN(ISBN))
+				throw new BookStoreException(BookStoreConstants.ISBN + ISBN
+						+ BookStoreConstants.INVALID);
+
+			// validate in store
+			if (!bookMap.containsKey(ISBN))
+				throw new BookStoreException(BookStoreConstants.ISBN + ISBN
+						+ BookStoreConstants.NOT_AVAILABLE);
+			
 			if (book.getSaleMisses() > 0) {
 				listBooks.add(book.immutableStockBook());
 			}
 		}
 		
-		listBooks.get(0).getAverageRating();
-		
 		return listBooks;
-
-		// What errors can happen
-		// throw new BookStoreException("Not implemented");
 	}
 
 	@Override
