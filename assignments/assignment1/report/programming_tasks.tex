@@ -24,7 +24,7 @@ that the argument isn't null. Then, for each of the ratings passed to us, we
 validate that the ISBN is valid and contained within the book map, and lastly
 that the rating is actually valid. If any of these fails, we throw an exception.
 If not, we proceed to perform the rating.
-\codeexcerpt{business/CertainBookStore.java}{333}{370}
+\codeexcerpt{business/CertainBookStore.java}{332}{370}
 
 Now that the functionality is implemented, we can add the message handling code.
 
@@ -49,7 +49,7 @@ getAverageRating} method. Once sorted, we merely need to cut the upper entries
 of the resultant list to get the requested number of toprated books. We then
 make a set of the ISBN numbers and use the {\tt getBooks} functionality to
 produce and return the books.
-\codeexcerpt{business/CertainBookStore.java}{280}{311}
+\codeexcerpt{business/CertainBookStore.java}{280}{309}
 
 The server now needs to recognize and handle the message. We do so by
 extracting and decoding the {\tt BOOK\_NUM\_PARAM} parameter and pass it to the
@@ -65,4 +65,4 @@ and wait for a response.
 
 \subsection{\tt getTopRatedBooks}
 TODO: explain
-\codeexcerpt{business/CertainBookStore.java}{313}{330}
+\codeexcerpt{business/CertainBookStore.java}{312}{329}
