@@ -7,3 +7,7 @@
 *.toc
 *.out
 *.pdf
+
+*.swp
+*.classpath
+*.project
