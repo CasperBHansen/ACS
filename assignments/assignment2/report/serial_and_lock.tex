@@ -31,7 +31,8 @@
     For schedule 2 we have that $T_3$ releases its locks before any other task
     wants to lock $Z$. Therefore, it is not dependent on any other task.
     Similarly, $T_1$ releases the lock on $Y$ before $T_2$ requests a lock on
-    it. So they must also be independent. Hence there are no precendences.
+    it. So they must also be independent. As there are no conflicts, the
+    schedule is therefore inherently conflict serializable.
     \begin{figure}[H]
         \centering
         \begin{tikzpicture}
@@ -41,10 +42,9 @@
             \node[task] (T1) at (0.0, 0.0) {$T_1$};
             \node[task] (T2) at (2.0, 0.0) {$T_2$};
             \node[task] (T3) at (1.0, 1.4) {$T_3$};
-            
         \end{tikzpicture}
-        \caption{Precedence graph for schedule 1}
-        \label{fig:trans-schedule-1}
+        \caption{Precedence graph for schedule 2}
+        \label{fig:trans-schedule-2}
     \end{figure}
 
 \end{multicols}
