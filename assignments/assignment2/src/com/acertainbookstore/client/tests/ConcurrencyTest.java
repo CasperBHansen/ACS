@@ -3,6 +3,7 @@ package com.acertainbookstore.client.tests;
 import static org.junit.Assert.*;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.After;
@@ -150,26 +151,39 @@ public class ConcurrencyTest {
 	 */
 	@Test
 	public void testOne() throws BookStoreException, InterruptedException {
-		
-		int numBooks = 
+
+		List<StockBook> booksBefore = storeManager.getBooks();
 		
 		HashSet<BookCopy> booksToBuy = new HashSet<BookCopy>();
 		booksToBuy.add(new BookCopy(TEST_ISBN, 10)); // valid
-		Thread C1 = new Thread(new ClientBuyer((BookStore)client, booksToBuy));
+		Thread C1 = new Thread(new ClientBuyer(client, booksToBuy));
 		
 		HashSet<BookCopy> booksToAdd = new HashSet<BookCopy>();
 		booksToAdd.add(new BookCopy(TEST_ISBN, 5)); // valid
-		Thread C2 = new Thread(new ClientAdder((StockManager)client, booksToAdd));
+		Thread C2 = new Thread(new ClientAdder(storeManager, booksToAdd));
 
-		C2.start();
 		C1.start();
+		C2.start();
 		
 		C1.join();
 		C2.join();
 		
-		assertTrue()
+		List<StockBook> booksAfter = storeManager.getBooks();
 		
-		fail("unfinished");
+		// horribly inefficient, but works
+		for (StockBook before : booksBefore) {
+			int a = before.getISBN();
+			for (StockBook after : booksAfter) {
+				int b = after.getISBN();
+				if (a == b) {
+					// temporarily, print it out
+					System.out.println("ISBN: " + a);
+					System.out.println(" · before:\t" + before.getNumCopies());
+					System.out.println(" · after:\t" + after.getNumCopies() + "\n");
+					assertTrue(before.getNumCopies() == after.getNumCopies());
+				}
+			}
+		}
 	}
 
 }
