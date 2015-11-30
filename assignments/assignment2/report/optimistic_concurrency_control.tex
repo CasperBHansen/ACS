@@ -3,4 +3,32 @@
 %==============================================================================%
 
 \section{Optimistic Concurrency Control}
-...
+
+Checking the three given scenarios boils down to checking if one of the 2 validation conditions hold with respect to the three phases: {\it Read}, {\it Validation} and {\it Write}. In each scenario, since T1 and T2 has commited, we assume here that the conditions was met, and that we only need to check T3.
+
+\subsection{Scenario 1}
+
+\begin{itemize}
+\item T1 fits the first condition since all phases has completed before T3 starts.
+\item T2 does {\bf not} meet the the first condition because it only completes before the write phase of T3 starts.
+\item T2 does {\bf not} meet the second condition because T2 writes to 4 in the set \verb|{4, 5}| which is read by T3 in the set \verb|{3, 4, 6}|.
+\item T2 does {\bf not} meet the third condition because T2 writes to 4 in the set \verb|{4, 5}| which is read by T3 in the set \verb|{3, 4, 6}|.
+\end{itemize}
+Based on the above, we {\bf roll back} in the first scenario.
+
+\subsection{Scenario 2}
+
+\begin{itemize}
+\item T1 does {\bf not} meet the the first condition because it only completes before the write phase of T3 starts.
+\item T1 does {\bf not} meet the second condition because T2 writes to 3 from set \verb|{3}| which is read by T3 in the set \verb|{3, 4, 5, 6, 7}|.
+\item T1 does {\bf not} meet the third condition because T2 writes to 3 from set \verb|{3}| which is read by T3 in the set \verb|{3, 4, 5, 6, 7}| (as well as written to in the set \verb|{3}|).
+\end{itemize}
+Based on the above, we {\bf roll back} in the second scenario.
+
+\subsection{Scenario 3}
+
+\begin{itemize}
+\item T1 fits the second condition because it completes before T3 begins its write phase, and since the object 3 from set \verb|{3}| written to by T1 is not read by T3.
+\item T2 fits the second condition because it completes before T3 begins its write phase, and since the object 8 from set \verb|{8}| written to by T2 is not read by T3.
+\end{itemize}
+Based on the above, we {\bf commit} in the third scenario.

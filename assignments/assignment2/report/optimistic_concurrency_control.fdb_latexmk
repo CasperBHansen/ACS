@@ -1,0 +1,9 @@
+# Fdb version 3
+["pdflatex"] 1448917895 "optimistic_concurrency_control.tex" "optimistic_concurrency_control.pdf" "optimistic_concurrency_control" 1448917895
+  "/usr/share/texmf-dist/web2c/texmf.cnf" 1447534201 31669 df537245012f3e5f05bdc55644b7a3df ""
+  "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1447698911 7214064 a739c41aa564453105f7bffadea7ad0d ""
+  "optimistic_concurrency_control.aux" 1448917895 8 a94a2480d3289e625eea47cd1b285758 ""
+  "optimistic_concurrency_control.tex" 1448917894 1957 f6e45cf3afdc3a1943972c6e311df787 ""
+  (generated)
+  "optimistic_concurrency_control.log"
+  "optimistic_concurrency_control.pdf"
