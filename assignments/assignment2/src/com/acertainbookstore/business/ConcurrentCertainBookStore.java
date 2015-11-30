@@ -3,6 +3,9 @@
  */
 package com.acertainbookstore.business;
 
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -25,11 +28,13 @@ import com.acertainbookstore.utils.BookStoreUtility;
  * defined in the BookStore
  */
 public class ConcurrentCertainBookStore implements BookStore, StockManager {
-	private Map<Integer, BookStoreBook> bookMap;
-
+	private ConcurrentHashMap<Integer, BookStoreBook> bookMap;
+	private ConcurrentHashMap<Integer, ReentrantReadWriteLock> locks;
+	
 	public ConcurrentCertainBookStore() {
 		// Constructors are not synchronized
-		bookMap = new HashMap<Integer, BookStoreBook>();
+		locks = new ConcurrentHashMap<Integer, ReentrantReadWriteLock>();
+		bookMap = new ConcurrentHashMap<Integer, BookStoreBook>();
 	}
 
 	public void addBooks(Set<StockBook> bookSet)
@@ -60,7 +65,18 @@ public class ConcurrentCertainBookStore implements BookStore, StockManager {
 
 		for (StockBook book : bookSet) {
 			int ISBN = book.getISBN();
-			bookMap.put(ISBN, new BookStoreBook(book));
+			
+			// add lock
+			ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+			locks.put(ISBN, lock);
+			lock.writeLock().lock();
+			try {
+				// add book
+				bookMap.put(ISBN, new BookStoreBook(book));
+			}
+			finally {
+				lock.writeLock().unlock();
+			}
 		}
 		return;
 	}
