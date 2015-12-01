@@ -61,7 +61,7 @@ public class ConcurrentCertainBookStore implements BookStore, StockManager {
 			}
 		}
 		finally {
-			//globalLock.readLock().unlock();
+			// globalLock.readLock().unlock();
 		}
 	}
 	
