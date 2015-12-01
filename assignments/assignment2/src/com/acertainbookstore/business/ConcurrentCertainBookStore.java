@@ -435,12 +435,11 @@ public class ConcurrentCertainBookStore implements BookStore, StockManager {
 		for (Integer index : tobePicked) {
 			book = listAllEditorPicks.get(index);
 			ImmutableBook copy = new ImmutableBook(book.getISBN(), new String(book.getTitle()),
-					new String(book.getAuthor()), book.getPrice());
+					new String(book.getAuthor()), book.getPrice()); // ugly, we know :)
 			listEditorPicks.add(copy);
 		}
 		
 		return listEditorPicks;
-
 	}
 
 	@Override
