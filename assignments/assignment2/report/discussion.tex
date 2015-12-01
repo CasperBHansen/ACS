@@ -49,10 +49,30 @@ correctness over concurrency, our solution suffers the botteneck of intersecting
 sets not being allowed to be processed concurrently.
 One obvious bottleneck is the global locks.
 
+As an example of the bottleneck, consider the following scenario; let $T_1$ be
+a writing thread on the set $A$, let $T_2$ be another writing thread on the set
+$B$, and let $T_3$ be a writing thread on the set $C$. For the sake illustration
+of the worst-case scenario, assume that $A \cap B \neq \emptyset$ and $(A \cup B)
+\cap C = \emptyset$. As $T_1$ initiates its procedure it acquires the global lock,
+such that $T_k$, for $k \neq 1$, cannot waits for $T_1$ as it obtains the locks
+for $x \in A$. As $T_1$ releases the global lock, $T_2$ acquires the global lock,
+leaving $T_3$ to wait for $T_2$ as it acquires locks on some subset of $B$. The
+thread $T_2$ may acquire some locks, but will stall at any element of $A \cap B$,
+as that lock is already in use. Now we have any thread $T_k$, where $k \neq 1$
+being blocked by $T_1$.
+
+Consider the same scenario as the one above, but let $T_3$ gain access to the
+global lock before $T_2$. Since $A \cap C = \emptyset$ our implementation would
+allow $T_1$ and $T_3$ to perform concurrently. The bottleneck is that any sets
+that intersect, such as $A \cap B$ block further concurrent operations.
+
+This bottleneck could be alleviated by way of some more intricate checking, for
+example by checking whether or not all locks can be acquired beforehand of the
+acquisition phase. This would not block any "innocent" operations that do not
+intersect with other concurrent operations.
+
 \subsection{Overhead}
 We consider our solution to pay a lot of overhead in exchange for correctness.
 Our solution can cause halting of several operations as a consequence of only
 allowing for operations on sets of books at a time --- or more explicitly, we
 only allow lock acquisition for sets of locks.
-
-
