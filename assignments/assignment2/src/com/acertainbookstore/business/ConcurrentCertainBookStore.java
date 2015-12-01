@@ -40,7 +40,7 @@ public class ConcurrentCertainBookStore implements BookStore, StockManager {
 	}
 	
 	private void read_lock(Set<Integer> isbnSet) {
-		//globalLock.readLock().lock();
+		globalLock.readLock().lock();
 		try {
 			for (Integer ISBN : isbnSet) {
 				ReentrantReadWriteLock lock = locks.get(ISBN);
@@ -48,7 +48,7 @@ public class ConcurrentCertainBookStore implements BookStore, StockManager {
 			}
 		}
 		finally {
-			// globalLock.readLock().unlock();
+			globalLock.readLock().unlock();
 		}
 	}
 	
@@ -61,7 +61,7 @@ public class ConcurrentCertainBookStore implements BookStore, StockManager {
 			}
 		}
 		finally {
-			// globalLock.readLock().unlock();
+			//globalLock.readLock().unlock();
 		}
 	}
 	
@@ -79,7 +79,7 @@ public class ConcurrentCertainBookStore implements BookStore, StockManager {
 	}
 	
 	private void write_unlock(Set<Integer> isbnSet) {
-		globalLock.writeLock().lock();
+		// globalLock.writeLock().lock();
 		try {
 			for (Integer ISBN : isbnSet) {
 				ReentrantReadWriteLock lock = locks.get(ISBN);
@@ -87,7 +87,7 @@ public class ConcurrentCertainBookStore implements BookStore, StockManager {
 			}
 		}
 		finally {
-			globalLock.writeLock().unlock();
+			// globalLock.writeLock().unlock();
 		}
 	}
 	
@@ -225,7 +225,7 @@ public class ConcurrentCertainBookStore implements BookStore, StockManager {
 		
 		return listBooks;
 	}
-
+	
 	public void updateEditorPicks(Set<BookEditorPick> editorPicks)
 			throws BookStoreException {
 		// Check that all ISBNs that we add/remove are there first.
@@ -313,7 +313,6 @@ public class ConcurrentCertainBookStore implements BookStore, StockManager {
 		return;
 	}
 
-
 	public List<StockBook> getBooksByISBN(Set<Integer> isbnSet)
 			throws BookStoreException {
 		if (isbnSet == null) {
@@ -385,23 +384,36 @@ public class ConcurrentCertainBookStore implements BookStore, StockManager {
 					+ ", but it must be positive");
 		}
 		
-		List<BookStoreBook> listAllEditorPicks = new ArrayList<BookStoreBook>();
-		List<Book> listEditorPicks = new ArrayList<Book>();
+		List<StockBook> books = getBooks(); // return immutable copies
+		
+		// converted to non-serial method, avoiding null/garbage pointer iterator
+		List<StockBook> listAllEditorPicks = new ArrayList<StockBook>();
+		for (StockBook book : books) {
+			if (book.isEditorPick()) {
+				listAllEditorPicks.add(book);
+			}
+		}
+		
+		/* converted to non-serial method, avoiding null/garbage pointer iterator
 		Iterator<Entry<Integer, BookStoreBook>> it = bookMap.entrySet()
 				.iterator();
-		BookStoreBook book;
 
 		// Get all books that are editor picks
 		while (it.hasNext()) {
 			Entry<Integer, BookStoreBook> pair = (Entry<Integer, BookStoreBook>) it
 					.next();
+			
 			book = (BookStoreBook) pair.getValue();
 			if (book.isEditorPick()) {
 				listAllEditorPicks.add(book);
 			}
 		}
+		*/
+		
+		List<Book> listEditorPicks = new ArrayList<Book>();
 
 		// Find numBooks random indices of books that will be picked
+		BookStoreBook book;
 		Random rand = new Random();
 		Set<Integer> tobePicked = new HashSet<Integer>();
 		int rangePicks = listAllEditorPicks.size();
@@ -421,9 +433,10 @@ public class ConcurrentCertainBookStore implements BookStore, StockManager {
 
 		// Get the numBooks random books
 		for (Integer index : tobePicked) {
-			book = listAllEditorPicks.get(index);
+			book = (BookStoreBook)listAllEditorPicks.get(index);
 			listEditorPicks.add(book.immutableBook());
 		}
+		
 		return listEditorPicks;
 
 	}
