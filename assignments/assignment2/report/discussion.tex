@@ -25,7 +25,12 @@ operation to finish before the next operation can proceed.
 ...
 
 \subsection{Scalability and bottlenecks}
-...
+Definitely. As described before, because of how we've chosen to prioritise
+correctness over concurrency, our solution suffers the botteneck of intersecting
+sets not being allowed to be processed concurrently.
 
 \subsection{Overhead}
-...
+We consider our solution to pay a lot of overhead in exchange for correctness.
+Our solution can cause halting of several operations as a consequence of only
+allowing for operations on sets of books at a time --- or more explicitly, we
+only allow lock acquisition for sets of locks.
