@@ -3,32 +3,4 @@
 %==============================================================================%
 
 \section{Programming Tasks}
-
-\subsection{Describe the tests, in particular}
-
-\subsubsection{How did you test before-or-after atomicity?}
-
-\subsubsection{How did you test for concurrent problems like dirty read and dirty writes?}
-
-\subsection{Argue for the correctness of your locking protocol by equivalence to 2PL.}
-
-Since we acquire exclusive locks when before writing, and shared locks before reading, and release said locks when done, we argue this does in fact follow a Strict 2PL protocol. In particular, we use a two-phase locking mechanism (not to be confused with the 2PL protocol) where we have a single global lock which a read (respectively write) operation first locks in shared (respectively exclusive) mode when locking the individual locks of the books used in the operation. When all books are locked, the global lock is released. we use a exclusive lock on the books we want to write to or change individually in all cases, and only release the locks when done. For reading, since we want multiple read to be possible at the same time, we use a shared lock on each individual book when wanting to read and release when done.
-
-The before-or-after atomicity is not violated since we get all the locks we need and wait until we can do so. The global lock unsure
-
-\subsection{Can your locking protocol lead to deadlocks?}
-Because of the way we have chosen to acquire locks in sets, rather than one by
-one, we argue that no deadlocks should be able to occur. Any reads are allowed
-to perform their operations concurrently, but once a write operation is set in
-motion we lock the table of locks, acquire all the write locks needed, and then
-release the table lock. So any subsequent read/write operation would stall at
-acquiring its locks, if the sets of entries of the former and the latter
-intersect, effectively letting the former finish before the latter is allowed
-to proceed. In short, no.
-
-\subsection{Is there any scalability bottlenecks wrt. number of clients?}
-Yes. The one bottleneck is the global locks.
-
-\subsection{Discuss the overhead being paid in the locking protocol vs degree of concurrency.}
-
-
+...
