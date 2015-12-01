@@ -12,12 +12,13 @@ sets of books at a time. Obtaining write locks concurrently is therefore possibl
 if and only if the sets of books do not intersect. This enforces conflict
 resolution. The read lock is more permissive since it's a shared lock. We also lock the global lock in shared mode when acquiring shared locks on the books. This ensures a write is possible while reading if it wants to modify a book not currently being read. This begs the question if it is possible to have the phantom problem in the {\tt getBooks} method. We would argue that this cannot happen since all read functions read only the books once while all the books are locked, meaning the snapshot either happens before-or-after some read. This also ensures before-or-after atomicity.
 
+In regards to testing typical concurrency problems the following tests (2 of which were given) were carried out:
 \begin{itemize}
-    \item Test 1: Before-or-after atomicity, dirty-write.
-    \item Test 2: Before-or-after atomicity, dirt-read.
-    \item Test Time:
-    \item TestBuyTwice:
-    \item TestEditorPicks: Before-or-after atomicity, dirty-reads
+    \item Test 1: This first test has two threads, one trying to buy books and another attempting to add copies. We start the buying thread first in hopes it will fail to buy books, and if it fails, retry until it completes. Print statements show this is often the case. This both assert before-or-after atomicity and that dirty-writes does not happen since both operations are write operations writing to the same
+    \item Test 2: This test continuously has two threads running, one adding a fixed number of books before removing them, and another continuously checking dirty-reads is possible. If this succeeds, it also indicates before-or-after atomicity is not violated.
+    \item Test Time: This test does not work as intended. We were hoping to show that the concurrent solution is faster when performing {\tt getBooks} a fixed number of times. ... (try fix)
+    \item TestBuyTwice: This test attempts to assert that multiple buy books, where one should end up in an exception due to lack of books, does in fact end up in an exception. If a dirty-write had happened, this may not be the case.
+    \item TestEditorPicks: In this test we test {\tt getEditorPicks} and {\tt updateEditorPicks} specifically by updating and getting editor picks in seperate threads. We are looking for problems with before-or-after atomicity and dirty-reads.
 \end{itemize}
 
 \subsection{Locking protocol correctness}
