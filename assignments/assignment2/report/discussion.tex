@@ -16,7 +16,7 @@ In regards to testing typical concurrency problems the following tests (2 of whi
 \begin{itemize}
     \item Test 1: This first test has two threads, one trying to buy books and another attempting to add copies. We start the buying thread first in hopes it will fail to buy books, and if it fails, retry until it completes. Print statements show this is often the case. This both assert before-or-after atomicity and that dirty-writes does not happen since both operations are write operations writing to the same
     \item Test 2: This test continuously has two threads running, one adding a fixed number of books before removing them, and another continuously checking dirty-reads is possible. If this succeeds, it also indicates before-or-after atomicity is not violated.
-    \item Test Time: This test does not work as intended. We were hoping to show that the concurrent solution is faster when performing {\tt getBooks} a fixed number of times. ... (try fix)
+    \item Test Time: This test does not work as intended. We were hoping to show that the concurrent solution is faster when performing {\tt getBooks} a fixed number of times. Our attempt is to add a number of books to the bookstore. We then measure the time how long a number of reads takes both serially and spread out across multiple threads. This does not seem to speed up the average time spend getting the books.
     \item TestBuyTwice: This test attempts to assert that multiple buy books, where one should end up in an exception due to lack of books, does in fact end up in an exception. If a dirty-write had happened, this may not be the case.
     \item TestEditorPicks: In this test we test {\tt getEditorPicks} and {\tt updateEditorPicks} specifically by updating and getting editor picks in seperate threads. We are looking for problems with before-or-after atomicity and dirty-reads.
 \end{itemize}
@@ -28,8 +28,6 @@ that we cannot obtain a subset of locks for a given operation, without stalling
 if one or more of the locks needed cannot be acquired, if it is already in use.
 Hence any operation with intersecting sets of books must wait for the previous
 operation to finish before the next operation can proceed.
-
------
 
 Since we acquire exclusive locks when before writing, and shared locks before reading, and release said locks when done, we argue this does in fact follow a Strict 2PL protocol. In particular, we use a two-phase locking mechanism (not to be confused with the 2PL protocol) where we have a single global lock which a read (respectively write) operation first locks in shared (respectively exclusive) mode when locking the individual locks of the books used in the operation. When all books are locked, the global lock is released. we use a exclusive lock on the books we want to write to or change individually in all cases, and only release the locks when done. For reading, since we want multiple read to be possible at the same time, we use a shared lock on each individual book when wanting to read and release when done.
 
