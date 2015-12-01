@@ -3,4 +3,25 @@
 %==============================================================================%
 
 \section{Programming Tasks}
-...
+
+\subsection{Describe the tests, in particular}
+
+\subsubsection{How did you test before-or-after atomicity?}
+
+\subsubsection{How did you test for concurrent problems like dirty read and dirty writes?}
+
+\subsection{Argue for the correctness of your locking protocol by equivalence to 2PL.}
+
+Since we acquire exclusive locks when before writing, and shared locks before reading, and release said locks when done, we argue this does in fact follow a Strict 2PL protocol. In particular, we use a exclusive lock on the books we want to write to or change individually in all cases, and only release the locks when done. For reading, since we want multiple read to be possible at the same time, we use a shared lock on each individual book when wanting to read and release when done.
+
+The before-or-after atomicity is no violated since a given read following a write has to wait for the write to complete... (hmm... what happens if a read is partially aquireing book locks while a write wants to write to the same books???)
+
+\subsection{Can your locking protocol lead to deadlocks?}
+
+\subsection{Is there any scalability bottlenecks wrt. number of clients?}
+
+Yes. One example is the global lock we choose to require when performing writes on a set of books.
+
+\subsection{Discuss the overhead being paid in the locking protocol vs degree of concurrency.}
+
+
