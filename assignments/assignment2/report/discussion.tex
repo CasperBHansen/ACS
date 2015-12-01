@@ -2,14 +2,24 @@
 % DISCUSSION                                                                   %
 %==============================================================================%
 
+\newpage
 \section{Discussion on Concurrent Implementation}
-...
 
 \subsection{Description of implementation}
-...
+Our implementation maintains a table of locks which binds an ISBN to an
+associated lock. In addition to this, we maintain a global lock, which acts as
+a safeguard on the lock table. Its purpose is to ensure that we only lock whole
+sets of books at a time. Obtaining write locks concurrently is therefore possible
+if and only if the sets of books do not intersect. This enforces conflict
+resolution.
 
 \subsection{Locking protocol correctness}
-...
+We reason that our locking protocol holds, because we lock sets of books, rather
+than acquiring individual locks as they are needed. Our implementation ensures
+that we cannot obtain a subset of locks for a given operation, without stalling
+if one or more of the locks needed cannot be acquired, if it is already in use.
+Hence any operation with intersecting sets of books must wait for the previous
+operation to finish before the next operation can proceed.
 
 \subsection{Deadlocks}
 ...

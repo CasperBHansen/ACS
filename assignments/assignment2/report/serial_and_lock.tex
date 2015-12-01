@@ -5,7 +5,10 @@
 \section{Serializability \& Locking}
 
 \begin{multicols}{2}
-    ...
+    In schedule 1 we see that $T_1$ reads $X$ whilst $T_2$ wants to write to
+    $X$, so $T_1$ must wait for $T_2$. $T_2$ also wants to write to $Z$ whilst
+    $T_3$ wants to read $Z$, so $T_2$ must wait for $T_3$. $T_3$ reads $Y$
+    whilst $T_1$ wants to write to $Y$, so $T_3$ must then wait for $T_1$.
     \begin{figure}[H]
         \centering
         \begin{tikzpicture}
@@ -27,7 +30,9 @@
 
     \colbreak
 
-    ...
+    In schedule 2 we see that $T_1$ reads $X$ whilst $T_2$ wants to write to
+    $X$, so $T_1$ must wait for $T_3$. Likewise, $T_3$ wants to write to $Z$
+    whilst $T_2$ also wants to write to $Z$, so $T_3$ must wait for $T_2$.
     \begin{figure}[H]
         \centering
         \begin{tikzpicture}
