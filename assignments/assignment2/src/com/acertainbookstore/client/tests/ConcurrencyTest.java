@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 
 import org.junit.After;
@@ -236,7 +237,7 @@ public class ConcurrencyTest {
 	 */
 
 	public static int getNextISBN() {
-		return TEST_ISBN + (++ISBN_COUNTER);
+		return TEST_ISBN + 3 + (++ISBN_COUNTER);
 	}
 
 	/**
@@ -442,12 +443,12 @@ public class ConcurrencyTest {
 		long serialTime = serialAfter - serialBefore;
 
 		System.out.println("Serial took " + serialTime);
-
+		
 		Thread concurrentA = new Thread(new ClientReads(storeManager, numTimes / divide));
 		Thread concurrentB = new Thread(new ClientReads(storeManager, numTimes / divide));
 		Thread concurrentC = new Thread(new ClientReads(storeManager, numTimes / divide));
 		Thread concurrentD = new Thread(new ClientReads(storeManager, numTimes / divide));
-
+		
 		long concurrentBefore = System.currentTimeMillis();
 		concurrentA.start();
 		concurrentB.start();
