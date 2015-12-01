@@ -11,9 +11,15 @@ associated lock. In addition to this, we maintain a global lock, which acts as
 a safeguard on the lock table. Its purpose is to ensure that we only lock whole
 sets of books at a time. Obtaining write locks concurrently is therefore possible
 if and only if the sets of books do not intersect. This enforces conflict
-resolution.
+resolution. The read lock is more permissive since it's a shared lock. We also lock the global lock in shared mode when acquiring shared locks on the books. This ensures a write is possible while reading if it wants to modify a book not currently being read. This begs the question if it is possible to have the phantom problem in the {\tt getBooks} method. We would argue that this cannot happen since all read functions read only the books once while all the books are locked, meaning the snapshot either happens before-or-after some read. This also ensures before-or-after atomicity.
 
-The before-or-after atomicity is not violated since we get all the locks we need and wait until we can do so. The global lock unsure
+\begin{itemize}
+\item Test 1: Before-or-after atomicity, dirty-write.
+\item Test 2: Before-or-after atomicity, dirt-read.
+\item Test Time:
+\item TestBuyTwice:
+\item TestEditorPicks: Before-or-after atomicity, dirty-reads
+\end{itemize}
 
 \subsection{Locking protocol correctness}
 We reason that our locking protocol holds, because we lock sets of books, rather
