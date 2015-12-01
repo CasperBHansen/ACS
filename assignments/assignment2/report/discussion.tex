@@ -75,4 +75,9 @@ intersect with other concurrent operations.
 We consider our solution to pay a lot of overhead in exchange for correctness.
 Our solution can cause halting of several operations as a consequence of only
 allowing for operations on sets of books at a time --- or more explicitly, we
-only allow lock acquisition for sets of locks.
+only allow lock acquisition for sets of locks. In addition to this, we introduce
+overhead by locking access to any locks every time to want to acquire a set of
+locks for a write operation, whereas a more refined solution may allow threads
+to acquire locks at the same time. Such a solution would be more involved, however,
+and we deliberately chose not to follow such a stragedy for the sake of simplicity,
+correctness and time constraints.
