@@ -28,26 +28,27 @@ import com.sun.org.apache.xml.internal.security.c14n.implementations.Canonicaliz
 
 /**
  * Test class to test the BookStore interface
- * 
+ *
  */
 public class ConcurrencyTest {
 
+	private static int ISBN_COUNTER = 0;
 	private static final int TEST_ISBN = 3044560;
 	private static final int NUM_COPIES = 5;
 	private static boolean localTest = true;
 	private static StockManager storeManager;
 	private static BookStore client;
-	
+
 	private class ClientBuyer implements Runnable {
-		
+
 		private BookStore client;
 		private HashSet<BookCopy> copies;
-		
+
 		public ClientBuyer(BookStore client, HashSet<BookCopy> copies) {
 			this.client = client;
 			this.copies = copies;
 		}
-		
+
 		public void run() {
 			boolean succesful = false;
 			while (!succesful) {
@@ -61,9 +62,9 @@ public class ConcurrencyTest {
 			}
 		}
 	}
-	
+
 	private class ClientAdder implements Runnable {
-		
+
 		private StockManager client;
 		private HashSet<BookCopy> copies;
 
@@ -71,7 +72,7 @@ public class ConcurrencyTest {
 			this.client = client;
 			this.copies = copies;
 		}
-		
+
 		public void run() {
 			try {
 				this.client.addCopies(copies);
@@ -81,19 +82,19 @@ public class ConcurrencyTest {
 			}
 		}
 	}
-	
+
 	private class ClientBuyThenReplenish implements Runnable {
 
 		private BookStore client;
 		private StockManager stock;
 		private HashSet<BookCopy> copies;
-		
+
 		public ClientBuyThenReplenish(BookStore client, StockManager stock, HashSet<BookCopy> copies) {
 			this.client = client;
 			this.stock = stock;
 			this.copies = copies;
 		}
-		
+
 		public void run() {
 			try {
 				this.client.buyBooks(copies);
@@ -104,19 +105,19 @@ public class ConcurrencyTest {
 			}
 		}
 	}
-	
+
 	private class ClientBuyCopies implements Runnable {
-		
+
 		private ResultWrapper result;
 		private BookStore client;
 		private HashSet<BookCopy> copies;
-		
+
 		public ClientBuyCopies(BookStore client, HashSet<BookCopy> copies, ResultWrapper result) {
 			this.client = client;
 			this.copies = copies;
 			this.result = result;
 		}
-		
+
 		public void run() {
 			try {
 				this.client.buyBooks(copies);
@@ -127,24 +128,24 @@ public class ConcurrencyTest {
 			}
 		}
 	}
-	
+
 	private class ClientContinuousGetBooks implements Runnable {
 		private StockManager stock;
 		private HashSet<BookCopy> copies;
 		private int bought;
 		private long time;
-		
+
 		public ClientContinuousGetBooks(StockManager stock, HashSet<BookCopy> copies, int bought, long time) {
 			this.stock = stock;
 			this.copies = copies;
 			this.bought = bought;
 			this.time = time;
 		}
-		
+
 		public void run() {
 			try {
 				long startTime = System.currentTimeMillis();
-				
+
 				while ((System.currentTimeMillis() - startTime) < time) {
 					List<StockBook> books = this.stock.getBooks();
 					for (StockBook book : books) {
@@ -158,16 +159,16 @@ public class ConcurrencyTest {
 			}
 		}
 	}
-	
+
 	private class ClientUpdateEditorPicks implements Runnable {
 		private StockManager stock;
 		private HashSet<BookEditorPick> editorPicks;
-		
+
 		public ClientUpdateEditorPicks(StockManager stock, HashSet<BookEditorPick> editorPicks) {
 			this.stock = stock;
 			this.editorPicks = editorPicks;
 		}
-		
+
 		public void run() {
 			try {
 				stock.updateEditorPicks(editorPicks);
@@ -177,29 +178,29 @@ public class ConcurrencyTest {
 			}
 		}
 	}
-	
+
 	private class ClientGetEditorPicks implements Runnable {
 		private BookStore store;
 		private HashSet<BookEditorPick> editorPicks;
-		
+
 		public ClientGetEditorPicks(BookStore store, HashSet<BookEditorPick> editorPicks) {
 			this.store = store;
 			this.editorPicks = editorPicks;
 		}
-		
+
 		public void run() {
 			try {
 				List<Book> picks = store.getEditorPicks(editorPicks.size());
 				for (BookEditorPick pick : editorPicks) {
 					boolean found = false;
 					int isbn = pick.getISBN();
-					
+
 					for (Book book : picks) {
 						if (book.getISBN() == isbn) {
 							found = true;
 						}
 					}
-					
+
 					assertTrue(found);
 				}
 			}
@@ -208,16 +209,16 @@ public class ConcurrencyTest {
 			}
 		}
 	}
-	
+
 	private class ClientReads implements Runnable {
 		private StockManager stock;
 		private int numTimes;
-		
+
 		public ClientReads(StockManager stock, int numTimes) {
 			this.stock = stock;
 			this.numTimes = numTimes;
 		}
-		
+
 		public void run() {
 			try {
 				for (int i = 0; i < numTimes; ++i) {
@@ -228,6 +229,47 @@ public class ConcurrencyTest {
 				System.out.println(ex);
 			}
 		}
+	}
+
+	/**
+	 * Produces a valid ISBN number
+	 */
+
+	public static int getNextISBN() {
+		return TEST_ISBN + (++ISBN_COUNTER);
+	}
+
+	/**
+	 * Produces a random book.
+	 */
+	public static StockBook makeRandomBook() {
+		Random random = new Random();
+
+		ImmutableStockBook book = new ImmutableStockBook(
+				getNextISBN(),
+				"A Random Book", // title
+				"A Random Author", // author
+				(float)random.nextFloat(),	// price
+				random.nextInt(10) + 1, // copies
+				random.nextInt(11), // misses
+				random.nextInt(11), // times rated
+				random.nextInt(11 * 5), // total rating
+				random.nextBoolean()
+				);
+
+		return book;
+	}
+
+	/**
+	 * Produces a list of random books
+	 */
+	public static Set<StockBook> makeRandomBooks(int num) {
+
+		Set<StockBook> list = new HashSet<StockBook>();
+		for (int i = 0; i < num; ++i) {
+			list.add(makeRandomBook());
+		}
+		return list;
 	}
 
 	@BeforeClass
@@ -310,35 +352,35 @@ public class ConcurrencyTest {
 				"Donald F. Glut", (float) 500, copies, 0, 0, 0, false));
 		starWarsCollection.add(new ImmutableStockBook(TEST_ISBN + 3, "Return of the Jedi",
 				"James Kahn", (float) 500, copies, 0, 0, 0, false));
-		
+
 		return starWarsCollection;
 	}
 
 	/**
 	 * Tests buying and adding books concurrently
-	 * 
+	 *
 	 * @throws InterruptedException, InterruptedException
 	 */
 	@Test
 	public void testOne() throws BookStoreException, InterruptedException {
-		
+
 		int copies = 50000;
 		List<StockBook> booksBefore = storeManager.getBooks();
-		
+
 		HashSet<BookCopy> bookCopies = new HashSet<BookCopy>();
 		bookCopies.add(new BookCopy(TEST_ISBN, copies));
-		
+
 		Thread C1 = new Thread(new ClientBuyer(client, bookCopies));
 		Thread C2 = new Thread(new ClientAdder(storeManager, bookCopies));
 
 		C1.start();
 		C2.start();
-		
+
 		C1.join();
 		C2.join();
-		
+
 		List<StockBook> booksAfter = storeManager.getBooks();
-		
+
 		// horribly inefficient, but works
 		for (StockBook before : booksBefore) {
 			int a = before.getISBN();
@@ -353,41 +395,44 @@ public class ConcurrencyTest {
 
 	/**
 	 * Tests buying and adding books concurrently
-	 * 
+	 *
 	 * @throws InterruptedException, InterruptedException
 	 */
 	@Test
 	public void testTwo() throws BookStoreException, InterruptedException {
-		
+
 		long continousTime = 2000;
 		int copiesBought = 1;
-		
+
 		HashSet<BookCopy> starWarsCollection = new HashSet<BookCopy>();
 		starWarsCollection.add(new BookCopy(TEST_ISBN + 1, copiesBought));
 		starWarsCollection.add(new BookCopy(TEST_ISBN + 2, copiesBought));
 		starWarsCollection.add(new BookCopy(TEST_ISBN + 3, copiesBought));
-		
+
 		Thread C1 = new Thread(new ClientBuyThenReplenish(client, storeManager, starWarsCollection));
 		Thread C2 = new Thread(new ClientContinuousGetBooks(storeManager, starWarsCollection, copiesBought, continousTime));
-		
+
 		C1.start();
 		C2.start();
-		
+
 		C1.join();
 		C2.join();
 	}
 
 	/**
 	 * Tests concurrent reads, measured by time.
-	 * 
+	 *
 	 * @throws InterruptedException, InterruptedException
 	 */
 	@Test
 	public void testTime() throws BookStoreException, InterruptedException {
-		
+
 		int divide = 4;
-		int numTimes = 800 * divide;
-		
+		int numTimes = 100 * divide;
+
+		Set<StockBook> booksToAdd = makeRandomBooks(500);
+		storeManager.addBooks(booksToAdd);
+
 		// serial baseline
 		Thread serialThread = new Thread(new ClientReads(storeManager, numTimes));
 		long serialBefore = System.currentTimeMillis();
@@ -395,65 +440,65 @@ public class ConcurrencyTest {
 		serialThread.join();
 		long serialAfter = System.currentTimeMillis();
 		long serialTime = serialAfter - serialBefore;
-		
+
 		System.out.println("Serial took " + serialTime);
-		
+
 		Thread concurrentA = new Thread(new ClientReads(storeManager, numTimes / divide));
 		Thread concurrentB = new Thread(new ClientReads(storeManager, numTimes / divide));
 		Thread concurrentC = new Thread(new ClientReads(storeManager, numTimes / divide));
 		Thread concurrentD = new Thread(new ClientReads(storeManager, numTimes / divide));
-		
+
 		long concurrentBefore = System.currentTimeMillis();
 		concurrentA.start();
 		concurrentB.start();
 		concurrentC.start();
 		concurrentD.start();
-		
+
 		concurrentA.join();
 		concurrentB.join();
 		concurrentC.join();
 		concurrentD.join();
 		long concurrentAfter = System.currentTimeMillis();
 		long concurrentTime = concurrentAfter - concurrentBefore;
-		
+
 		System.out.println("Concurrently took " + concurrentTime);
-		
+
 		assertTrue(concurrentTime <= serialTime);
 	}
 
 	/**
 	 * Tests buying and adding books concurrently
-	 * 
+	 *
 	 * @throws InterruptedException, InterruptedException
 	 */
 	@Test
 	public void testBuyTwice() throws BookStoreException, InterruptedException {
-		
+
 		ResultWrapper result = new ResultWrapper(); // ingenious solution, I know ^^
-		
+
 		HashSet<BookCopy> booksToBuy = new HashSet<BookCopy>();
 		booksToBuy.add(new BookCopy(TEST_ISBN, NUM_COPIES));
 
 		Thread C1 = new Thread(new ClientBuyCopies(client, booksToBuy, result));
 		Thread C2 = new Thread(new ClientBuyCopies(client, booksToBuy, result));
-		
+
 		C1.start();
 		C2.start();
-	
+
 		C1.join();
 		C2.join();
-		
+
 		// the intention is that result is true if it met an exception
 		assertTrue(result.getResult());
 	}
-	
+
 	private class ResultWrapper {
 		private boolean result = false;
-		
+
 		public void setResult(boolean value) {
 			this.result = value;
 		}
-		
+
 		public boolean getResult() {
 			return this.result;
 		}
@@ -461,12 +506,12 @@ public class ConcurrencyTest {
 
 	/**
 	 * Tests updating and reading editor picks concurrently
-	 * 
+	 *
 	 * @throws InterruptedException, InterruptedException
 	 */
 	@Test
 	public void testEditorPicks() throws BookStoreException, InterruptedException {
-		
+
 		HashSet<BookEditorPick> editorPicks = new HashSet<BookEditorPick>();
 		editorPicks.add(new BookEditorPick(TEST_ISBN + 1, true));
 		editorPicks.add(new BookEditorPick(TEST_ISBN + 2, true));
@@ -474,10 +519,10 @@ public class ConcurrencyTest {
 
 		Thread C1 = new Thread(new ClientUpdateEditorPicks(storeManager, editorPicks));
 		Thread C2 = new Thread(new ClientGetEditorPicks(client, editorPicks));
-		
+
 		C1.start();
 		C2.start();
-	
+
 		C1.join();
 		C2.join();
 	}
