@@ -103,6 +103,29 @@ public class ConcurrencyTest {
 		}
 	}
 	
+	private class ClientBuyCopies implements Runnable {
+		
+		private ResultWrapper result;
+		private BookStore client;
+		private HashSet<BookCopy> copies;
+		
+		public ClientBuyCopies(BookStore client, HashSet<BookCopy> copies, ResultWrapper result) {
+			this.client = client;
+			this.copies = copies;
+			this.result = result;
+		}
+		
+		public void run() {
+			try {
+				this.client.buyBooks(copies);
+			}
+			catch (BookStoreException ex) {
+				System.out.println(ex);
+				result.setResult(true);
+			}
+		}
+	}
+	
 	private class ClientContinuousGetBooks implements Runnable {
 		private StockManager stock;
 		private HashSet<BookCopy> copies;
@@ -308,9 +331,9 @@ public class ConcurrencyTest {
 	 * @throws InterruptedException, InterruptedException
 	 */
 	@Test
-	public void testThree() throws BookStoreException, InterruptedException {
+	public void testTime() throws BookStoreException, InterruptedException {
 		
-		int numTimes = 8000000;
+		int numTimes = 80000;
 		
 		// serial baseline
 		Thread serialThread = new Thread(new ClientReads(storeManager, numTimes));
@@ -322,30 +345,65 @@ public class ConcurrencyTest {
 
 		System.out.println("Serial took " + serialTime);
 
-		Thread concurrentA = new Thread(new ClientReads(storeManager, numTimes / 2));
-		Thread concurrentB = new Thread(new ClientReads(storeManager, numTimes / 2));
+		Thread concurrentA = new Thread(new ClientReads(storeManager, numTimes / 4));
+		Thread concurrentB = new Thread(new ClientReads(storeManager, numTimes / 4));
+		Thread concurrentC = new Thread(new ClientReads(storeManager, numTimes / 4));
+		Thread concurrentD = new Thread(new ClientReads(storeManager, numTimes / 4));
 		
 		long concurrentBefore = System.currentTimeMillis();
 		concurrentA.start();
 		concurrentB.start();
-		//concurrentC.start();
-		//concurrentD.start();
+		concurrentC.start();
+		concurrentD.start();
 
 		concurrentA.join();
 		concurrentB.join();
-		//concurrentC.join();
-		//concurrentD.join();
+		concurrentC.join();
+		concurrentD.join();
 		long concurrentAfter = System.currentTimeMillis();
 		long concurrentTime = concurrentAfter - concurrentBefore;
 
 		System.out.println("Concurrently took " + concurrentTime);
 		
-		assertTrue(concurrentTime < serialTime);
+		assertTrue(concurrentTime <= serialTime);
 	}
 
-	private Runnable ClientReads(StockManager storeManager2) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	/**
+	 * Tests buying and adding books concurrently
+	 * 
+	 * @throws InterruptedException, InterruptedException
+	 */
+	@Test
+	public void testBuyTwice() throws BookStoreException, InterruptedException {
+		
+		ResultWrapper result = new ResultWrapper(); // ingenious solution, I know ^^
+		
+		HashSet<BookCopy> booksToBuy = new HashSet<BookCopy>();
+		booksToBuy.add(new BookCopy(TEST_ISBN, NUM_COPIES));
 
+		Thread C1 = new Thread(new ClientBuyCopies(client, booksToBuy, result));
+		Thread C2 = new Thread(new ClientBuyCopies(client, booksToBuy, result));
+		
+		C1.start();
+		C2.start();
+	
+		C1.join();
+		C2.join();
+		
+		// the intention is that result is true if it met an exception
+		if (result.getResult() != true)
+			fail("Ooops, didn't hit exception :(");
+	}
+	
+	private class ResultWrapper {
+		private boolean result = false;
+		
+		public void setResult(boolean value) {
+			this.result = value;
+		}
+		
+		public boolean getResult() {
+			return this.result;
+		}
+	}
 }
