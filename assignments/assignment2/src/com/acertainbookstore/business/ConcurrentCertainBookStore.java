@@ -384,7 +384,8 @@ public class ConcurrentCertainBookStore implements BookStore, StockManager {
 					+ ", but it must be positive");
 		}
 		
-		List<StockBook> books = getBooks(); // return immutable copies
+		// all reads occur on this line, and returns immutable copies. Hence no locks!
+		List<StockBook> books = getBooks();
 		
 		// converted to non-serial method, avoiding null/garbage pointer iterator
 		List<StockBook> listAllEditorPicks = new ArrayList<StockBook>();
@@ -409,11 +410,8 @@ public class ConcurrentCertainBookStore implements BookStore, StockManager {
 			}
 		}
 		*/
-		
-		List<Book> listEditorPicks = new ArrayList<Book>();
 
 		// Find numBooks random indices of books that will be picked
-		BookStoreBook book;
 		Random rand = new Random();
 		Set<Integer> tobePicked = new HashSet<Integer>();
 		int rangePicks = listAllEditorPicks.size();
@@ -432,9 +430,13 @@ public class ConcurrentCertainBookStore implements BookStore, StockManager {
 		}
 
 		// Get the numBooks random books
+		List<Book> listEditorPicks = new ArrayList<Book>();
+		StockBook book;
 		for (Integer index : tobePicked) {
-			book = (BookStoreBook)listAllEditorPicks.get(index);
-			listEditorPicks.add(book.immutableBook());
+			book = listAllEditorPicks.get(index);
+			ImmutableBook copy = new ImmutableBook(book.getISBN(), new String(book.getTitle()),
+					new String(book.getAuthor()), book.getPrice());
+			listEditorPicks.add(copy);
 		}
 		
 		return listEditorPicks;

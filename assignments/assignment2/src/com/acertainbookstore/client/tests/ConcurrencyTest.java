@@ -12,7 +12,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import com.acertainbookstore.business.Book;
 import com.acertainbookstore.business.BookCopy;
+import com.acertainbookstore.business.BookEditorPick;
 import com.acertainbookstore.business.ConcurrentCertainBookStore;
 import com.acertainbookstore.business.ImmutableStockBook;
 import com.acertainbookstore.business.StockBook;
@@ -143,6 +145,56 @@ public class ConcurrencyTest {
 				for (StockBook book : books) {
 					assertTrue(book.getNumCopies() == NUM_COPIES ||
 							   book.getNumCopies() == (NUM_COPIES - bought));
+				}
+			}
+			catch (BookStoreException ex) {
+				System.out.println(ex);
+			}
+		}
+	}
+	
+	private class ClientUpdateEditorPicks implements Runnable {
+		private StockManager stock;
+		private HashSet<BookEditorPick> editorPicks;
+		
+		public ClientUpdateEditorPicks(StockManager stock, HashSet<BookEditorPick> editorPicks) {
+			this.stock = stock;
+			this.editorPicks = editorPicks;
+		}
+		
+		public void run() {
+			try {
+				stock.updateEditorPicks(editorPicks);
+			}
+			catch (BookStoreException ex) {
+				System.out.println(ex);
+			}
+		}
+	}
+	
+	private class ClientGetEditorPicks implements Runnable {
+		private BookStore store;
+		private HashSet<BookEditorPick> editorPicks;
+		
+		public ClientGetEditorPicks(BookStore store, HashSet<BookEditorPick> editorPicks) {
+			this.store = store;
+			this.editorPicks = editorPicks;
+		}
+		
+		public void run() {
+			try {
+				List<Book> picks = store.getEditorPicks(editorPicks.size());
+				for (BookEditorPick pick : editorPicks) {
+					boolean found = false;
+					int isbn = pick.getISBN();
+					
+					for (Book book : picks) {
+						if (book.getISBN() == isbn) {
+							found = true;
+						}
+					}
+					
+					assertTrue(found);
 				}
 			}
 			catch (BookStoreException ex) {
@@ -405,5 +457,28 @@ public class ConcurrencyTest {
 		public boolean getResult() {
 			return this.result;
 		}
+	}
+
+	/**
+	 * Tests updating and reading editor picks concurrently
+	 * 
+	 * @throws InterruptedException, InterruptedException
+	 */
+	@Test
+	public void testEditorPicks() throws BookStoreException, InterruptedException {
+		
+		HashSet<BookEditorPick> editorPicks = new HashSet<BookEditorPick>();
+		editorPicks.add(new BookEditorPick(TEST_ISBN + 1, true));
+		editorPicks.add(new BookEditorPick(TEST_ISBN + 2, true));
+		editorPicks.add(new BookEditorPick(TEST_ISBN + 3, true));
+
+		Thread C1 = new Thread(new ClientUpdateEditorPicks(storeManager, editorPicks));
+		Thread C2 = new Thread(new ClientGetEditorPicks(client, editorPicks));
+		
+		C1.start();
+		C2.start();
+	
+		C1.join();
+		C2.join();
 	}
 }
