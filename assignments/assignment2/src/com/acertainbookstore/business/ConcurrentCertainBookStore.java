@@ -154,6 +154,22 @@ public class ConcurrentCertainBookStore implements BookStore, StockManager {
 		if (bookCopiesToBuy == null) {
 			throw new BookStoreException(BookStoreConstants.NULL_INPUT);
 		}
+		
+		/*
+		 * 
+			
+			// add lock
+			ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
+			locks.put(ISBN, lock);
+			lock.writeLock().lock();
+			try {
+				// add book
+				bookMap.put(ISBN, new BookStoreBook(book));
+			}
+			finally {
+				lock.writeLock().unlock();
+			}
+		 */
 
 		// Check that all ISBNs that we buy are there first.
 		int ISBN;
@@ -161,21 +177,42 @@ public class ConcurrentCertainBookStore implements BookStore, StockManager {
 		Boolean saleMiss = false;
 		for (BookCopy bookCopyToBuy : bookCopiesToBuy) {
 			ISBN = bookCopyToBuy.getISBN();
-			if (bookCopyToBuy.getNumCopies() < 0)
-				throw new BookStoreException(BookStoreConstants.NUM_COPIES
-						+ bookCopyToBuy.getNumCopies()
-						+ BookStoreConstants.INVALID);
-			if (BookStoreUtility.isInvalidISBN(ISBN))
-				throw new BookStoreException(BookStoreConstants.ISBN + ISBN
-						+ BookStoreConstants.INVALID);
-			if (!bookMap.containsKey(ISBN))
-				throw new BookStoreException(BookStoreConstants.ISBN + ISBN
-						+ BookStoreConstants.NOT_AVAILABLE);
-			book = bookMap.get(ISBN);
-			if (!book.areCopiesInStore(bookCopyToBuy.getNumCopies())) {
-				book.addSaleMiss(); // If we cannot sell the copies of the book
-									// its a miss
-				saleMiss = true;
+			
+			// read lock
+			ReentrantReadWriteLock lock = locks.get(ISBN);
+			lock.readLock().lock();
+			try {
+				if (bookCopyToBuy.getNumCopies() < 0)
+					throw new BookStoreException(BookStoreConstants.NUM_COPIES
+							+ bookCopyToBuy.getNumCopies()
+							+ BookStoreConstants.INVALID);
+				if (BookStoreUtility.isInvalidISBN(ISBN))
+					throw new BookStoreException(BookStoreConstants.ISBN + ISBN
+							+ BookStoreConstants.INVALID);
+				if (!bookMap.containsKey(ISBN))
+					throw new BookStoreException(BookStoreConstants.ISBN + ISBN
+							+ BookStoreConstants.NOT_AVAILABLE);
+				book = bookMap.get(ISBN);
+			
+				if (!book.areCopiesInStore(bookCopyToBuy.getNumCopies())) {
+					// upgrade to write lock
+					lock.readLock().unlock();
+					lock.writeLock().lock();
+					
+					try {
+						book.addSaleMiss(); // If we cannot sell the copies of the book
+											// its a miss
+						saleMiss = true;
+						
+						lock.readLock().lock();
+					}
+					finally {
+						lock.writeLock().unlock();
+					}
+				}
+			}
+			finally {
+				lock.readLock().unlock();
 			}
 		}
 

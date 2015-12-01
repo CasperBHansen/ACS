@@ -98,6 +98,31 @@ public class ConcurrencyTest {
 			}
 		}
 	}
+	
+	private class ClientContinuousGetBooks implements Runnable {
+		private StockManager stock;
+		private HashSet<BookCopy> copies;
+		private int bought;
+		
+		public ClientContinuousGetBooks(StockManager stock, HashSet<BookCopy> copies, int bought) {
+			this.stock = stock;
+			this.copies = copies;
+			this.bought = bought;
+		}
+		
+		public void run() {
+			try {
+				List<StockBook> books = this.stock.getBooks();
+				for (StockBook book : books) {
+					assertTrue(book.getNumCopies() == NUM_COPIES ||
+							   book.getNumCopies() == (NUM_COPIES - bought));
+				}
+			}
+			catch (BookStoreException ex) {
+				System.out.println(ex);
+			}
+		}
+	}
 
 	@BeforeClass
 	public static void setUpBeforeClass() {
@@ -138,7 +163,7 @@ public class ConcurrencyTest {
 		Set<StockBook> booksToAdd = new HashSet<StockBook>();
 		booksToAdd.add(getDefaultBook());
 		storeManager.addBooks(booksToAdd);
-		storeManager.addBooks(getStarWarsCollection());
+		storeManager.addBooks(getStarWarsCollection(NUM_COPIES));
 	}
 
 	/**
@@ -171,14 +196,14 @@ public class ConcurrencyTest {
 	/**
 	 * Helper method to get the star wars trilogy
 	 */
-	private Set<StockBook> getStarWarsCollection() throws BookStoreException {
+	private Set<StockBook> getStarWarsCollection(int copies) throws BookStoreException {
 		Set<StockBook> starWarsCollection = new HashSet<StockBook>();
 		starWarsCollection.add(new ImmutableStockBook(TEST_ISBN + 1, "A New Hope",
-				"Alan Dean Foster & George Lucas", (float) 500, 5, 0, 0, 0, false));
+				"Alan Dean Foster & George Lucas", (float) 500, copies, 0, 0, 0, false));
 		starWarsCollection.add(new ImmutableStockBook(TEST_ISBN + 2, "The Empire Strikes Back",
-				"Donald F. Glut", (float) 500, 5, 0, 0, 0, false));
+				"Donald F. Glut", (float) 500, copies, 0, 0, 0, false));
 		starWarsCollection.add(new ImmutableStockBook(TEST_ISBN + 3, "Return of the Jedi",
-				"James Kahn", (float) 500, 5, 0, 0, 0, false));
+				"James Kahn", (float) 500, copies, 0, 0, 0, false));
 		
 		return starWarsCollection;
 	}
@@ -232,14 +257,24 @@ public class ConcurrencyTest {
 	 */
 	@Test
 	public void testTwo() throws BookStoreException, InterruptedException {
-
+		
+		int copiesBought = 1;
+		
 		HashSet<BookCopy> starWarsCollection = new HashSet<BookCopy>();
-		starWarsCollection.add(new BookCopy(TEST_ISBN + 1, 1));
-		starWarsCollection.add(new BookCopy(TEST_ISBN + 2, 1));
-		starWarsCollection.add(new BookCopy(TEST_ISBN + 3, 1));
+		starWarsCollection.add(new BookCopy(TEST_ISBN + 1, copiesBought));
+		starWarsCollection.add(new BookCopy(TEST_ISBN + 2, copiesBought));
+		starWarsCollection.add(new BookCopy(TEST_ISBN + 3, copiesBought));
 		
 		Thread C1 = new Thread(new ClientBuyThenReplenish(client, storeManager, starWarsCollection));
-		// add C2
+		Thread C2 = new Thread(new ClientContinuousGetBooks(storeManager, starWarsCollection, copiesBought));
+		
+		C1.start();
+		C2.start();
+		
+		Thread.currentThread().sleep(5000);
+		
+		C1.join();
+		C2.join();
 	}
 
 }
