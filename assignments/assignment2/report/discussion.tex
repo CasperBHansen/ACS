@@ -48,12 +48,6 @@ correctness over concurrency, our solution suffers the botteneck of intersecting
 sets not being allowed to be processed concurrently.
 One obvious bottleneck is the global locks.
 
-\subsection{Overhead}
-We consider our solution to pay a lot of overhead in exchange for correctness.
-Our solution can cause halting of several operations as a consequence of only
-allowing for operations on sets of books at a time --- or more explicitly, we
-only allow lock acquisition for sets of locks.
-
 As an example of the bottleneck, consider the following scenario; let $T_1$ be
 a writing thread on the set $A$, let $T_2$ be another writing thread on the set
 $B$, and let $T_3$ be a writing thread on the set $C$. For the sake illustration
@@ -75,3 +69,9 @@ This bottleneck could be alleviated by way of some more intricate checking, for
 example by checking whether or not all locks can be acquired beforehand of the
 acquisition phase. This would not block any "innocent" operations that do not
 intersect with other concurrent operations.
+
+\subsection{Overhead}
+We consider our solution to pay a lot of overhead in exchange for correctness.
+Our solution can cause halting of several operations as a consequence of only
+allowing for operations on sets of books at a time --- or more explicitly, we
+only allow lock acquisition for sets of locks.
