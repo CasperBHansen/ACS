@@ -63,14 +63,17 @@
           Does the solution contain a clear description of the approach
           used to achieve before-or-after atomicity?
         </text>
-        <answer>[YES/NO]</answer>
+        <answer>NO</answer>
       </q1a>
       <q1b>
         <text>
           Provide comments on any aspects that you found unclear in the
           description of the approach to achieve before-or-after atomicity
         </text>
-        <answer>[Free text]</answer>
+        <answer>
+          The answer does not directly address the question, but rather it
+          describes how the particular locking mechanism works.
+        </answer>
       </q1b>
       <q1c>
         <text>
@@ -78,7 +81,7 @@
           assignment description as well as of at least another two test
           cases?
         </text>
-        <answer>[YES/NO]</answer>
+        <answer>YES</answer>
       </q1c>
       <q1d-i>
         <text>
@@ -86,7 +89,7 @@
           execution
           is correct in that it respects invariants designed in the test?
         </text>
-        <answer>[YES/NO]</answer>
+        <answer>YES</answer>
       </q1d-i>
       <q1d-ii>
         <text>
@@ -95,7 +98,7 @@
           arguable that these intermediate states could be found in an
           equivalent serial schedule?
         </text>
-        <answer>[YES/NO]</answer>
+        <answer>YES</answer>
       </q1d-ii>
       <q1e>
         <text>
@@ -103,7 +106,13 @@
           descriptions were unclear according to the criteria, and suggestions for
           improvement
         </text>
-        <answer>[Free text]</answer>
+        <answer>
+          There was no description of each of the tests in the report. There
+          were, however, comments explaining what they did in the code, but no
+          overall description of which invariants they were testing. Luckily,
+          the code was well-structured and easily understandable of what they
+          were attempting to achieve.
+        </answer>
       </q1e>
     </question1>
 
@@ -115,7 +124,7 @@
           the correctness argument clearly identified (e.g., conservative, strict,
           conservative strict)?
         </text>
-        <answer>[YES/NO]</answer>
+        <answer>YES</answer>
       </q2a>
       <q2b>
         <text>
@@ -123,21 +132,21 @@
           protocol designed correspond to steps taken in the chosen variant
           of 2PL?
         </text>
-        <answer>[YES/NO]</answer>
+        <answer>YES</answer>
       </q2b>
       <q2c>
         <text>
           Is there an argument for the need to take into account predicate
           reads, with appropriate justification?
         </text>
-        <answer>[YES/NO]</answer>
+        <answer>NO</answer>
       </q2c>
       <q2d>
         <text>
           Is there an argument for the need to take into account predicate
           reads, with appropriate justification?
         </text>
-        <answer>[Free text]</answer>
+        <answer></answer>
       </q2d>
     </question2>
 
@@ -148,14 +157,22 @@
           Does the solution contain a correct argument for why deadlocks can
           occur in the locking protocol or why deadlocks cannot occur?
         </text>
-        <answer>[YES/NO]</answer>
+        <answer>NO</answer>
       </q3a>
       <q3b>
         <text>
           Provide comments on how the argument provided with respect to
           deadlocks could be improved
         </text>
-        <answer>[Free text]</answer>
+        <answer>
+          Deadlocks can definitely occur. The argument made is valid. However,
+          you have forgotten encapsulate your locking/unlocking in a
+          try/catch-statement, using finally to always unlock failed attempts.
+          Consider the scenario that an operation acquires the write lock, and
+          then triggers an exception. The method then returns, but still holds
+          the lock. Any subsequent attempts at obtaining the lock will then be
+          blocked - effectively causing a deadlock.
+        </answer>
       </q3b>
     </question3>
 
@@ -166,14 +183,16 @@
           Is there a sound argument about the scalability limits of the
           concurrent implementation provided?
         </text>
-        <answer>[YES/NO]</answer>
+        <answer>YES</answer>
       </q4a>
       <q4b>
         <text>
           Provide comments on how the reflections on scalability could be
           improved
         </text>
-        <answer>[Free text]</answer>
+        <answer>
+          We agree with the reflections already provided in the report.
+        </answer>
       </q4b>
     </question4>
 
@@ -184,14 +203,18 @@
           Is there a sound argument in the solution about the trade-off between
           locking overhead and concurrency?
         </text>
-        <answer>[YES/NO]</answer>
+        <answer>YES</answer>
       </q5a>
       <q5b>
         <text>
           Provide comments on how the argument about performance trade-offs in
           the locking protocol could be improved
         </text>
-        <answer>[Free text]</answer>
+        <answer>
+          The argument made is a valid one, with respect to the application
+          domain. Thoughts on improvements, with which we agree, have already
+          been given in the report. We have nothing to add to this.
+        </answer>
       </q5b>
     </question5>
   </programming>
