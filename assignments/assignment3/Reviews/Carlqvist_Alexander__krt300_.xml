@@ -63,14 +63,14 @@
           Does the solution contain a clear description of the approach
           used to achieve before-or-after atomicity?
         </text>
-        <answer>[YES/NO]</answer>
+        <answer>YES</answer>
       </q1a>
       <q1b>
         <text>
           Provide comments on any aspects that you found unclear in the
           description of the approach to achieve before-or-after atomicity
         </text>
-        <answer>[Free text]</answer>
+        <answer>YES</answer>
       </q1b>
       <q1c>
         <text>
@@ -78,7 +78,7 @@
           assignment description as well as of at least another two test
           cases?
         </text>
-        <answer>[YES/NO]</answer>
+        <answer>YES</answer>
       </q1c>
       <q1d-i>
         <text>
@@ -86,7 +86,7 @@
           execution
           is correct in that it respects invariants designed in the test?
         </text>
-        <answer>[YES/NO]</answer>
+        <answer>YES</answer>
       </q1d-i>
       <q1d-ii>
         <text>
@@ -95,7 +95,7 @@
           arguable that these intermediate states could be found in an
           equivalent serial schedule?
         </text>
-        <answer>[YES/NO]</answer>
+        <answer>YES</answer>
       </q1d-ii>
       <q1e>
         <text>
@@ -103,7 +103,12 @@
           descriptions were unclear according to the criteria, and suggestions for
           improvement
         </text>
-        <answer>[Free text]</answer>
+        <answer>
+          No comments on clarity. The simplicity of the solution makes it easy
+          to argue the correctness. As a suggestion, however, you could employ a
+          per-book locking system, which would alleviate a major bottleneck in
+          your design, effectively allowing concurrent writes.
+        </answer>
       </q1e>
     </question1>
 
@@ -115,7 +120,7 @@
           the correctness argument clearly identified (e.g., conservative, strict,
           conservative strict)?
         </text>
-        <answer>[YES/NO]</answer>
+        <answer>YES</answer>
       </q2a>
       <q2b>
         <text>
@@ -123,21 +128,23 @@
           protocol designed correspond to steps taken in the chosen variant
           of 2PL?
         </text>
-        <answer>[YES/NO]</answer>
+        <answer>YES</answer>
       </q2b>
       <q2c>
         <text>
           Is there an argument for the need to take into account predicate
           reads, with appropriate justification?
         </text>
-        <answer>[YES/NO]</answer>
+        <answer>NO</answer>
       </q2c>
       <q2d>
         <text>
           Is there an argument for the need to take into account predicate
           reads, with appropriate justification?
         </text>
-        <answer>[Free text]</answer>
+        <answer>
+          The solution alleviates the need for it, but isn't explicitly reasoned.
+        </answer>
       </q2d>
     </question2>
 
@@ -148,14 +155,18 @@
           Does the solution contain a correct argument for why deadlocks can
           occur in the locking protocol or why deadlocks cannot occur?
         </text>
-        <answer>[YES/NO]</answer>
+        <answer>YES</answer>
       </q3a>
       <q3b>
         <text>
           Provide comments on how the argument provided with respect to
           deadlocks could be improved
         </text>
-        <answer>[Free text]</answer>
+        <answer>
+          An example, showing a deadlock occur, of the scenario said could
+          be provided. That is, one that includes the competing thread calls,
+          telling where and why they deadlock.
+        </answer>
       </q3b>
     </question3>
 
@@ -166,14 +177,21 @@
           Is there a sound argument about the scalability limits of the
           concurrent implementation provided?
         </text>
-        <answer>[YES/NO]</answer>
+        <answer>YES</answer>
       </q4a>
       <q4b>
         <text>
           Provide comments on how the reflections on scalability could be
           improved
         </text>
-        <answer>[Free text]</answer>
+        <answer>
+          We would argue that the scalability isn't affected by the deadlocks,
+          so much as the simplicity of the locking mechanism, which introduces
+          a major bottleneck. The more clients, the more likely the system is
+          to halt operations because of a single client that locks the entire
+          book map. Thus, as the number of clients increase, so does the
+          expectation of clients waiting for each other.
+        </answer>
       </q4b>
     </question4>
 
@@ -184,14 +202,18 @@
           Is there a sound argument in the solution about the trade-off between
           locking overhead and concurrency?
         </text>
-        <answer>[YES/NO]</answer>
+        <answer>YES</answer>
       </q5a>
       <q5b>
         <text>
           Provide comments on how the argument about performance trade-offs in
           the locking protocol could be improved
         </text>
-        <answer>[Free text]</answer>
+        <answer>
+          No further comments. The trade-offs payed for correctness is suffered
+          in concurrency, as concluded by the report, which we also have stated
+          and agree with.
+        </answer>
       </q5b>
     </question5>
   </programming>
