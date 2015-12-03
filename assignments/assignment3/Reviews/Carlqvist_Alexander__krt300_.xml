@@ -8,8 +8,8 @@
           Is the solution provided both correct and includes a convincing short
           argument justifying it?
         </text>
-        <answer>[YES/NO]</answer>
-        <comment>[If your answer is NO write your comment here]</comment>
+        <answer>YES</answer>
+        <comment></comment>
       </schedule1>
 
       <schedule2>
@@ -17,8 +17,8 @@
           Is the solution provided both correct and includes a convincing short
           argument justifying it?
         </text>
-        <answer>[YES/NO]</answer>
-        <comment>[If your answer is NO write your comment here]</comment>
+        <answer>YES</answer>
+        <comment></comment>
       </schedule2>
     </question1>
 
@@ -29,8 +29,8 @@
           Is the solution provided both correct and includes a convincing short
           argument justifying it?
         </text>
-        <answer>[YES/NO]</answer>
-        <comment>[If your answer is NO write your comment here]</comment>
+        <answer>YES</answer>
+        <comment></comment>
       </scenario1>
 
       <scenario2>
@@ -38,8 +38,8 @@
           Is the solution provided both correct and includes a convincing short
           argument justifying it?
         </text>
-        <answer>[YES/NO]</answer>
-        <comment>[If your answer is NO write your comment here]</comment>
+        <answer>YES</answer>
+        <comment></comment>
       </scenario2>
 
       <scenario3>
@@ -47,8 +47,8 @@
           Is the solution provided both correct and includes a convincing short
           argument justifying it?
         </text>
-        <answer>[YES/NO]</answer>
-        <comment>[If your answer is NO write your comment here]</comment>
+        <answer>YES</answer>
+        <comment></comment>
       </scenario3>
 
     </question2>
