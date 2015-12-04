@@ -134,8 +134,8 @@
       </q2c>
       <q2d>
         <text>
-          Is there an argument for the need to take into account predicate
-          reads, with appropriate justification?
+          Provide comments on why you found any aspects of the correctness
+          argument provided to be lacking, incorrect, or in need of improvement.
         </text>
         <answer>[Free text]</answer>
       </q2d>
