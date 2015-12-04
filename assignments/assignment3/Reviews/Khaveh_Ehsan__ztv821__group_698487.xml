@@ -63,14 +63,16 @@
           Does the solution contain a clear description of the approach
           used to achieve before-or-after atomicity?
         </text>
-        <answer>[YES/NO]</answer>
+        <answer>YES</answer>
       </q1a>
       <q1b>
         <text>
           Provide comments on any aspects that you found unclear in the
           description of the approach to achieve before-or-after atomicity
         </text>
-        <answer>[Free text]</answer>
+        <answer>
+          Nice diagrams, and clearly conveying the pitfalls of the design.
+        </answer>
       </q1b>
       <q1c>
         <text>
@@ -78,7 +80,7 @@
           assignment description as well as of at least another two test
           cases?
         </text>
-        <answer>[YES/NO]</answer>
+        <answer>YES</answer>
       </q1c>
       <q1d-i>
         <text>
@@ -86,7 +88,7 @@
           execution
           is correct in that it respects invariants designed in the test?
         </text>
-        <answer>[YES/NO]</answer>
+        <answer>YES</answer>
       </q1d-i>
       <q1d-ii>
         <text>
@@ -95,7 +97,7 @@
           arguable that these intermediate states could be found in an
           equivalent serial schedule?
         </text>
-        <answer>[YES/NO]</answer>
+        <answer>YES</answer>
       </q1d-ii>
       <q1e>
         <text>
@@ -103,7 +105,7 @@
           descriptions were unclear according to the criteria, and suggestions for
           improvement
         </text>
-        <answer>[Free text]</answer>
+        <answer></answer>
       </q1e>
     </question1>
 
@@ -115,7 +117,7 @@
           the correctness argument clearly identified (e.g., conservative, strict,
           conservative strict)?
         </text>
-        <answer>[YES/NO]</answer>
+        <answer>YES</answer>
       </q2a>
       <q2b>
         <text>
@@ -123,21 +125,21 @@
           protocol designed correspond to steps taken in the chosen variant
           of 2PL?
         </text>
-        <answer>[YES/NO]</answer>
+        <answer>YES</answer>
       </q2b>
       <q2c>
         <text>
           Is there an argument for the need to take into account predicate
           reads, with appropriate justification?
         </text>
-        <answer>[YES/NO]</answer>
+        <answer>NO</answer>
       </q2c>
       <q2d>
         <text>
           Provide comments on why you found any aspects of the correctness
           argument provided to be lacking, incorrect, or in need of improvement.
         </text>
-        <answer>[Free text]</answer>
+        <answer></answer>
       </q2d>
     </question2>
 
@@ -148,14 +150,14 @@
           Does the solution contain a correct argument for why deadlocks can
           occur in the locking protocol or why deadlocks cannot occur?
         </text>
-        <answer>[YES/NO]</answer>
+        <answer>YES</answer>
       </q3a>
       <q3b>
         <text>
           Provide comments on how the argument provided with respect to
           deadlocks could be improved
         </text>
-        <answer>[Free text]</answer>
+        <answer></answer>
       </q3b>
     </question3>
 
@@ -166,14 +168,19 @@
           Is there a sound argument about the scalability limits of the
           concurrent implementation provided?
         </text>
-        <answer>[YES/NO]</answer>
+        <answer>YES</answer>
       </q4a>
       <q4b>
         <text>
           Provide comments on how the reflections on scalability could be
           improved
         </text>
-        <answer>[Free text]</answer>
+        <answer>
+          We tend to agree with the assertion, that the system would scale well
+          with reads, but falls short on concurrency as the number of writes
+          increases. A fine solution of improvement to this has been provided,
+          with which we agree.
+        </answer>
       </q4b>
     </question4>
 
@@ -184,14 +191,14 @@
           Is there a sound argument in the solution about the trade-off between
           locking overhead and concurrency?
         </text>
-        <answer>[YES/NO]</answer>
+        <answer>YES</answer>
       </q5a>
       <q5b>
         <text>
           Provide comments on how the argument about performance trade-offs in
           the locking protocol could be improved
         </text>
-        <answer>[Free text]</answer>
+        <answer></answer>
       </q5b>
     </question5>
   </programming>
