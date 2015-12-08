@@ -72,7 +72,9 @@
         </text>
         <answer>
           The answer does not directly address the question, but rather it
-          describes how the particular locking mechanism works.
+          describes how the particular locking mechanism works. In other
+          words, how do you use this locking mechanism to ensure
+          before-or-after atomicity? It does not grant this by default.
         </answer>
       </q1b>
       <q1c>
@@ -166,7 +168,8 @@
         </text>
         <answer>
           Deadlocks can definitely occur. The argument made is valid. However,
-          you have forgotten encapsulate your locking/unlocking in a
+          you have forgotten either release the locks before throwing exceptions
+          or alternatively encapsulate your locking/unlocking in a
           try/catch-statement, using finally to always unlock failed attempts.
           Consider the scenario that an operation acquires the write lock, and
           then triggers an exception. The method then returns, but still holds
