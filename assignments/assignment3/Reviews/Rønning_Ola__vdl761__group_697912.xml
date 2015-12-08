@@ -8,8 +8,8 @@
           Is the solution provided both correct and includes a convincing short
           argument justifying it?
         </text>
-        <answer>[YES/NO]</answer>
-        <comment>[If your answer is NO write your comment here]</comment>
+        <answer>YES</answer>
+        <comment></comment>
       </schedule1>
 
       <schedule2>
@@ -17,8 +17,8 @@
           Is the solution provided both correct and includes a convincing short
           argument justifying it?
         </text>
-        <answer>[YES/NO]</answer>
-        <comment>[If your answer is NO write your comment here]</comment>
+        <answer>YES</answer>
+        <comment></comment>
       </schedule2>
     </question1>
 
@@ -29,8 +29,8 @@
           Is the solution provided both correct and includes a convincing short
           argument justifying it?
         </text>
-        <answer>[YES/NO]</answer>
-        <comment>[If your answer is NO write your comment here]</comment>
+        <answer>YES</answer>
+        <comment></comment>
       </scenario1>
 
       <scenario2>
@@ -38,8 +38,8 @@
           Is the solution provided both correct and includes a convincing short
           argument justifying it?
         </text>
-        <answer>[YES/NO]</answer>
-        <comment>[If your answer is NO write your comment here]</comment>
+        <answer>YES</answer>
+        <comment></comment>
       </scenario2>
 
       <scenario3>
@@ -47,8 +47,8 @@
           Is the solution provided both correct and includes a convincing short
           argument justifying it?
         </text>
-        <answer>[YES/NO]</answer>
-        <comment>[If your answer is NO write your comment here]</comment>
+        <answer>YES</answer>
+        <comment></comment>
       </scenario3>
 
     </question2>
@@ -63,14 +63,14 @@
           Does the solution contain a clear description of the approach
           used to achieve before-or-after atomicity?
         </text>
-        <answer>[YES/NO]</answer>
+        <answer>YES</answer>
       </q1a>
       <q1b>
         <text>
           Provide comments on any aspects that you found unclear in the
           description of the approach to achieve before-or-after atomicity
         </text>
-        <answer>[Free text]</answer>
+        <answer>+1 for going with the high-granularity solution.</answer>
       </q1b>
       <q1c>
         <text>
@@ -78,7 +78,7 @@
           assignment description as well as of at least another two test
           cases?
         </text>
-        <answer>[YES/NO]</answer>
+        <answer>YES</answer>
       </q1c>
       <q1d-i>
         <text>
@@ -86,7 +86,7 @@
           execution
           is correct in that it respects invariants designed in the test?
         </text>
-        <answer>[YES/NO]</answer>
+        <answer>YES</answer>
       </q1d-i>
       <q1d-ii>
         <text>
@@ -95,7 +95,7 @@
           arguable that these intermediate states could be found in an
           equivalent serial schedule?
         </text>
-        <answer>[YES/NO]</answer>
+        <answer>YES</answer>
       </q1d-ii>
       <q1e>
         <text>
@@ -103,7 +103,7 @@
           descriptions were unclear according to the criteria, and suggestions for
           improvement
         </text>
-        <answer>[Free text]</answer>
+        <answer>Since you cannot control how the scheduler choses to assign threads time slices, I see no guarantee that the threads are running at the same time in the 'testSerilizability()' test. One possible solution is to crate a test where threads can run continuously until a certain point. Not that it's particularly easy.</answer>
       </q1e>
     </question1>
 
@@ -115,7 +115,7 @@
           the correctness argument clearly identified (e.g., conservative, strict,
           conservative strict)?
         </text>
-        <answer>[YES/NO]</answer>
+        <answer>YES</answer>
       </q2a>
       <q2b>
         <text>
@@ -123,7 +123,7 @@
           protocol designed correspond to steps taken in the chosen variant
           of 2PL?
         </text>
-        <answer>[YES/NO]</answer>
+        <answer>YES</answer>
       </q2b>
       <q2c>
         <text>
@@ -137,7 +137,7 @@
           Provide comments on why you found any aspects of the correctness
           argument provided to be lacking, incorrect, or in need of improvement.
         </text>
-        <answer>[Free text]</answer>
+        <answer>Arguments seems to cover all we can think of, but looking at the code I don't think the locking mechanism work. First little detail, is that the defined writeLock is in fact a readlock. Assuming that you did mean to write "readWriteLock.writeLock()" at line 29. One problem arising multiple places is the premature release of locks. Take addCopies as an example. You use a readlock to check the bookmap contains the appropriate book, but then release the lock before applying the changes. If another operation decides to remove some books, you are in trouble since the correct error is not returned. One possibility is to extend the read lock and upgrade it to a write lock at the appropriate time. But this is deadlock prone as per the textbook. Some kind of write lock is needed all through the operation.</answer>
       </q2d>
     </question2>
 
@@ -148,14 +148,14 @@
           Does the solution contain a correct argument for why deadlocks can
           occur in the locking protocol or why deadlocks cannot occur?
         </text>
-        <answer>[YES/NO]</answer>
+        <answer>YES</answer>
       </q3a>
       <q3b>
         <text>
           Provide comments on how the argument provided with respect to
           deadlocks could be improved
         </text>
-        <answer>[Free text]</answer>
+        <answer>I can see no problem in the arguments given.</answer>
       </q3b>
     </question3>
 
@@ -166,14 +166,14 @@
           Is there a sound argument about the scalability limits of the
           concurrent implementation provided?
         </text>
-        <answer>[YES/NO]</answer>
+        <answer>YES</answer>
       </q4a>
       <q4b>
         <text>
           Provide comments on how the reflections on scalability could be
           improved
         </text>
-        <answer>[Free text]</answer>
+        <answer>I think you avoid most scalability problems because the locking protocol does not ensure before-or-after atomicity. As discussed in the answer to question 2, you have to hold write locks for longer. This is a big source of overhead, and write operations suddenly become expensive.</answer>
       </q4b>
     </question4>
 
