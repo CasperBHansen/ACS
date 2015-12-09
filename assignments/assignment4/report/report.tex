@@ -1,0 +1,118 @@
+\documentclass[10pt,a4paper]{article}
+
+
+%==============================================================================%
+% PACKAGES                                                                     %
+%==============================================================================%
+
+\usepackage{a4wide}
+\usepackage{color}
+\usepackage{float}
+\usepackage[utf8]{inputenc}
+\usepackage{lipsum}
+\usepackage{listings}
+\usepackage{multicol}
+\usepackage{tikz}
+\usetikzlibrary{arrows,shapes,positioning}
+
+
+%==============================================================================%
+% SETTINGS                                                                     %
+%==============================================================================%
+
+\setcounter{tocdepth}{1}
+
+\renewcommand{\thesubsubsection}{\alph{subsubsection})}
+
+\lstset
+{
+    basicstyle=\footnotesize\ttfamily,
+    breaklines=true,
+    frame=single,
+    language=java,
+    numbers=left,
+    numbersep=8pt,
+    tabsize=4,
+}
+
+
+%==============================================================================%
+% DEFINITIONS                                                                  %
+%==============================================================================%
+
+\newcommand{\assignmentnumber}{4}
+\newcommand{\srcroot}{../src/com/acertainbookstore/}
+
+\newcommand{\theabstract}
+{
+    \lipsum[1-1]
+}
+
+
+%==============================================================================%
+% COMMANDS                                                                     %
+%==============================================================================%
+
+% usage: \authform{<full name>}{<student id>}
+\newcommand{\authform}[2]
+{
+    #1\\ % full name
+    Department of Computer Science\\
+    University of Copenhagen\\
+    {\tt #2@alumni.ku.dk}\\ % student id
+}
+
+\newcommand{\colbreak}{{\ }\vfill\columnbreak}
+
+% usage: \codeexcerpt{<file path (relative)>}{<begin line>}{<end line>}
+\newcommand{\codeexcerpt}[3]
+{
+\begin{figure}[H]
+\lstinputlisting[firstnumber=#2,firstline=#2,lastline=#3]{\srcroot/#1}
+\caption{Code excerpt of {\it ../#1}, lines #2--#3}
+\label{code:#1}
+\end{figure}
+}
+
+
+%==============================================================================%
+% META                                                                         %
+%==============================================================================%
+
+\title
+{
+    Advanced Computer Systems \\
+    {\Large Assignment \assignmentnumber}
+}
+
+\author
+{
+    \authform{Hans J. T. Stephensen}{xkv467}
+    \and
+    \authform{Casper B. Hansen}{fvx507}
+}
+
+\date{\today}
+
+
+%==============================================================================%
+% DOCUMENT                                                                     %
+%==============================================================================%
+
+\begin{document}
+
+\clearpage
+\maketitle
+\thispagestyle{empty}
+
+\setlength{\columnsep}{0pt}
+\begin{multicols}{2}
+    \colbreak
+    \tableofcontents
+\end{multicols}
+\setlength{\columnsep}{10pt}
+\clearpage
+
+\input{discussion.tex}
+
+\end{document}
