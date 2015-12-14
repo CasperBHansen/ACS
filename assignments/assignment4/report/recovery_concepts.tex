@@ -5,17 +5,31 @@
 \section{Recovery Concepts}
 
 \subsection{Necessity of redo/undo in systems force and no-steal}
-\dots
+Using a force, no-steal approach, if we assume we use stable storage,
+every change is forced to disk as soon as a commit is reached. Following a
+crash the database is already at a consistent state, it is not needed to
+perform either a redo or undo phase. If storage is not stable, a crash may
+have occured during writing. (unsure about everything from this point on)
+Since we we use {\bf WAL} the commit log entry is written before a commit
+takes place, and we may need to redo transactions marked with a {\tt commit} but not
+and {\tt end} entry.
 
 \subsection{Differences between non-volatile and stable storage}
-Casper: The main difference of these types of storage is that stable storage relies on
+Casper:
+The main difference of these types of storage is that stable storage relies on
 book keeping to restore its data in the event of a system crash, while data in
 non-volatile storage aren't affected by crashes.
 
-Hans: non-volatile as well as stable storage retains stored data in the event of a
+Hans:
+non-volatile as well as stable storage retains stored data in the event of a
 system shutdown or crash. The difference is that stable storage ensures
 atomicity of operations, and thus system crashes may ruin the state of
 non-volatile storage while stable storage is still in consistent state.
 
 \subsection{Write-Ahead logging}
-\dots
+
+The two situations when the log tail must be force written to stable storage
+is when a commit is performed and ... well I don't know.
+Wiki (for discussion): "A record of the changes must still be preserved at commit time to ensure that the transaction is durable. This record is typically written to a sequential transaction log, with the actual changes to the database objects being changes which can be written at a later time.
+
+For frequently changed objects, a no-force policy allows updates to be merged and so reduce the number of write operations to the actual database object. A no-force policy also reduces the seek time required for a commit by having mostly sequential write operations to the transaction log, rather than requiring the disk to seek to many distinct database objects during a commit."
