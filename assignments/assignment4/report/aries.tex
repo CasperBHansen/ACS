@@ -41,9 +41,7 @@ int this phase, the dirty page table is used to determine the earliest LSN that 
 \noindent
 {\bf Undo:}
 
-\begin{enumerate}
-\item ...
-\end{enumerate}
+The undo reads the transaction table and undo's action of the transactions present (the loser transaction) and adding compensation log entries (CLR) to the log.
 
 \subsection{Transaction state and dirty pages after analysis phase}
 Following the above the transaction table includes
