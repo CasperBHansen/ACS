@@ -29,7 +29,23 @@ non-volatile storage while stable storage is still in consistent state.
 \subsection{Write-Ahead logging}
 
 The two situations when the log tail must be force written to stable storage
-is when a commit is performed and ... well I don't know.
+is when a commit is performed and when dirty pages are written to disk.
+Write-ahead logging must maintain the invariant that any writing occurs in the
+log before it is reflected on disk. As a natural consequence of the nature of
+a commit, of course, the log tail must be written to stable storage. Likewise,
+dirty pages that are evicted, will get written to disk, and hence requires the
+log tail to be force written.
+
+The main function of this strategy is to accomplish durability in the event of
+system crashes. Because each transaction is preserved in stable storage, even
+when the system crashes, any and all changes made, but not yet reflected on disk
+are recoverable. The forementioned scenarios are the only actions that constitute
+changes on disk, and because the log tail holds a backward reference, we are
+able to trace back through the changes made and restore any otherwise lost
+transactions.
+
+\iffalse
 Wiki (for discussion): "A record of the changes must still be preserved at commit time to ensure that the transaction is durable. This record is typically written to a sequential transaction log, with the actual changes to the database objects being changes which can be written at a later time.
 
 For frequently changed objects, a no-force policy allows updates to be merged and so reduce the number of write operations to the actual database object. A no-force policy also reduces the seek time required for a commit by having mostly sequential write operations to the transaction log, rather than requiring the disk to seek to many distinct database objects during a commit."
+\fi
