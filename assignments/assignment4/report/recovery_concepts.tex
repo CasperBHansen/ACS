@@ -5,22 +5,13 @@
 \section{Recovery Concepts}
 
 \subsection{Necessity of redo/undo in systems force and no-steal}
-Using a force, no-steal approach, if we assume we use stable storage,
-every change is forced to disk as soon as a commit is reached. Following a
+Using a force, no-steal approach, every change is forced to disk as soon as a commit is reached. Following a
 crash the database is already at a consistent state, it is not needed to
-perform either a redo or undo phase. If storage is not stable, a crash may
-have occured during writing. (unsure about everything from this point on)
-Since we we use {\bf WAL} the commit log entry is written before a commit
-takes place, and we may need to redo transactions marked with a {\tt commit} but not and {\tt end} entry.
+perform either a redo or undo phase.
 
 \subsection{Differences between non-volatile and stable storage}
-Casper:
-The main difference of these types of storage is that stable storage relies on
-book keeping to restore its data in the event of a system crash, while data in
-non-volatile storage aren't affected by crashes.
 
-Hans:
-non-volatile as well as stable storage retains stored data in the event of a
+Non-volatile as well as stable storage retains stored data in the event of a
 system shutdown or crash. The difference is that stable storage ensures
 atomicity of operations, and thus system crashes may ruin the state of
 non-volatile storage while stable storage is still in consistent state.
@@ -38,7 +29,7 @@ log tail to be force written.
 The main function of this strategy is to accomplish durability in the event of
 system crashes. Because each transaction is preserved in stable storage, even
 when the system crashes, any and all changes made, but not yet reflected on disk
-are recoverable. The forementioned scenarios are the only actions that constitute
+are recoverable. The aforementioned scenarios are the only actions that constitute
 changes on disk, and because the log tail holds a backward reference, we are
 able to trace back through the changes made and restore any otherwise lost
 transactions. The scenarios we want to prevent are, in case of the commit, that a user of the database gets the response that his transaction has committed successfully, but a crash wiped the log entry of this event that may not have been written to non-volatile storage yet, so recovery is incomplete. In case of the update log entry, we need this to log entry to be force written to stable storage to prevent data from being present in the database but the log not reflecting the changes took place.

@@ -3,9 +3,14 @@
  */
 package com.acertainbookstore.client.workloads;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.Callable;
 
+import com.acertainbookstore.business.StockBook;
+import com.acertainbookstore.interfaces.StockManager;
 import com.acertainbookstore.utils.BookStoreException;
 
 /**
@@ -18,6 +23,7 @@ public class Worker implements Callable<WorkerRunResult> {
 	private WorkloadConfiguration configuration = null;
 	private int numSuccessfulFrequentBookStoreInteraction = 0;
 	private int numTotalFrequentBookStoreInteraction = 0;
+	private Random random = new Random();
 
 	public Worker(WorkloadConfiguration config) {
 		configuration = config;
@@ -98,7 +104,30 @@ public class Worker implements Callable<WorkerRunResult> {
 	 * @throws BookStoreException
 	 */
 	private void runRareStockManagerInteraction() throws BookStoreException {
-		// TODO: Add code for New Stock Acquisition Interaction
+		
+		// Get stockManager and bookGenerator from configuration file.
+		StockManager stm = configuration.getStockManager();
+		BookSetGenerator bookGen = configuration.getBookSetGenerator();
+		
+
+		
+		// Get all books from bookstore.
+		List<StockBook> storeBooks = stm.getBooks();
+		
+		// Get random number of random set of books defined in the book generation class.
+		int n = random.nextInt(10) + 1;
+		Set<StockBook> randomBookSet = bookGen.nextSetOfStockBooks(n);
+
+		Set<StockBook> booksNotFound = new HashSet<StockBook>();
+		
+		// Check if books are in the bookstore.
+		for (StockBook book : storeBooks) {
+			if (!randomBookSet.contains(book)) {
+				booksNotFound.add(book);
+			}
+		}
+		stm.addBooks(booksNotFound);
+		
 	}
 
 	/**
