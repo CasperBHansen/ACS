@@ -11,8 +11,7 @@ crash the database is already at a consistent state, it is not needed to
 perform either a redo or undo phase. If storage is not stable, a crash may
 have occured during writing. (unsure about everything from this point on)
 Since we we use {\bf WAL} the commit log entry is written before a commit
-takes place, and we may need to redo transactions marked with a {\tt commit} but not
-and {\tt end} entry.
+takes place, and we may need to redo transactions marked with a {\tt commit} but not and {\tt end} entry.
 
 \subsection{Differences between non-volatile and stable storage}
 Casper:
@@ -42,7 +41,7 @@ when the system crashes, any and all changes made, but not yet reflected on disk
 are recoverable. The forementioned scenarios are the only actions that constitute
 changes on disk, and because the log tail holds a backward reference, we are
 able to trace back through the changes made and restore any otherwise lost
-transactions.
+transactions. The scenarios we want to prevent are, in case of the commit, that a user of the database gets the response that his transaction has committed successfully, but a crash wiped the log entry of this event that may not have been written to non-volatile storage yet, so recovery is incomplete. In case of the update log entry, we need this to log entry to be force written to stable storage to prevent data from being present in the database but the log not reflecting the changes took place.
 
 \iffalse
 Wiki (for discussion): "A record of the changes must still be preserved at commit time to ensure that the transaction is durable. This record is typically written to a sequential transaction log, with the actual changes to the database objects being changes which can be written at a later time.
