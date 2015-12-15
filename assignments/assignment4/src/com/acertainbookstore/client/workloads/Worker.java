@@ -3,6 +3,8 @@
  */
 package com.acertainbookstore.client.workloads;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
@@ -109,25 +111,27 @@ public class Worker implements Callable<WorkerRunResult> {
 		StockManager stm = configuration.getStockManager();
 		BookSetGenerator bookGen = configuration.getBookSetGenerator();
 		
-
-		
 		// Get all books from bookstore.
 		List<StockBook> storeBooks = stm.getBooks();
 		
 		// Get random number of random set of books defined in the book generation class.
 		int n = random.nextInt(10) + 1;
 		Set<StockBook> randomBookSet = bookGen.nextSetOfStockBooks(n);
+		Set<Integer> isbnOfRandom = new HashSet<Integer>();
 
+		for (StockBook book : randomBookSet) {
+			isbnOfRandom.add(book.getISBN());
+		}
+		
 		Set<StockBook> booksNotFound = new HashSet<StockBook>();
 		
 		// Check if books are in the bookstore.
 		for (StockBook book : storeBooks) {
-			if (!randomBookSet.contains(book)) {
+			if (!isbnOfRandom.contains(book.getISBN())) {
 				booksNotFound.add(book);
 			}
 		}
 		stm.addBooks(booksNotFound);
-		
 	}
 
 	/**
@@ -136,7 +140,25 @@ public class Worker implements Callable<WorkerRunResult> {
 	 * @throws BookStoreException
 	 */
 	private void runFrequentStockManagerInteraction() throws BookStoreException {
-		// TODO: Add code for Stock Replenishment Interaction
+		
+		// Get stockManager and bookGenerator from configuration file.
+		StockManager stm = configuration.getStockManager();
+		
+		// Get all books from bookstore.
+		List<StockBook> storeBooks = stm.getBooks();
+		
+		// Sort books on number of copies
+		Collections.sort(storeBooks, new Comparator<StockBook>() {
+			public int compare(StockBook a, StockBook b) {
+				return a.getNumCopies() <= b.getNumCopies() ? 1 : -1;
+			}
+		});
+
+		// Get random number of books to which we want the smallest number of copies.
+		int k = random.nextInt(storeBooks.size() - 1) + 1;
+
+		// Add the wanted subset of books.
+		stm.addBooks( new HashSet<StockBook>(storeBooks.subList(0, k)) );
 	}
 
 	/**
@@ -145,7 +167,7 @@ public class Worker implements Callable<WorkerRunResult> {
 	 * @throws BookStoreException
 	 */
 	private void runFrequentBookStoreInteraction() throws BookStoreException {
-		// TODO: Add code for Customer Interaction
+		
 	}
 
 }
