@@ -11,7 +11,10 @@ import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.Callable;
 
+import com.acertainbookstore.business.Book;
+import com.acertainbookstore.business.BookCopy;
 import com.acertainbookstore.business.StockBook;
+import com.acertainbookstore.interfaces.BookStore;
 import com.acertainbookstore.interfaces.StockManager;
 import com.acertainbookstore.utils.BookStoreException;
 
@@ -25,7 +28,6 @@ public class Worker implements Callable<WorkerRunResult> {
 	private WorkloadConfiguration configuration = null;
 	private int numSuccessfulFrequentBookStoreInteraction = 0;
 	private int numTotalFrequentBookStoreInteraction = 0;
-	private Random random = new Random();
 
 	public Worker(WorkloadConfiguration config) {
 		configuration = config;
@@ -107,16 +109,14 @@ public class Worker implements Callable<WorkerRunResult> {
 	 */
 	private void runRareStockManagerInteraction() throws BookStoreException {
 		
-		// Get stockManager and bookGenerator from configuration file.
+		// Get StockManager and BookSetGenerator from configuration file.
 		StockManager stm = configuration.getStockManager();
 		BookSetGenerator bookGen = configuration.getBookSetGenerator();
 		
 		// Get all books from bookstore.
 		List<StockBook> storeBooks = stm.getBooks();
 		
-		// Get random number of random set of books defined in the book generation class.
-		int n = random.nextInt(10) + 1;
-		Set<StockBook> randomBookSet = bookGen.nextSetOfStockBooks(n);
+		Set<StockBook> randomBookSet = bookGen.nextSetOfStockBooks(configuration.getNumBooksToAdd());
 		Set<Integer> isbnOfRandom = new HashSet<Integer>();
 
 		for (StockBook book : randomBookSet) {
@@ -141,7 +141,7 @@ public class Worker implements Callable<WorkerRunResult> {
 	 */
 	private void runFrequentStockManagerInteraction() throws BookStoreException {
 		
-		// Get stockManager and bookGenerator from configuration file.
+		// Get StockManager from configuration file.
 		StockManager stm = configuration.getStockManager();
 		
 		// Get all books from bookstore.
@@ -154,11 +154,8 @@ public class Worker implements Callable<WorkerRunResult> {
 			}
 		});
 
-		// Get random number of books to which we want the smallest number of copies.
-		int k = random.nextInt(storeBooks.size() - 1) + 1;
-
 		// Add the wanted subset of books.
-		stm.addBooks( new HashSet<StockBook>(storeBooks.subList(0, k)) );
+		stm.addBooks( new HashSet<StockBook>(storeBooks.subList(0, configuration.getNumBooksWithLeastCopies())) );
 	}
 
 	/**
@@ -168,6 +165,21 @@ public class Worker implements Callable<WorkerRunResult> {
 	 */
 	private void runFrequentBookStoreInteraction() throws BookStoreException {
 		
+		// Get BookStore from configuration file.
+		BookStore bkst = configuration.getBookStore();
+		
+		// Get random number of books to which we want the smallest number of copies.	
+		
+		List<Book> editorPicks = bkst.getEditorPicks(configuration.getNumEditorPicksToGet())
+													 .subList(0, configuration.getNumBooksToBuy());
+		
+		Set<BookCopy> booksToBuy = new HashSet<BookCopy>();
+				
+		for (Book book : editorPicks) {
+			booksToBuy.add( new BookCopy(book.getISBN(), configuration.getNumBookCopiesToBuy()) );
+		}
+
+		bkst.buyBooks( booksToBuy );
 	}
 
 }
