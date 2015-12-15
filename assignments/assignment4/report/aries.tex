@@ -4,8 +4,56 @@
 
 \section{ARIES}
 
+The ARIES recovery method starts at the most recent checkpoint. Since ARIES
+use fuzzy checkpoints, only the transaction table ({\tt TT}) and dirty page
+table ({\tt DPT}) is given, and these are empty in this case.
+
+\noindent
+The three phases proceeds as follows
+
+\noindent
+{\bf Analysis:}
+
+In this phase the log is read from checkpoint until the most recent entry in
+the log.
+\begin{enumerate}
+\item {\tt LNS: 1} - Start of checkpoint. We here look ahead to find the
+{\tt DPT} and {\tt TT}. These are found empty at {\tt LNS: 2}. The log is now
+scanned until time of crash.
+\item {\tt LNS: 3} - Add {\tt T1} as {\tt U} with LAST\_LSN set to {\tt NULL} in
+{\tt TT} and {\tt P2} to {\tt DPT}.
+\item {\tt LNS: 4} - Add {\tt P1} to {\tt DPT} and change LAST\_LSN og
+    {\tt T1} in {\tt TT} to 3.
+\item {\tt LNS: 5} - Add {\tt T2} at {\tt U} with LAST\_LSN set to {\tt NULL}
+    to {\tt TT} and {\tt P5} to {\tt DPT}.
+\item {\tt LNS: 6} - Add {\tt T3} as {\tt U} with LAST\_LSN set to {\tt NULL}
+    to {\tt TT} and {\tt P3} to {\tt DPT}.
+\item {\tt LNS: 7} - Change {\tt T3} to {\tt C} and change LAST\_LSN to 6 in {\tt TT}.
+\item {\tt LNS: 8} - Change LAST\_LSN of {\tt T2} to 5 in {\tt TT}.
+\item {\tt LNS: 9} - Change LAST\_LSN of {\tt T2} to 8 in {\tt TT}.
+\item {\tt LNS: 10} - Remove {\tt T3} from {\tt TT}.
+\end{enumerate}
+
+\noindent
+{\bf Redo:}
+
+\begin{enumerate}
+\item ...
+\end{enumerate}
+
+\noindent
+{\bf Undo:}
+
+\begin{enumerate}
+\item ...
+\end{enumerate}
+
 \subsection{Transaction state and dirty pages after analysis phase}
-\dots
+Following the above the transaction table includes
+\begin{itemize}
+\item {\tt T1} with status {\tt U} and LAST\_LSN equal to 3.
+\item {\tt T2} with status {\tt U} and LAST\_LSN equal to 8.
+\end{itemize}
 
 \subsection{The sets of winners and loser transactions}
 \dots
