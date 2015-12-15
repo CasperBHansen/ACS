@@ -1,5 +1,8 @@
 package com.acertainbookstore.client.workloads;
 
+import java.util.Set;
+
+import com.acertainbookstore.business.StockBook;
 import com.acertainbookstore.interfaces.BookStore;
 import com.acertainbookstore.interfaces.StockManager;
 
@@ -23,10 +26,10 @@ public class WorkloadConfiguration {
 	private BookSetGenerator bookSetGenerator = null;
 	private StockManager stockManager = null;
 	private BookStore bookStore = null;
-
-	public WorkloadConfiguration(BookStore bookStore, StockManager stockManager) throws Exception {
+	
+	public WorkloadConfiguration(BookStore bookStore, StockManager stockManager, Set<StockBook> bookSet) throws Exception {
 		// Create a new one so that it is not shared
-		bookSetGenerator = new BookSetGenerator();
+		bookSetGenerator = new BookSetGenerator(bookSet);
 		this.bookStore = bookStore;
 		this.stockManager = stockManager;
 	}
