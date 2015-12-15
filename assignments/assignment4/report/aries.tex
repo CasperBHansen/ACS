@@ -36,16 +36,12 @@ scanned until time of crash.
 \noindent
 {\bf Redo:}
 
-\begin{enumerate}
-\item ...
-\end{enumerate}
+int this phase, the dirty page table is used to determine the earliest LSN that needs to be redone. Since no pages have been updated (un-dirtied) all pages in the log since the checkpoint is in the {\tt DPT}, it can also therefor never happen that recLSN or page LSN is greater than the current LSN being redone. Thus all updates logged at LSNs $3,4,5,6,8,9$ are redone.
 
 \noindent
 {\bf Undo:}
 
-\begin{enumerate}
-\item ...
-\end{enumerate}
+The undo reads the transaction table and undo's action of the transactions present (the loser transaction) and adding compensation log entries (CLR) to the log.
 
 \subsection{Transaction state and dirty pages after analysis phase}
 Following the above the transaction table includes
@@ -62,17 +58,43 @@ and the dirty page table holds
 \end{itemize}
 
 \subsection{The sets of winners and loser transactions}
-\dots
+The losers are {\tt T1} and {\tt T2} and only winner is {\tt T3}.
 
 \subsection{Values for LSNs at redo phase start and undo phase end}
-\dots
+The redo phase starts at LSN 3 as this is the smallest recLSN of the {\tt DPT}. The undo phase ends at LSN 3 again because the {\tt T1} modifying {\tt P2} recLSN is present in the {\tt TT} at the start of the undo phase and must thus be undone.
 
 \subsection{Set of log records that may rewrite during redo phase}
-\dots
+As mentioned in the redo section, these are $\{3,4,5,6,8,9\}$.
 
 \subsection{Set of log records undone}
-\dots
+As mentioned in the undo section, these are $\{3,4,5,8,9\}$.
 
 \subsection{Contents of the log after recovery}
-\dots
+The log after the recovery can be seen in Table \ref{log}.
+\begin{table}[]
+\centering
+\caption{Log}
+\label{log}
+\begin{tabular}{|l|l|l|l|l|l|}
+\hline
+LSN & LAST\_LSN & TRAN\_ID & TYPE       & PAGE\_ID & undoNextLSN \\ \hline
+1   & -         & -        & begin CKPT & -        & -           \\ \hline
+2   & -         & -        & end CKPT   & -        & -           \\ \hline
+3   & NULL      & T1       & update     & P2       & -           \\ \hline
+4   & 3         & T1       & update     & P1       & -           \\ \hline
+5   & NULL      & T2       & update     & P5       & -           \\ \hline
+6   & NULL      & T3       & update     & P3       & -           \\ \hline
+7   & 6         & T3       & commit     & .        & -           \\ \hline
+8   & 5         & T2       & update     & P5       & -           \\ \hline
+9   & 8         & T2       & update     & P3       & -           \\ \hline
+10  & 6         & T3       & end        & -        & -           \\ \hline
+11  & 9         & T2       & CLR        & P3       & 8           \\ \hline
+12  & 11        & T2       & CLR        & P5       & 5           \\ \hline
+13  & 12        & T2       & CLR        & P5       & NULL        \\ \hline
+14  & 4         & T1       & CLR        & P1       & 3           \\ \hline
+15  & 14        & T1       & CLR        & P2       & NULL        \\ \hline
+\end{tabular}
+\end{table}
+
+
 
