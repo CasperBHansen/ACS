@@ -1,0 +1,14 @@
+*.class
+
+*.jar
+
+*.aux
+*.log
+*.toc
+*.out
+*.pdf
+
+*.swp
+*.classpath
+*.project
+*.DS_STORE

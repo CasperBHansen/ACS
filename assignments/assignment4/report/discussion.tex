@@ -2,80 +2,13 @@
 % DISCUSSION                                                                   %
 %==============================================================================%
 
-\section{Discussion on Concurrent Implementation}
+\section{Discussion on the Performance Measurements}
 
-\subsection{Description of implementation}
-Our implementation maintains a table of locks which binds an ISBN to an
-associated lock. In addition to this, we maintain a global lock, which acts as
-a safeguard on the lock table. Its purpose is to ensure that we only lock whole
-sets of books at a time. Obtaining write locks concurrently is therefore possible
-if and only if the sets of books do not intersect. This enforces conflict
-resolution. The read lock is more permissive since it's a shared lock. We also lock the global lock in shared mode when acquiring shared locks on the books. This ensures a write is possible while reading if it wants to modify a book not currently being read. This begs the question if it is possible to have the phantom problem in the {\tt getBooks} method. We would argue that this cannot happen since all read functions read only the books once while all the books are locked, meaning the snapshot either happens before-or-after some read. This also ensures before-or-after atomicity.
+\subsection{Setup}
+\dots
 
-In regards to testing typical concurrency problems the following tests (2 of which were given) were carried out:
-\begin{itemize}
-    \item Test 1: This first test has two threads, one trying to buy books and another attempting to add copies. We start the buying thread first in hopes it will fail to buy books, and if it fails, retry until it completes. Print statements show this is often the case. This both assert before-or-after atomicity and that dirty-writes does not happen since both operations are write operations writing to the same
-    \item Test 2: This test continuously has two threads running, one adding a fixed number of books before removing them, and another continuously checking dirty-reads is possible. If this succeeds, it also indicates before-or-after atomicity is not violated.
-    \item Test Time: This test does not work as intended. We were hoping to show that the concurrent solution is faster when performing {\tt getBooks} a fixed number of times. Our attempt is to add a number of books to the bookstore. We then measure the time how long a number of reads takes both serially and spread out across multiple threads. This does not seem to speed up the average time spend getting the books.
-    \item TestBuyTwice: This test attempts to assert that multiple buy books, where one should end up in an exception due to lack of books, does in fact end up in an exception. If a dirty-write had happened, this may not be the case.
-    \item TestEditorPicks: In this test we test {\tt getEditorPicks} and {\tt updateEditorPicks} specifically by updating and getting editor picks in seperate threads. We are looking for problems with before-or-after atomicity and dirty-reads.
-\end{itemize}
+\subsection{Plots}
+\dots
 
-\subsection{Locking protocol correctness}
-We reason that our locking protocol holds, because we lock sets of books, rather
-than acquiring individual locks as they are needed. Our implementation ensures
-that we cannot obtain a subset of locks for a given operation, without stalling
-if one or more of the locks needed cannot be acquired, if it is already in use.
-Hence any operation with intersecting sets of books must wait for the previous
-operation to finish before the next operation can proceed.
-
-Since we acquire exclusive locks when before writing, and shared locks before reading, and release said locks when done, we argue this does in fact follow a Strict 2PL protocol. In particular, we use a two-phase locking mechanism (not to be confused with the 2PL protocol) where we have a single global lock which a read (respectively write) operation first locks in shared (respectively exclusive) mode when locking the individual locks of the books used in the operation. When all books are locked, the global lock is released. we use a exclusive lock on the books we want to write to or change individually in all cases, and only release the locks when done. For reading, since we want multiple read to be possible at the same time, we use a shared lock on each individual book when wanting to read and release when done.
-
-\subsection{Deadlocks}
-Because of the way we have chosen to acquire locks in sets, rather than one by
-one, we argue that no deadlocks should be able to occur. Any reads are allowed
-to perform their operations concurrently, but once a write operation is set in
-motion we lock the table of locks, acquire all the write locks needed, and then
-release the table lock. So any subsequent read/write operation would stall at
-acquiring its locks, if the sets of entries of the former and the latter
-intersect, effectively letting the former finish before the latter is allowed
-to proceed. In short, no.
-
-\subsection{Scalability and bottlenecks}
-Definitely. As described before, because of how we've chosen to prioritise
-correctness over concurrency, our solution suffers the botteneck of intersecting
-sets not being allowed to be processed concurrently.
-One obvious bottleneck is the global locks.
-
-As an example of the bottleneck, consider the following scenario; let $T_1$ be
-a writing thread on the set $A$, let $T_2$ be another writing thread on the set
-$B$, and let $T_3$ be a writing thread on the set $C$. For the sake illustration
-of the worst-case scenario, assume that $A \cap B \neq \emptyset$ and $(A \cup B)
-\cap C = \emptyset$. As $T_1$ initiates its procedure it acquires the global lock,
-such that $T_k$, for $k \neq 1$, cannot waits for $T_1$ as it obtains the locks
-for $x \in A$. As $T_1$ releases the global lock, $T_2$ acquires the global lock,
-leaving $T_3$ to wait for $T_2$ as it acquires locks on some subset of $B$. The
-thread $T_2$ may acquire some locks, but will stall at any element of $A \cap B$,
-as that lock is already in use. Now we have any thread $T_k$, where $k \neq 1$
-being blocked by $T_1$.
-
-Consider the same scenario as the one above, but let $T_3$ gain access to the
-global lock before $T_2$. Since $A \cap C = \emptyset$ our implementation would
-allow $T_1$ and $T_3$ to perform concurrently. The bottleneck is that any sets
-that intersect, such as $A \cap B$ block further concurrent operations.
-
-This bottleneck could be alleviated by way of some more intricate checking, for
-example by checking whether or not all locks can be acquired beforehand of the
-acquisition phase. This would not block any "innocent" operations that do not
-intersect with other concurrent operations.
-
-\subsection{Overhead}
-We consider our solution to pay a lot of overhead in exchange for correctness.
-Our solution can cause halting of several operations as a consequence of only
-allowing for operations on sets of books at a time --- or more explicitly, we
-only allow lock acquisition for sets of locks. In addition to this, we introduce
-overhead by locking access to any locks every time to want to acquire a set of
-locks for a write operation, whereas a more refined solution may allow threads
-to acquire locks at the same time. Such a solution would be more involved, however,
-and we deliberately chose not to follow such a stragedy for the sake of simplicity,
-correctness and time constraints.
+\subsection{Reliability}
+\dots
