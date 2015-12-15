@@ -92,6 +92,32 @@ public class CertainWorkload {
 	 */
 	public static void reportMetric(List<WorkerRunResult> workerRunResults) {
 		// TODO: You should aggregate metrics and output them for plotting here
+		
+		int successfulInteractions = 0;
+		int totalRuns = 0;
+		long elapsedTimeInNanoSecs = 0;
+		int successfulFrequentBookStoreInteractionRuns = 0;
+		int totalFrequentBookStoreInteractionRuns = 0;
+		
+		for (WorkerRunResult result : workerRunResults) {
+			successfulInteractions += result.getSuccessfulInteractions();
+			totalRuns += result.getTotalRuns();
+			elapsedTimeInNanoSecs += result.getElapsedTimeInNanoSecs();
+			successfulFrequentBookStoreInteractionRuns += result.getSuccessfulFrequentBookStoreInteractionRuns();
+			totalFrequentBookStoreInteractionRuns += result.getTotalFrequentBookStoreInteractionRuns();
+		}
+		
+		long aggregateTroughput = (successfulInteractions / elapsedTimeInNanoSecs);
+		
+		System.out.println("Successful Interactions: " + successfulInteractions);
+		System.out.println("Successful Frequent Bookstore Interaction Runs: " + successfulFrequentBookStoreInteractionRuns);
+		
+		System.out.println("Total runs: " + totalRuns);
+		System.out.println("Total Frequent Bookstore Interaction Runs: " + totalFrequentBookStoreInteractionRuns);
+		
+		System.out.println("Elapsed Time: " + elapsedTimeInNanoSecs + "ns");
+		
+		System.out.println("Aggregate Throughput: " + aggregateTroughput);
 	}
 
 	/**
@@ -102,8 +128,12 @@ public class CertainWorkload {
 	 */
 	public static void initializeBookStoreData(BookStore bookStore,
 			StockManager stockManager) throws BookStoreException {
-
+		
+		// why pass the BookStore, it only provides an interface for customers?
+		
 		// TODO: You should initialize data for your bookstore here
-
+		
+		// discuss: generate random books? Perhaps? Or a fixed set? Benefits in relation to report?
+		
 	}
 }
