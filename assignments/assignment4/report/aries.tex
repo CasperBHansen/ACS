@@ -22,9 +22,13 @@ the log.
     \begin{tabular}{|l|l|l|l|l|}
         \hline
         {\bf LNS} & {\bf Action}   & {\bf Tx ID}  & {\bf Status}  & {\bf Last LSN} \\ \hline
-        3 & Add     & T1 & U & 3 % wrong last
-        4 & Alter   & T1 & U & 4
-
+        3 & Add     & T1 & U & 3 \\ \hline % wrong last
+        4 & Alter   & T1 & U & 4 \\ \hline % also probably wrong last maybe
+        5 & Add     & T2 & U & 5 \\ \hline
+        6 & Add     & T3 & U & 6 \\ \hline
+        7 & Alter   & T3 & C & 7 \\ \hline
+        8 & Alter   & T2 & U & 8 \\ \hline
+        9 & Alter   & T2 & U & 9 \\ \hline
     \end{tabular}
     \caption{Transaction Table Changes}
     \label{fig:tt}
