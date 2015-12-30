@@ -61,7 +61,9 @@ crash occurs.
 
 \end{multicols}
 
-Note: We acknowledge that you say that {\it ``both''} transactions (There's three?) have some wrong {\tt Last\_LSN}, but we have not changed them. In accordance with the textbook, the transaction tables {\tt Last\_LSN} field contains the log LSN of the most recent log entry for the given transaction. This is also enforced in the textbook description of the analysis phases wherein it is stated that the {Last\_LSN} is set to the current LSN when reading the log from checkpoint to time of crash.\\
+Note: We acknowledge that you say that {\it ``both''} transactions (There's three?) have some wrong {\tt Last\_LSN}, but we have not changed them. In accordance with the textbook, the transaction tables {\tt Last\_LSN} field contains the log LSN of the most recent log entry for the given transaction. This is also enforced in the textbook description of the analysis phases wherein it is stated that the {Last\_LSN} is set to the current LSN when reading the log from checkpoint to time of crash. To prevent
+any further confusion, please note that the tables presented reflect changes, and not
+the tables themselves.\\
 
 \iffalse
 \begin{enumerate}
@@ -93,6 +95,39 @@ In this phase, the dirty page table is used to determine the earliest LSN that n
 The undo reads the transaction table and undo's action of the transactions present (the loser transaction) and adding compensation log entries (CLR) to the log.
 
 \subsection{Transaction state and dirty pages after analysis phase}
+
+\begin{multicols}{2}
+\begin{figure}[H]
+    \centering
+    \begin{tabular}{|l|l|l|}
+        \hline
+        {\bf TID} & {\bf lastLSN} & {\bf State} \\ \hline
+        {\tt T1} & 3 & {\tt U} \\ \hline
+        {\tt T2} & 8 & {\tt U} \\ \hline
+    \end{tabular}
+    \label{table:anal-phase-tt} % nifty short-hand
+    \caption{Transaction table after analysis phase}
+\end{figure}
+
+\colbreak
+
+\begin{figure}[H]
+    \centering
+    \begin{tabular}{|l|l|}
+        \hline
+        {\bf PID} & {\bf recLSN} \\ \hline
+        {\tt P1} & 4 \\ \hline
+        {\tt P2} & 3 \\ \hline
+        {\tt P3} & 6 \\ \hline
+        {\tt P5} & 5 \\ \hline
+    \end{tabular}
+    \label{table:anal-phase-dpt} % nifty short-hand
+    \caption{Dirty page table after analysis phase}
+\end{figure}
+
+\end{multicols}
+
+\iffalse
 Following the above the transaction table includes
 \begin{itemize}
 \item {\tt T1} with status {\tt U} and LAST\_LSN equal to 3.
@@ -105,6 +140,7 @@ and the dirty page table holds
 \item {\tt P3} with recLSN equal to 6.
 \item {\tt P5} with recLSN equal to 5.
 \end{itemize}
+\fi
 
 \subsection{The sets of winners and loser transactions}
 The losers are {\tt T1} and {\tt T2}, because they are both in the transaction

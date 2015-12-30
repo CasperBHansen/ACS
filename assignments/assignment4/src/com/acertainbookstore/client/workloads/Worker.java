@@ -150,7 +150,18 @@ public class Worker implements Callable<WorkerRunResult> {
 		// Sort books on number of copies
 		Collections.sort(storeBooks, new Comparator<StockBook>() {
 			public int compare(StockBook a, StockBook b) {
-				return a.getNumCopies() <= b.getNumCopies() ? 1 : -1;
+
+                if (a.getNumCopies() < b.getNumCopies()) {
+                    return 1;
+                }
+
+                if (a.getNumCopies() > b.getNumCopies()) {
+                    return -1;
+                }
+
+                return 0;
+
+                // return (a.getNumCopies() <= b.getNumCopies()) ? 1 : -1;
 			}
 		});
 
