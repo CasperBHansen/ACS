@@ -84,10 +84,12 @@ LSN & LAST\_LSN & TRAN\_ID & TYPE       & PAGE\_ID & undoNextLSN \\ \hline
 4   & 3         & T1       & update     & P1       & -           \\ \hline
 5   & NULL      & T2       & update     & P5       & -           \\ \hline
 6   & NULL      & T3       & update     & P3       & -           \\ \hline
-7   & 6         & T3       & commit     & .        & -           \\ \hline
+7   & 6         & T3       & commit     & -        & -           \\ \hline
 8   & 5         & T2       & update     & P5       & -           \\ \hline
 9   & 8         & T2       & update     & P3       & -           \\ \hline
-10  & 6         & T3       & end        & -        & -           \\ \hline
+10  & 7         & T3       & end        & -        & -           \\ \hline
+11  &           & T2       & abort      &          &             \\ \hline
+12  &           & T1       & abort      &          &             \\ \hline
 11  & 9         & T2       & CLR        & P3       & 8           \\ \hline
 12  & 11        & T2       & CLR        & P5       & 5           \\ \hline
 13  & 12        & T2       & CLR        & P5       & NULL        \\ \hline
