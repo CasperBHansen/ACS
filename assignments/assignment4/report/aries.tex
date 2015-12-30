@@ -17,23 +17,51 @@ The three phases proceeds as follows
 In this phase the log is read from checkpoint until the most recent entry in
 the log.
 
+\begin{multicols}{2}
+
+{\tt LSN 1} is the starting checking. As we look ahead, we find the {\tt TT} and
+{\tt DPT} to be empty at {\tt LNS 2}, so we scan the log until the time of the
+crash occurs.
+
+\begin{figure}[H]
+    \centering
+    \begin{tabular}{|l|l|l|l|}
+        \hline
+        {\bf LSN} & {\bf Action} & {\bf Page ID} & {\bf recLSN} \\ \hline
+        3 & Add     & P2 & 3  \\ \hline
+        4 & Add     & P1 & 4  \\ \hline
+        5 & Add     & P5 & 5  \\ \hline
+        6 & Add     & P3 & 6  \\ \hline
+    \end{tabular}
+    \caption{Dirty page table changes}
+    \label{fig:dpt}
+\end{figure}
+
+\colbreak
+
 \begin{figure}[H]
     \centering
     \begin{tabular}{|l|l|l|l|l|}
         \hline
-        {\bf LNS} & {\bf Action}   & {\bf Tx ID}  & {\bf Status}  & {\bf Last LSN} \\ \hline
-        3 & Add     & T1 & U & 3 \\ \hline % wrong last
-        4 & Alter   & T1 & U & 4 \\ \hline % also probably wrong last maybe
-        5 & Add     & T2 & U & 5 \\ \hline
-        6 & Add     & T3 & U & 6 \\ \hline
-        7 & Alter   & T3 & C & 7 \\ \hline
-        8 & Alter   & T2 & U & 8 \\ \hline
-        9 & Alter   & T2 & U & 9 \\ \hline
+        {\bf LSN} & {\bf Action}   & {\bf TID}  & {\bf State}  & {\bf lastLSN} \\ \hline
+        3  & Add     & T1 & U & 3 \\ \hline % wrong last
+        \rowcolor{awesomecolor}
+        4  & Alter   & T1 & U & 4 \\ \hline % also probably wrong last maybe
+        5  & Add     & T2 & U & 5 \\ \hline
+        6  & Add     & T3 & U & 6 \\ \hline
+        7  & Alter   & T3 & C & 7 \\ \hline
+        8  & Alter   & T2 & U & 8 \\ \hline
+        \rowcolor{awesomecolor}
+        9  & Alter   & T2 & U & 9 \\ \hline
+        10 & Remove  & T3 & - & - \\ \hline
     \end{tabular}
-    \caption{Transaction Table Changes}
+    \caption{Transaction table changes (remaining entries are colored)}
     \label{fig:tt}
 \end{figure}
 
+\end{multicols}
+
+\iffalse
 \begin{enumerate}
 \item {\tt LNS: 1} - Start of checkpoint. We here look ahead to find the
 {\tt DPT} and {\tt TT}. These are found empty at {\tt LNS: 2}. The log is now
@@ -50,6 +78,7 @@ scanned until time of crash.
 \item {\tt LNS: 9} - Change LAST\_LSN of {\tt T2} to 9 in {\tt TT}.
 \item {\tt LNS: 10} - Remove {\tt T3} from {\tt TT}.
 \end{enumerate}
+\fi
 
 \noindent
 {\bf Redo:}
@@ -76,7 +105,9 @@ and the dirty page table holds
 \end{itemize}
 
 \subsection{The sets of winners and loser transactions}
-The losers are {\tt T1} and {\tt T2} and only winner is {\tt T3}.
+The losers are {\tt T1} and {\tt T2}, because they are both in the transaction
+table at the time of the analysis phase --- meaning they have to be undone.
+Thus the only winner is {\tt T3}.
 
 \subsection{Values for LSNs at redo phase start and undo phase end}
 The redo phase starts at LSN 3 as this is the smallest recLSN of the {\tt DPT}. The undo phase ends at LSN 3 again because the {\tt T1} modifying {\tt P2} recLSN is present in the {\tt TT} at the start of the undo phase and must thus be undone.
