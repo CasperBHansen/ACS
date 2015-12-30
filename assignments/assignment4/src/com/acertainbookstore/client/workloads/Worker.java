@@ -44,6 +44,7 @@ public class Worker implements Callable<WorkerRunResult> {
 	 * @return
 	 */
 	private boolean runInteraction(float chooseInteraction) {
+		System.out.println("Worker::runInteraction::CALLED - thread" + Thread.currentThread().getName());
 		try {
 			if (chooseInteraction < configuration
 					.getPercentRareStockManagerInteraction()) {
@@ -59,7 +60,9 @@ public class Worker implements Callable<WorkerRunResult> {
 		} catch (BookStoreException ex) {
 			return false;
 		}
+		System.out.println("Worker::runInteraction::FINISHED - thread" + Thread.currentThread().getName());
 		return true;
+
 	}
 
 	/**
@@ -67,6 +70,7 @@ public class Worker implements Callable<WorkerRunResult> {
 	 * and return result in the end
 	 */
 	public WorkerRunResult call() throws Exception {
+		System.out.println("Worker::call::CALLED - thread" + Thread.currentThread().getName());
 		int count = 1;
 		long startTimeInNanoSecs = 0;
 		long endTimeInNanoSecs = 0;
@@ -96,6 +100,7 @@ public class Worker implements Callable<WorkerRunResult> {
 		}
 		endTimeInNanoSecs = System.nanoTime();
 		timeForRunsInNanoSecs += (endTimeInNanoSecs - startTimeInNanoSecs);
+		System.out.println("Worker::call::FINISHED - thread" + Thread.currentThread().getName());
 		return new WorkerRunResult(successfulInteractions,
 				timeForRunsInNanoSecs, configuration.getNumActualRuns(),
 				numSuccessfulFrequentBookStoreInteraction,
@@ -108,6 +113,7 @@ public class Worker implements Callable<WorkerRunResult> {
 	 * @throws BookStoreException
 	 */
 	private void runRareStockManagerInteraction() throws BookStoreException {
+		System.out.println("Worker::runRareStockManagerInteraction::CALLED - thread" + Thread.currentThread().getName());
 
 		// Get StockManager and BookSetGenerator from configuration file.
 		StockManager stm = configuration.getStockManager();
@@ -144,6 +150,7 @@ public class Worker implements Callable<WorkerRunResult> {
 			}
 		}
 		stm.addBooks(booksNotFound);
+		System.out.println("Worker::runRareStockManagerInteraction::FINISHED - thread" + Thread.currentThread().getName());
 	}
 
 	/**
@@ -152,6 +159,7 @@ public class Worker implements Callable<WorkerRunResult> {
 	 * @throws BookStoreException
 	 */
 	private void runFrequentStockManagerInteraction() throws BookStoreException {
+		System.out.println("Worker::runFrequentStockManagerInteraction::CALLED - thread" + Thread.currentThread().getName());
 
 		// Get StockManager from configuration file.
 		StockManager stm = configuration.getStockManager();
@@ -187,6 +195,7 @@ public class Worker implements Callable<WorkerRunResult> {
 
 		// Add the wanted subset of books.
 		stm.addBooks( new HashSet<StockBook>(storeBooks.subList(0, configuration.getNumBooksWithLeastCopies())) );
+		System.out.println("Worker::runFrequentStockManagerInteraction::FINISHED - thread" + Thread.currentThread().getName());
 	}
 
 	/**
@@ -195,6 +204,7 @@ public class Worker implements Callable<WorkerRunResult> {
 	 * @throws BookStoreException
 	 */
 	private void runFrequentBookStoreInteraction() throws BookStoreException {
+		System.out.println("Worker::runFrequentBookStoreInteraction::CALLED - thread" + Thread.currentThread().getName());
 
 		// Get BookStore from configuration file.
 		BookStore bkst = configuration.getBookStore();
@@ -215,6 +225,7 @@ public class Worker implements Callable<WorkerRunResult> {
 		}
 
 		bkst.buyBooks( booksToBuy );
+		System.out.println("Worker::runFrequentBookStoreInteraction::FINISHED - thread" + Thread.currentThread().getName());
 	}
 
 }

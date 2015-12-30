@@ -101,7 +101,7 @@ public class CertainWorkload {
 			runResults.add(exec.submit(workerTask));
 		}
 
-		System.out.println("Main here 8");
+		System.out.println("Main here 8 - " + Thread.currentThread().getName());
 
 		// Get the results from the threads using the futures returned
 		for (Future<WorkerRunResult> futureRunResult : runResults) {
