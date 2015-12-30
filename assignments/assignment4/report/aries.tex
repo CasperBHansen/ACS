@@ -70,11 +70,10 @@ As mentioned in the redo section, these are $\{3,4,5,6,8,9\}$.
 As mentioned in the undo section, these are $\{3,4,5,8,9\}$.
 
 \subsection{Contents of the log after recovery}
-The log after the recovery can be seen in Table \ref{log}.
-\begin{table}[]
+The log after the recovery can be seen in Table \ref{fig:log}.
+
+\begin{figure}[H]
 \centering
-\caption{Log}
-\label{log}
 \begin{tabular}{|l|l|l|l|l|l|}
 \hline
 LSN & LAST\_LSN & TRAN\_ID & TYPE       & PAGE\_ID & undoNextLSN \\ \hline
@@ -89,8 +88,8 @@ LSN & LAST\_LSN & TRAN\_ID & TYPE       & PAGE\_ID & undoNextLSN \\ \hline
 9   & 8         & T2       & UPDATE     & P3       & -           \\ \hline
 10  & 7         & T3       & END        & -        & -           \\ \hline
 *   & *         & *        & *CRASH*    & *        & *           \\ \hline
-11  & 9         & T2       & ABORT      &          &             \\ \hline
-12  & 4         & T1       & ABORT      &          &             \\ \hline
+11  & 9         & T2       & ABORT      & -        & -           \\ \hline
+12  & 4         & T1       & ABORT      & -        & -           \\ \hline
 13  & 11        & T2       & CLR        & P3       & 8           \\ \hline
 14  & 13        & T2       & CLR        & P5       & 5           \\ \hline
 15  & 14        & T2       & CLR        & P5       & NULL        \\ \hline
@@ -99,7 +98,8 @@ LSN & LAST\_LSN & TRAN\_ID & TYPE       & PAGE\_ID & undoNextLSN \\ \hline
 18  & 17        & T1       & CLR        & P2       & NULL        \\ \hline
 19  & 18        & T1       & END        & -        & -           \\ \hline
 \end{tabular}
-\end{table}
-
+\caption{Log}
+\label{fig:log}
+\end{figure}
 
 
