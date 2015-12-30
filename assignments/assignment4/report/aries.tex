@@ -78,23 +78,26 @@ The log after the recovery can be seen in Table \ref{log}.
 \begin{tabular}{|l|l|l|l|l|l|}
 \hline
 LSN & LAST\_LSN & TRAN\_ID & TYPE       & PAGE\_ID & undoNextLSN \\ \hline
-1   & -         & -        & begin CKPT & -        & -           \\ \hline
-2   & -         & -        & end CKPT   & -        & -           \\ \hline
-3   & NULL      & T1       & update     & P2       & -           \\ \hline
-4   & 3         & T1       & update     & P1       & -           \\ \hline
-5   & NULL      & T2       & update     & P5       & -           \\ \hline
-6   & NULL      & T3       & update     & P3       & -           \\ \hline
-7   & 6         & T3       & commit     & -        & -           \\ \hline
-8   & 5         & T2       & update     & P5       & -           \\ \hline
-9   & 8         & T2       & update     & P3       & -           \\ \hline
-10  & 7         & T3       & end        & -        & -           \\ \hline
-11  &           & T2       & abort      &          &             \\ \hline
-12  &           & T1       & abort      &          &             \\ \hline
-11  & 9         & T2       & CLR        & P3       & 8           \\ \hline
-12  & 11        & T2       & CLR        & P5       & 5           \\ \hline
-13  & 12        & T2       & CLR        & P5       & NULL        \\ \hline
-14  & 4         & T1       & CLR        & P1       & 3           \\ \hline
-15  & 14        & T1       & CLR        & P2       & NULL        \\ \hline
+1   & -         & -        & BEGIN CKPT & -        & -           \\ \hline
+2   & -         & -        & END CKPT   & -        & -           \\ \hline
+3   & NULL      & T1       & UPDATE     & P2       & -           \\ \hline
+4   & 3         & T1       & UPDATE     & P1       & -           \\ \hline
+5   & NULL      & T2       & UPDATE     & P5       & -           \\ \hline
+6   & NULL      & T3       & UPDATE     & P3       & -           \\ \hline
+7   & 6         & T3       & COMMIT     & -        & -           \\ \hline
+8   & 5         & T2       & UPDATE     & P5       & -           \\ \hline
+9   & 8         & T2       & UPDATE     & P3       & -           \\ \hline
+10  & 7         & T3       & END        & -        & -           \\ \hline
+*   & *         & *        & *CRASH*    & *        & *           \\ \hline
+11  & 9         & T2       & ABORT      &          &             \\ \hline
+12  & 4         & T1       & ABORT      &          &             \\ \hline
+13  & 11        & T2       & CLR        & P3       & 8           \\ \hline
+14  & 13        & T2       & CLR        & P5       & 5           \\ \hline
+15  & 14        & T2       & CLR        & P5       & NULL        \\ \hline
+16  & 15        & T2       & END        & -        & -           \\ \hline
+17  & 12        & T1       & CLR        & P1       & 3           \\ \hline
+18  & 17        & T1       & CLR        & P2       & NULL        \\ \hline
+19  & 18        & T1       & END        & -        & -           \\ \hline
 \end{tabular}
 \end{table}
 
