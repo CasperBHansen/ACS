@@ -61,6 +61,8 @@ crash occurs.
 
 \end{multicols}
 
+Note: We acknowledge that you say that {\it ``both''} transactions (There's three?) have some wrong {\tt Last\_LSN}, but we have not changed them. In accordance with the textbook, the transaction tables {\tt Last\_LSN} field contains the log LSN of the most recent log entry for the given transaction. This is also enforced in the textbook description of the analysis phases wherein it is stated that the {Last\_LSN} is set to the current LSN when reading the log from checkpoint to time of crash.\\
+
 \iffalse
 \begin{enumerate}
 \item {\tt LNS: 1} - Start of checkpoint. We here look ahead to find the
@@ -83,7 +85,7 @@ scanned until time of crash.
 \noindent
 {\bf Redo:}
 
-int this phase, the dirty page table is used to determine the earliest LSN that needs to be redone. Since no pages have been updated (un-dirtied) all pages in the log since the checkpoint is in the {\tt DPT}, it can also therefor never happen that recLSN or page LSN is greater than the current LSN being redone. Thus all updates logged at LSNs $3,4,5,6,8,9$ are redone.
+In this phase, the dirty page table is used to determine the earliest LSN that needs to be redone. Since no pages have been updated (un-dirtied) all pages in the log since the checkpoint is in the {\tt DPT}, it can also therefor never happen that recLSN or page LSN is greater than the current LSN being redone. Thus all updates logged at LSNs $3,4,5,6,8,9$ are redone.
 
 \noindent
 {\bf Undo:}
