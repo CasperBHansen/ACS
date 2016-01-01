@@ -165,7 +165,7 @@ public class Worker implements Callable<WorkerRunResult> {
 		});
 
 		// Add the wanted subset of books.
-		stm.addBooks( new HashSet<StockBook>(storeBooks.subList(0, configuration.getNumBooksWithLeastCopies())) );
+		//stm.addBooks( new HashSet<StockBook>(storeBooks.subList(0, configuration.getNumBooksWithLeastCopies())) );
 	}
 
 	/**
