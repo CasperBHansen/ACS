@@ -133,7 +133,7 @@ public class Worker implements Callable<WorkerRunResult> {
 				booksNotFound.add(book);
 			}
 		}
-		stm.addBooks(booksNotFound);
+		//stm.addBooks(booksNotFound);
 	}
 
 	/**

@@ -16,12 +16,12 @@ import com.acertainbookstore.business.ImmutableStockBook;
  * class
  */
 public class BookSetGenerator {
-	
+
 	private static int bookStoreSize = 100;
 
 	private static SecureRandom random = new SecureRandom();
 	private static Integer NEXT_ISBN = 1; // this is definitively the next isbn :P
-	
+
     private Set<StockBook> books = new HashSet<StockBook>();
 
     /**
@@ -35,14 +35,14 @@ public class BookSetGenerator {
 
 	/**
 	 * Returns num randomly selected isbns from the input set
-	 * 
+	 *
 	 * @param num
 	 * @return
 	 */
 	public Set<Integer> sampleFromSetOfISBNs(Set<Integer> isbns, int num) {
 		Set<Integer> selected = new HashSet<Integer>();
 		Set<Integer> offsets = generateRandomOffsets(num, 0, isbns.size() - 1);
-		
+
 		// select the isbns from the set, given the random offsets
 		Integer offset = 0;
 		for (Integer isbn : isbns) {
@@ -51,20 +51,26 @@ public class BookSetGenerator {
 			}
 			++offset;
 		}
-		
+
 		return selected;
+	}
+
+	public Set<StockBook> getRandomSetOfStockBooks() {
+		int begin = (int) Math.floor(books.size()*0.25f);
+		int end = (int) Math.floor(books.size()*0.75f);
+		return nextSetOfStockBooks(randomInt(begin, end));
 	}
 
 	/**
 	 * Return num stock books. For now return an ImmutableStockBook
-	 * 
+	 *
 	 * @param num
 	 * @return
 	 */
 	public Set<StockBook> nextSetOfStockBooks(int num) {
 		Set<StockBook> bookSet = new HashSet<StockBook>();
 		Set<Integer> offsets = generateRandomOffsets(num, 0, books.size() - 1);
-		
+
 		Integer offset = 0;
 		for (StockBook book : books) {
 			if (offsets.contains(offset)) {
@@ -75,7 +81,7 @@ public class BookSetGenerator {
 
 		return bookSet;
 	}
-	
+
 	/**
 	 * Helper method which generates a random set of unique offsets
 	 */
@@ -85,9 +91,9 @@ public class BookSetGenerator {
         num = num > bound ? bound : num;
 
         /* bad way :P
-        
+
 		Set<Integer> offsets = new HashSet<Integer>();
-		
+
 		Integer offset = ThreadLocalRandom.current().nextInt(0, bound);
 		for (int i = 0; i < num; ++i) {
 			while (offsets.contains(offset)) {

@@ -3,6 +3,8 @@
  */
 package com.acertainbookstore.client.workloads;
 
+import java.lang.Math;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -139,10 +141,10 @@ public class CertainWorkload {
 			StockManager stockManager,
 			BookSetGenerator bookSetGenerator) throws BookStoreException {
 
-        Set<StockBook> booksToAdd = bookSetGenerator.nextSetOfStockBooks(Integer.MAX_VALUE);
+        Set<StockBook> booksToAdd = bookSetGenerator.getRandomSetOfStockBooks();
 
         // make sure we're working on a clean store
-		stockManager.removeAllBooks(); 
+		stockManager.removeAllBooks();
 		stockManager.addBooks(booksToAdd);
 
 		// possible assertion test here, that stores match up.
