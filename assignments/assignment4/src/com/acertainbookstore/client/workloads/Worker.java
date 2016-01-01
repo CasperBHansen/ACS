@@ -57,6 +57,7 @@ public class Worker implements Callable<WorkerRunResult> {
 				numSuccessfulFrequentBookStoreInteraction++;
 			}
 		} catch (BookStoreException ex) {
+			System.out.println("E: Worker::runInteraction: Got BookStoreException: " + ex.getMessage());
 			return false;
 		}
 		return true;
@@ -143,7 +144,7 @@ public class Worker implements Callable<WorkerRunResult> {
 	private void runFrequentStockManagerInteraction() throws BookStoreException {
 		// Get StockManager from configuration file.
 		StockManager stm = configuration.getStockManager();
-        
+
 		// Get all books from bookstore.
 		List<StockBook> storeBooks = stm.getBooks();
 
