@@ -11,11 +11,21 @@ show anything meaningful. In particular, we generate one big set of books and
 only include a subset of these in the bookstore from the beginning. As a
 design choice, we have abstracted out generation of books to the
 {\tt BookSetGenerator} which we only make a single instance of passed by
-reference to the workers. We feel this should in fact be singleton. This has
+reference to the {\tt WorkloadConfiguration} instances. We feel this should in
+fact be singleton . This has
 not been done for the {\tt WorkloadConfiguration} even though we feel the same
 applies. Note also that we have a remaining error which causes certain ISBN
 numbers to be duplicated. We will discuss the potential effects on the test
 results separately.
+
+One problem with the current benchmarking design is how we simply measure the
+entire time used by a stock manager or client as opposed to just the time of
+the server call. Latency for instance, should just include the time of a call
+to the server, and not the work done locally at the stock
+manager or client. In our case we chose to sort all the books in the bookstore
+with respect to the number of copies to find the $k$ books with the least
+copies. This creates a dominating overhead (especially in Java) when looking
+at a bookstore with a large supply of books (10000 for instance).
 
 \subsection{Plots}
 \dots
@@ -31,11 +41,16 @@ the metric is reliable, as the increase in threads allows for faster and more
 frequent restocking that in turn decreases the amount of sales misses, which
 means that throughput has increased proportionally with the amount of threads.
 
-We do, however, believe that the metric suffers some loss of what we would
-consider critical data. While the metric is oriented toward measuring supply
-and demand, it fails to capture ---perhaps infrequent, but highly important---
-instances in which the system does not perform well. In order to do so, one
-could alter the metric slightly to be more versatile in its description of the
-system, by way of a distribution or histogram --- that is, the distribution of
-outcomes per time interval. This way we can make more solid arguments about the
-system and its performance overall, rather than mere successes per time interval.
+We do, however, believe that the metric does not capture some potential
+crucial information. And {\it average} or {\it aggregate} projects all
+information into a single value that does not capture the overall distribution
+of the measured performance. Instead of simply aggregating or averaging the
+individual times of the workers, we can construct a histogram of the data and
+simply report this instead, as it convey much better data. For instance, we
+could answer questions like, are the times normally distributed as one would
+perhaps theoretically assume, or are there groups of clients with low and a
+group with high latency, whereto the average would tell us little. This way we
+can make more solid arguments about the system and its performance overall,
+rather than mere successes per time interval. Alternatively. we could report
+the suggested metric, as well as minimum, maximum and spread of the latency
+and throughput.
