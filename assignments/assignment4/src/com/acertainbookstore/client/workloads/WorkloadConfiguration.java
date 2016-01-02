@@ -7,16 +7,16 @@ import com.acertainbookstore.interfaces.BookStore;
 import com.acertainbookstore.interfaces.StockManager;
 
 /**
- * 
+ *
  * WorkloadConfiguration represents the configuration parameters to be used by
  * Workers class for running the workloads
- * 
+ *
  */
 public class WorkloadConfiguration {
 	private int numBooksToBuy = 5;
 	private int numBookCopiesToBuy = 1;
 	private int numEditorPicksToGet = 10;
-	private int numAddCopies = numBookCopiesToBuy * 10;
+	private int numAddCopies = numBookCopiesToBuy * 5;
 	private int numBooksToAdd = numBooksToBuy * 8;
 	private int numBooksWithLeastCopies = 5;
 	private int warmUpRuns = 100;
@@ -26,7 +26,7 @@ public class WorkloadConfiguration {
 	private BookSetGenerator bookSetGenerator = null;
 	private StockManager stockManager = null;
 	private BookStore bookStore = null;
-	
+
 	public WorkloadConfiguration(BookStore bookStore, StockManager stockManager, BookSetGenerator bookSetGenerator) throws Exception {
 
 		// Create a new one so that it is not shared
@@ -66,7 +66,7 @@ public class WorkloadConfiguration {
 	public void setNumBooksWithLeastCopies(int numBooksWithLeastCopies) {
 		this.numBooksWithLeastCopies = numBooksWithLeastCopies;
 	}
-	
+
 	public StockManager getStockManager() {
 		return stockManager;
 	}

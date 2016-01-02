@@ -56,8 +56,8 @@ public class BookSetGenerator {
 	}
 
 	public Set<StockBook> getRandomSetOfStockBooks() {
-		int begin = (int) Math.floor(books.size()*0.25f);
-		int end = (int) Math.floor(books.size()*0.75f);
+		int begin = (int) Math.floor(books.size()*0.1f);
+		int end = (int) Math.floor(books.size()*0.15f);
 		return nextSetOfStockBooks(randomInt(begin, end));
 	}
 
@@ -125,7 +125,7 @@ public class BookSetGenerator {
 		String title = randomString();
 		String author = randomString();
 		float price = randomFloat(5, 100);
-		int copies = randomInt(10, 100);
+		int copies = randomInt(5, 50);
 		long misses = (long)randomInt(0, 10);
 		long rated = (long)randomInt(0, 10);
 		long rating = (long)0;

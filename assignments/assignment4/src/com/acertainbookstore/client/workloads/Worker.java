@@ -57,7 +57,7 @@ public class Worker implements Callable<WorkerRunResult> {
 				numSuccessfulFrequentBookStoreInteraction++;
 			}
 		} catch (BookStoreException ex) {
-			// System.out.println("E: Worker::runInteraction: Got BookStoreException: " + ex.getMessage());
+			System.out.println("E: Worker::runInteraction: Got BookStoreException: " + ex.getMessage());
 			return false;
 		}
 		return true;
@@ -119,21 +119,21 @@ public class Worker implements Callable<WorkerRunResult> {
 
 		Set<StockBook> randomBookSet = bookGen.nextSetOfStockBooks(configuration.getNumBooksToAdd());
 
-		Set<Integer> isbnOfRandom = new HashSet<Integer>();
+		Set<Integer> isbnOfBookStoreBooks = new HashSet<Integer>();
 
-		for (StockBook book : randomBookSet) {
-			isbnOfRandom.add(book.getISBN());
+		for (StockBook book : storeBooks) {
+			isbnOfBookStoreBooks.add(book.getISBN());
 		}
 
 		Set<StockBook> booksNotFound = new HashSet<StockBook>();
 
 		// Check if books are in the bookstore.
-		for (StockBook book : storeBooks) {
-			if (!isbnOfRandom.contains(book.getISBN())) {
+		for (StockBook book : randomBookSet) {
+			if (!isbnOfBookStoreBooks.contains(book.getISBN())) {
 				booksNotFound.add(book);
 			}
 		}
-		
+
         stm.addBooks(booksNotFound);
 	}
 
@@ -153,11 +153,11 @@ public class Worker implements Callable<WorkerRunResult> {
 		Collections.sort(storeBooks, new Comparator<StockBook>() {
 			public int compare(StockBook a, StockBook b) {
 
-                if (a.getNumCopies() < b.getNumCopies()) {
+                if (a.getNumCopies() > b.getNumCopies()) {
                     return 1;
                 }
 
-                if (a.getNumCopies() > b.getNumCopies()) {
+                if (a.getNumCopies() < b.getNumCopies()) {
                     return -1;
                 }
 
