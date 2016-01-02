@@ -38,9 +38,9 @@ public class CertainWorkload {
 	 */
 	public static void main(String[] args) throws Exception {
 
-		int numConcurrentWorkloadThreads = 10;
+		int numConcurrentWorkloadThreads = 9;
 		String serverAddress = "http://localhost:8081";
-		boolean localTest = true;
+		boolean localTest = false;
 		List<WorkerRunResult> workerRunResults = new ArrayList<WorkerRunResult>();
 		List<Future<WorkerRunResult>> runResults = new ArrayList<Future<WorkerRunResult>>();
 
@@ -120,7 +120,7 @@ public class CertainWorkload {
 			elapsedTimeInNanoSecs += result.getElapsedTimeInNanoSecs();
 			successfulFrequentBookStoreInteractionRuns += result.getSuccessfulFrequentBookStoreInteractionRuns();
 			totalFrequentBookStoreInteractionRuns += result.getTotalFrequentBookStoreInteractionRuns();
-    
+
             throughPut = (double)result.getSuccessfulFrequentBookStoreInteractionRuns() / (double)result.getElapsedTimeInNanoSecs();
             aggThroughput += throughPut;
             avgLatency += 1f / throughPut;
@@ -136,7 +136,6 @@ public class CertainWorkload {
 
 		System.out.println("Aggregate Throughput: " + aggThroughput);
 		System.out.println("Average Latency: " + avgLatency);
-		System.out.println("Aggregate Latency: " + 1f / aggThroughput);
 	}
 
 	/**

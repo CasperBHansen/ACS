@@ -57,7 +57,7 @@ public class Worker implements Callable<WorkerRunResult> {
 				numSuccessfulFrequentBookStoreInteraction++;
 			}
 		} catch (BookStoreException ex) {
-			System.out.println("E: Worker::runInteraction: Got BookStoreException: " + ex.getMessage());
+			//System.out.println("E: Worker::runInteraction: Got BookStoreException: " + ex.getMessage());
 			return false;
 		}
 		return true;
