@@ -133,7 +133,8 @@ public class Worker implements Callable<WorkerRunResult> {
 				booksNotFound.add(book);
 			}
 		}
-		//stm.addBooks(booksNotFound);
+		
+        stm.addBooks(booksNotFound);
 	}
 
 	/**
@@ -164,8 +165,15 @@ public class Worker implements Callable<WorkerRunResult> {
 			}
 		});
 
+        Set<StockBook> booksToAddCopiesTo = new HashSet<StockBook>(storeBooks.subList(0, configuration.getNumBooksWithLeastCopies()));
+		Set<BookCopy> copies = new HashSet<BookCopy>();
+
+		for (Book book : booksToAddCopiesTo) {
+			copies.add( new BookCopy(book.getISBN(), configuration.getNumAddCopies()) );
+		}
+
 		// Add the wanted subset of books.
-		//stm.addBooks( new HashSet<StockBook>(storeBooks.subList(0, configuration.getNumBooksWithLeastCopies())) );
+		stm.addCopies(copies);
 	}
 
 	/**

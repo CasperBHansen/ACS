@@ -17,10 +17,10 @@ import com.acertainbookstore.business.ImmutableStockBook;
  */
 public class BookSetGenerator {
 
-	private static int bookStoreSize = 100;
+	private static int bookStoreSize = 1000;
 
 	private static SecureRandom random = new SecureRandom();
-	private static Integer NEXT_ISBN = 1; // this is definitively the next isbn :P
+	private static Integer NEXT_ISBN = 5; // this is definitively the next isbn :P
 
     private Set<StockBook> books = new HashSet<StockBook>();
 
@@ -41,7 +41,7 @@ public class BookSetGenerator {
 	 */
 	public Set<Integer> sampleFromSetOfISBNs(Set<Integer> isbns, int num) {
 		Set<Integer> selected = new HashSet<Integer>();
-		Set<Integer> offsets = generateRandomOffsets(num, 0, isbns.size() - 1);
+		Set<Integer> offsets = generateRandomOffsets(num, isbns.size());
 
 		// select the isbns from the set, given the random offsets
 		Integer offset = 0;
@@ -69,7 +69,7 @@ public class BookSetGenerator {
 	 */
 	public Set<StockBook> nextSetOfStockBooks(int num) {
 		Set<StockBook> bookSet = new HashSet<StockBook>();
-		Set<Integer> offsets = generateRandomOffsets(num, 0, books.size() - 1);
+		Set<Integer> offsets = generateRandomOffsets(num, books.size());
 
 		Integer offset = 0;
 		for (StockBook book : books) {
@@ -85,33 +85,19 @@ public class BookSetGenerator {
 	/**
 	 * Helper method which generates a random set of unique offsets
 	 */
-	private Set<Integer> generateRandomOffsets(int num, int min, int bound) {
+	private Set<Integer> generateRandomOffsets(int num, int bound) {
         // please avoid going out of bounds
-        bound = bound >= bookStoreSize ? bookStoreSize - 1 : bound;
+        bound = bound >= bookStoreSize ? bookStoreSize : bound;
         num = num > bound ? bound : num;
-
-        /* bad way :P
-
-		Set<Integer> offsets = new HashSet<Integer>();
-
-		Integer offset = ThreadLocalRandom.current().nextInt(0, bound);
-		for (int i = 0; i < num; ++i) {
-			while (offsets.contains(offset)) {
-				offset = ThreadLocalRandom.current().nextInt(0, bound);
-			}
-			offsets.add(offset);
-		}
-
-		return offsets;*/
 
         // make a set of available offsets
         ArrayList<Integer> available = new ArrayList<Integer>();
         for (int i = 0; i < bookStoreSize; ++i) { available.add(i); }
 
         Set<Integer> chosen = new HashSet<Integer>();
-        Integer offset = 0;
+        Integer offset = -1;
         while(chosen.size() < num) {
-            offset = available.remove(ThreadLocalRandom.current().nextInt(0, available.size() - 1));
+            offset = available.remove(ThreadLocalRandom.current().nextInt(0, available.size()));
             chosen.add(offset);
         }
 
@@ -124,7 +110,7 @@ public class BookSetGenerator {
 
 	private static String randomString() {
 		// happily stolen from stackoverflow.com
-		return new BigInteger(130, random).toString(32); // todo: slice
+		return (new BigInteger(130, random)).toString(32); // todo: slice
 	}
 
 	private static float randomFloat(float min, float max) {
@@ -139,7 +125,7 @@ public class BookSetGenerator {
 		String title = randomString();
 		String author = randomString();
 		float price = randomFloat(5, 100);
-		int copies = randomInt(1, 10);
+		int copies = randomInt(10, 100);
 		long misses = (long)randomInt(0, 10);
 		long rated = (long)randomInt(0, 10);
 		long rating = (long)0;

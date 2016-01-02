@@ -118,7 +118,9 @@ public class CertainWorkload {
 			totalFrequentBookStoreInteractionRuns += result.getTotalFrequentBookStoreInteractionRuns();
 		}
 
-		long aggregateTroughput = (successfulInteractions / elapsedTimeInNanoSecs);
+        System.out.println("Casted time: " + (double)elapsedTimeInNanoSecs);
+
+		double aggregateTroughput = ((double)successfulInteractions / (double)elapsedTimeInNanoSecs);
 
 		System.out.println("Successful Interactions: " + successfulInteractions);
 		System.out.println("Successful Frequent Bookstore Interaction Runs: " + successfulFrequentBookStoreInteractionRuns);
