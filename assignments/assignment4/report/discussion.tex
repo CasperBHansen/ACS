@@ -3,7 +3,6 @@
 %==============================================================================%
 
 \section{Discussion on the Performance Measurements}
-...
 
 \subsection{Setup}
 The implementation of the tests is a pretty direct implementation of the
@@ -22,4 +21,17 @@ results separately.
 \dots
 
 \subsection{Reliability}
-\dots
+In the interest of profit, from a business perspective, the metric employed
+makes sense.
+
+% TODO: test on system with low performance, and on one with high performance
+%       to argue that the reliability is sound.
+
+We do, however, believe that the metric suffers some loss of what we would
+consider critical data. While the metric is oriented toward measuring supply
+and demand, it fails to capture ---perhaps infrequent, but highly important---
+instances in which the system does not perform well. In order to do so, one
+could alter the metric slightly to be more versatile in its description of the
+system, by way of a distribution or histogram --- that is, the distribution of
+outcomes per time interval. This way we can make more solid arguments about the
+system and its performance overall, rather than mere successes per time interval.
