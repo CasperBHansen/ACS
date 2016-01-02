@@ -24,8 +24,12 @@ results separately.
 In the interest of profit, from a business perspective, the metric employed
 makes sense.
 
-% TODO: test on system with low performance, and on one with high performance
-%       to argue that the reliability is sound.
+As we increase the number of threads, and hence the performance of the system
+being simulated, so does the throughput. Please review the plots above. This
+supports that the metric is indeed reliable. In a more rigid way, we argue that
+the metric is reliable, as the increase in threads allows for faster and more
+frequent restocking that in turn decreases the amount of sales misses, which
+means that throughput has increased proportionally with the amount of threads.
 
 We do, however, believe that the metric suffers some loss of what we would
 consider critical data. While the metric is oriented toward measuring supply
