@@ -110,21 +110,22 @@ public class CertainWorkload {
 		int successfulFrequentBookStoreInteractionRuns = 0;
 		int totalFrequentBookStoreInteractionRuns = 0;
 
-        double sum = 0;
+        double aggThroughput = 0;
+        double avgLatency = 0;
+        double throughtPut = 0;
 
 		for (WorkerRunResult result : workerRunResults) {
+
 			successfulInteractions += result.getSuccessfulInteractions();
 			totalRuns += result.getTotalRuns();
 			elapsedTimeInNanoSecs += result.getElapsedTimeInNanoSecs();
 			successfulFrequentBookStoreInteractionRuns += result.getSuccessfulFrequentBookStoreInteractionRuns();
 			totalFrequentBookStoreInteractionRuns += result.getTotalFrequentBookStoreInteractionRuns();
     
-            sum += ((double)result.getSuccessfulInteractions() / (double)result.getElapsedTimeInNanoSecs());
+            throughtPut = (double)result.getSuccessfulInteractions() / (double)result.getElapsedTimeInNanoSecs();
+            aggThroughput += throughtPut;
+            avgLatency += 1f / throughtPut;
 		}
-
-        System.out.println("SUM: " + sum);
-
-		double aggregateTroughput = ((double)successfulInteractions / (double)elapsedTimeInNanoSecs);
 
 		System.out.println("Successful Interactions: " + successfulInteractions);
 		System.out.println("Successful Frequent Bookstore Interaction Runs: " + successfulFrequentBookStoreInteractionRuns);
@@ -134,7 +135,9 @@ public class CertainWorkload {
 
 		System.out.println("Elapsed Time: " + elapsedTimeInNanoSecs + "ns");
 
-		System.out.println("Aggregate Throughput: " + aggregateTroughput);
+		System.out.println("Aggregate Throughput: " + aggThroughput);
+		System.out.println("Average Latency: " + avgLatency);
+		System.out.println("Aggregate Latency: " + 1f / aggThroughput);
 	}
 
 	/**
