@@ -6,7 +6,17 @@
 ...
 
 \subsection{Setup}
-\dots
+The implementation of the tests is a pretty direct implementation of the
+specifications of the test. The interesting part is how we ensure the test
+show anything meaningful. In particular, we generate one big set of books and
+only include a subset of these in the bookstore from the beginning. As a
+design choice, we have abstracted out generation of books to the
+{\tt BookSetGenerator} which we only make a single instance of passed by
+reference to the workers. We feel this should in fact be singleton. This has
+not been done for the {\tt WorkloadConfiguration} even though we feel the same
+applies. Note also that we have a remaining error which causes certain ISBN
+numbers to be duplicated. We will discuss the potential effects on the test
+results separately.
 
 \subsection{Plots}
 \dots
