@@ -3,7 +3,6 @@
 %==============================================================================%
 
 \section{Discussion on the Performance Measurements}
-...
 
 \subsection{Setup}
 The implementation of the tests is a pretty direct implementation of the
@@ -22,4 +21,21 @@ results separately.
 \dots
 
 \subsection{Reliability}
-\dots
+In the interest of profit, from a business perspective, the metric employed
+makes sense.
+
+As we increase the number of threads, and hence the performance of the system
+being simulated, so does the throughput. Please review the plots above. This
+supports that the metric is indeed reliable. In a more rigid way, we argue that
+the metric is reliable, as the increase in threads allows for faster and more
+frequent restocking that in turn decreases the amount of sales misses, which
+means that throughput has increased proportionally with the amount of threads.
+
+We do, however, believe that the metric suffers some loss of what we would
+consider critical data. While the metric is oriented toward measuring supply
+and demand, it fails to capture ---perhaps infrequent, but highly important---
+instances in which the system does not perform well. In order to do so, one
+could alter the metric slightly to be more versatile in its description of the
+system, by way of a distribution or histogram --- that is, the distribution of
+outcomes per time interval. This way we can make more solid arguments about the
+system and its performance overall, rather than mere successes per time interval.
