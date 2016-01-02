@@ -112,19 +112,18 @@ public class CertainWorkload {
 
         double aggThroughput = 0;
         double avgLatency = 0;
-        double throughtPut = 0;
+        double throughPut = 0;
 
 		for (WorkerRunResult result : workerRunResults) {
-
 			successfulInteractions += result.getSuccessfulInteractions();
 			totalRuns += result.getTotalRuns();
 			elapsedTimeInNanoSecs += result.getElapsedTimeInNanoSecs();
 			successfulFrequentBookStoreInteractionRuns += result.getSuccessfulFrequentBookStoreInteractionRuns();
 			totalFrequentBookStoreInteractionRuns += result.getTotalFrequentBookStoreInteractionRuns();
     
-            throughtPut = (double)result.getSuccessfulInteractions() / (double)result.getElapsedTimeInNanoSecs();
-            aggThroughput += throughtPut;
-            avgLatency += 1f / throughtPut;
+            throughPut = (double)result.getSuccessfulFrequentBookStoreInteractionRuns() / (double)result.getElapsedTimeInNanoSecs();
+            aggThroughput += throughPut;
+            avgLatency += 1f / throughPut;
 		}
 
 		System.out.println("Successful Interactions: " + successfulInteractions);
