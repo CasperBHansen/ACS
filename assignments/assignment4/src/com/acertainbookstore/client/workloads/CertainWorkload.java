@@ -110,15 +110,19 @@ public class CertainWorkload {
 		int successfulFrequentBookStoreInteractionRuns = 0;
 		int totalFrequentBookStoreInteractionRuns = 0;
 
+        double sum = 0;
+
 		for (WorkerRunResult result : workerRunResults) {
 			successfulInteractions += result.getSuccessfulInteractions();
 			totalRuns += result.getTotalRuns();
 			elapsedTimeInNanoSecs += result.getElapsedTimeInNanoSecs();
 			successfulFrequentBookStoreInteractionRuns += result.getSuccessfulFrequentBookStoreInteractionRuns();
 			totalFrequentBookStoreInteractionRuns += result.getTotalFrequentBookStoreInteractionRuns();
+    
+            sum += ((double)result.getSuccessfulInteractions() / (double)result.getElapsedTimeInNanoSecs());
 		}
 
-        System.out.println("Casted time: " + (double)elapsedTimeInNanoSecs);
+        System.out.println("SUM: " + sum);
 
 		double aggregateTroughput = ((double)successfulInteractions / (double)elapsedTimeInNanoSecs);
 
