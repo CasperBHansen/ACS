@@ -3,13 +3,40 @@
 %==============================================================================%
 
 \section{Reliability}
-\dots
 
 \subsection{Probability of daisy chain connectivity}
+A daisy-chained network, assuming a linear topology, the graph consists of
+\begin{align}
+    c &= n - 1 \enspace ,
+\end{align}
+connections.
+
+The probability of a link failure is $p$. The probability that a link doesn't
+fail is thus the complement $1 - p$. The probability that all nodes are connected
+is then equivalent with the case that none of links fail. Under the assumption
+that each link failure is independent, we can then simply multiply the individual
+probabilities. We then have
+
+\begin{align}
+    (1 - p)^{n-1} \enspace .
+\end{align}
+
 \dots
 
 \subsection{Probability of fully connected network connectivity}
-\dots
+A fully connected network consists of
+\begin{align}
+    c &= \frac{n^2 - n}{2} \enspace ,
+\end{align}
+connections.
+
+In order for a fully connected network to not connect all buildings, a node
+would have to lose $n-1$ connections, which would have a probability of
+$q = p^{n-1}$ for each individual node. Again, by the assumption of independence,
+as before, we can multiply these
+\begin{align}
+    q^{n-1}
+\end{align}
 
 \subsection{Hypothetical town network}
 \dots
