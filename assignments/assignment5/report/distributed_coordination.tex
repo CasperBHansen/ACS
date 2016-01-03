@@ -3,5 +3,27 @@
 %==============================================================================%
 
 \section{Distributed Coordination}
-\dots
+The three-phase commit protocol is, unlike the two-phase commit protocol, an
+asynchronous protocol, because in the two-phase protocol each yes-voting
+participant must wait for the coordinator to reply to the {\it getDecision}
+request. Likewise, the coordinator must wait for all votes of the {\it canCommit?}
+requests, in order to proceed.
 
+This means that in the event of coordinator or participant failure, all
+participants are stalled until an abort mechanism is triggered --- such as a
+request time-out.
+
+In the event that a coordinator or other participants fail during a transaction,
+the three-phase commit protocol ensures that participants that have voted ``yes''
+have entered a state (e.g. lock acquisition) in which they can carry out their
+respective transactions independently of individual failures. Once a participant
+has entered the second phase it will eventually commit, regardless of failures.
+
+Although not specified in the assignment text, or the textbook, we have learned
+that in three-phase commit protocols, unlike the two-phase commit, is asynchronous
+and employs timers that belong to each participant and the coordinator. When the
+coordinator learns of a failure (e.g. due to time-out) or negative answer of one
+or more participants, it broadcasts a {\it doAbort} to all of the participants.
+Likewise, in the event that a request on the participant-side times-out, the
+coordinator is assumed to experience a failure. This triggers either an abort, if
+we are in the first phase, or a commit if we are in the second phase.

@@ -28,7 +28,7 @@ import com.acertainbookstore.utils.BookStoreResult;
 public class MasterCertainBookStore extends ReadOnlyCertainBookStore
 		implements ReplicatedBookStore, ReplicatedStockManager {
 	private Replicator replicator = null;
-	private String filePath = "/universe/acertainbookstore/server.properties";
+	private String filePath = "server.properties";
 
 	public MasterCertainBookStore() throws BookStoreException {
 		Set<String> slaveServers = initializeSlaveMapping();
