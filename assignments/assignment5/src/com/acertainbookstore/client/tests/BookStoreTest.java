@@ -34,7 +34,7 @@ public class BookStoreTest {
 
 	private static final int TEST_ISBN = 3044560;
 	private static final int NUM_COPIES = 5;
-	private static boolean localTest = true;
+	private static boolean localTest = false;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
@@ -101,6 +101,7 @@ public class BookStoreTest {
 	 */
 	@Test
 	public void testBuyAllCopiesDefaultBook() throws BookStoreException {
+		fail("lalalamsa");
 		// Set of books to buy
 		Set<BookCopy> booksToBuy = new HashSet<BookCopy>();
 		booksToBuy.add(new BookCopy(TEST_ISBN, NUM_COPIES));
@@ -131,6 +132,7 @@ public class BookStoreTest {
 	 */
 	@Test
 	public void testBuyInvalidISBN() throws BookStoreException {
+		fail("lalalamsa");
 		List<StockBook> booksInStorePreTest = storeManager.getBooks();
 
 		// Try to buy a book with invalid isbn
@@ -158,6 +160,7 @@ public class BookStoreTest {
 	 */
 	@Test
 	public void testBuyNonExistingISBN() throws BookStoreException {
+		fail("lalalamsa");
 		List<StockBook> booksInStorePreTest = storeManager.getBooks();
 
 		// Try to buy a book with isbn which does not exist
@@ -185,6 +188,7 @@ public class BookStoreTest {
 	 */
 	@Test
 	public void testBuyTooManyBooks() throws BookStoreException {
+		fail("lalalamsa");
 		List<StockBook> booksInStorePreTest = storeManager.getBooks();
 
 		// Try to buy more copies than there are in store
@@ -209,6 +213,7 @@ public class BookStoreTest {
 	 */
 	@Test
 	public void testBuyNegativeNumberOfBookCopies() throws BookStoreException {
+		fail("lalalamsa");
 		List<StockBook> booksInStorePreTest = storeManager.getBooks();
 
 		// Try to buy a negative number of copies
@@ -233,6 +238,7 @@ public class BookStoreTest {
 	 */
 	@Test
 	public void testGetBooks() throws BookStoreException {
+		fail("lalalamsa");
 		Set<StockBook> booksAdded = new HashSet<StockBook>();
 		booksAdded.add(getDefaultBook());
 
@@ -262,6 +268,7 @@ public class BookStoreTest {
 	 */
 	@Test
 	public void testGetCertainBooks() throws BookStoreException {
+		fail("lalalamsa");
 		Set<StockBook> booksToAdd = new HashSet<StockBook>();
 		booksToAdd.add(new ImmutableStockBook(TEST_ISBN + 1,
 				"The Art of Computer Programming", "Donald Knuth", (float) 300,
@@ -292,6 +299,7 @@ public class BookStoreTest {
 	 */
 	@Test
 	public void testGetInvalidIsbn() throws BookStoreException {
+		fail("lalalamsa");
 		List<StockBook> booksInStorePreTest = storeManager.getBooks();
 
 		// Make an invalid ISBN
