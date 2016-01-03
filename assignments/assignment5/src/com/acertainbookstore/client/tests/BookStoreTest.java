@@ -26,7 +26,7 @@ import com.acertainbookstore.utils.BookStoreException;
 
 /**
  * Test class to test the BookStore interface
- * 
+ *
  */
 public class BookStoreTest {
 	private static StockManager storeManager;
@@ -37,16 +37,18 @@ public class BookStoreTest {
 	private static boolean localTest = true;
 
 	@BeforeClass
-	public static void setUpBeforeClass() {
+	public static void setUpBeforeClass() throws Exception {
 		try {
 			String localTestProperty = System
 					.getProperty(BookStoreConstants.PROPERTY_KEY_LOCAL_TEST);
 			localTest = (localTestProperty != null) ? Boolean
 					.parseBoolean(localTestProperty) : localTest;
 			if (localTest) {
+
 				CertainBookStore store = new CertainBookStore();
 				storeManager = store;
 				client = store;
+
 			} else {
 				storeManager = new ReplicationAwareStockManagerHTTPProxy();
 				client = new ReplicationAwareBookStoreHTTPProxy();

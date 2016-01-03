@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.acertainbookstore.client;
 
@@ -29,17 +29,17 @@ import com.acertainbookstore.utils.BookStoreResult;
 import com.acertainbookstore.utils.BookStoreUtility;
 
 /**
- * 
+ *
  * ReplicationAwareBookStoreHTTPProxy implements the client level synchronous
  * CertainBookStore API declared in the BookStore class. It keeps retrying the
  * API until a consistent reply is returned from the replicas
- * 
+ *
  */
 public class ReplicationAwareBookStoreHTTPProxy implements BookStore {
 	private HttpClient client;
 	private Set<String> slaveAddresses;
 	private String masterAddress;
-	private String filePath = "/universe/acertainbookstore/proxy.properties";
+	private String filePath = "proxy.properties";
 	private volatile long snapshotId = 0;
 
 	public long getSnapshotId() {
@@ -59,13 +59,13 @@ public class ReplicationAwareBookStoreHTTPProxy implements BookStore {
 		client.setConnectorType(HttpClient.CONNECTOR_SELECT_CHANNEL);
 
 		// max concurrent connections to every address
-		client.setMaxConnectionsPerAddress(BookStoreClientConstants.CLIENT_MAX_CONNECTION_ADDRESS); 
-		
+		client.setMaxConnectionsPerAddress(BookStoreClientConstants.CLIENT_MAX_CONNECTION_ADDRESS);
+
 		// max threads
-		client.setThreadPool(new QueuedThreadPool(BookStoreClientConstants.CLIENT_MAX_THREADSPOOL_THREADS)); 
-		
+		client.setThreadPool(new QueuedThreadPool(BookStoreClientConstants.CLIENT_MAX_THREADSPOOL_THREADS));
+
 		// seconds to timeout if no server reply, the request expires
-		client.setTimeout(BookStoreClientConstants.CLIENT_MAX_TIMEOUT_MILLISECS); 
+		client.setTimeout(BookStoreClientConstants.CLIENT_MAX_TIMEOUT_MILLISECS);
 		client.start();
 	}
 
