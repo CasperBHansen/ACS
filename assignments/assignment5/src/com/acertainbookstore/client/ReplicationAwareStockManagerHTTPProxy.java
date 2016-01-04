@@ -90,11 +90,10 @@ public class ReplicationAwareStockManagerHTTPProxy implements StockManager {
 	}
 
 	public String getReplicaAddress() {
-        int num = (new Random()).nextInt(slaveAddresses.size());
+        int num = (new Random()).nextInt(slaveAddresses.size() + 1);
         
         // if the generator did not overshoot the size
         if (num < slaveAddresses.size()) {
-            System.out.println("Choosing a slave");
             int i = 0;
             for (String slave : slaveAddresses) {
                 if (i == num) { return slave; }
@@ -102,7 +101,6 @@ public class ReplicationAwareStockManagerHTTPProxy implements StockManager {
             }
         }
         
-        System.out.println("Choosing master");
 		return getMasterServerAddress();
 	}
 

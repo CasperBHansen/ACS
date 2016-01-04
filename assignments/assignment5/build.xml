@@ -74,6 +74,12 @@
                     <classpath refid="acertainbookstore.classpath"/>
                   </java>
                 </sequential> 
+                <sequential>
+                  <java classname="com.acertainbookstore.server.SlaveBookStoreHTTPServer" failonerror="true" fork="yes">
+                    <jvmarg line="-Dport=8083"/>
+                    <classpath refid="acertainbookstore.classpath"/>
+                  </java>
+                </sequential> 
               </parallel>
             </then>
           </if>
