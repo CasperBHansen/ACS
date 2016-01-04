@@ -5,13 +5,38 @@
 \section{Discussion on Replication Mechanism}
 
 \subsection{Implementation and strategy}
-\dots
+
+Added parameters?
+Load balancing
+latency hiding
+How fail-stop is used to handle failures
 
 \subsection{Advantages and disadvantages}
-\dots
+The replicated implementation first and foremost, increases concurrency on
+read by using load balancing to distribute reads evenly among the available
+servers (Master and Slaves). If the lack of concurrency was causing
+bottlenecks, this should theoretically (needs testing) increase throughput and
+reduces latency. Since all servers needs to fail simultaneously for the read
+services to be unavailable, this is an increase in availability. The cost is
+with regards to writes. Since each write operation needs to be replicated,
+this presents some overhead due to implementation complexity and since each
+slave must contacted via http (or some other network protocol), this adds
+extra latency on write operations. A potential bottleneck is how we need to
+wait for slaves to be updated before carrying out reads. It should be possible
+to implement something like a 3 phase commit in this regard.
 
 \subsection{Proxy and client failures}
-\dots
+Two possible ways are immediately apparent. Either proxies communicate with
+each other to establish what the current state of the server should be. We
+think this is still an error-prone strategy since we do not know if this state
+information is broadcasted early enough such that the client has not yet
+established contact with another proxy. Correctness would probably come at an
+unacceptable cost to concurrency. Alternatively, the client stores information
+(perhaps in form of a handle), storing information to facilitate possibility
+of verification at proxy that the server is updated.
 
 \subsection{Network partition}
-\dots
+We would lose all guarantees that the data is up-to-date, since the proxies
+forward read requests to slaves out of contact with the master. The timestamps
+would not be a good indicator of data correctness since the slave servers time
+is independent of the contact to the master.
