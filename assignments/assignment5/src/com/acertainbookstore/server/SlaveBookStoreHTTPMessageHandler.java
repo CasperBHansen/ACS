@@ -136,6 +136,10 @@ public class SlaveBookStoreHTTPMessageHandler extends AbstractHandler {
 								.serializeObjectToXMLString(bookStoreResponse));
 				break;
 
+            case REPLICATE:
+                break;
+
+                /* getting moved
 			case REPLICATE:
 				xml = BookStoreUtility.extractPOSTDataFromRequest(request);
 
@@ -246,6 +250,7 @@ public class SlaveBookStoreHTTPMessageHandler extends AbstractHandler {
 					System.out.println("Unhandled replication message tag");
 					break;
 				}
+            */
 
 			default:
 				System.out.println("Unhandled message tag");

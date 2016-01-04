@@ -35,7 +35,7 @@ public class MasterCertainBookStore extends ReadOnlyCertainBookStore
 		bookStore = new CertainBookStore();
 		// the threadpool size is equal to number of slaves for which concurrent
 		// requests need to be sent
-		replicator = new CertainBookStoreReplicator(slaveServers.size(), slaveServers);
+        replicator = new CertainBookStoreReplicator(slaveServers.size(), slaveServers);
 	}
 
 	private Set<String> initializeSlaveMapping() throws BookStoreException {

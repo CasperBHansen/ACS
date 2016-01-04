@@ -9,6 +9,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import com.acertainbookstore.utils.BookStoreException;
 import com.acertainbookstore.interfaces.Replication;
 import com.acertainbookstore.interfaces.Replicator;
 import com.acertainbookstore.server.ReplicationAwareServerHTTPProxy;
@@ -21,7 +22,8 @@ public class CertainBookStoreReplicator implements Replicator {
 	private Map<String, Replication> replicationClients = null;
 	private ExecutorService replicatorThreadPool = null;
 
-	public CertainBookStoreReplicator(int maxReplicatorThreads, Set<String> slaveServers) {
+	public CertainBookStoreReplicator(int maxReplicatorThreads, Set<String> slaveServers)
+             throws BookStoreException {
 		if(slaveServers == null) {
 			return;
 		}
@@ -29,9 +31,13 @@ public class CertainBookStoreReplicator implements Replicator {
 		replicationClients = new HashMap<String,Replication>();
 
 		//Create the proxies for each destination slave
-		for(String aSlaveServer : slaveServers) {
-			replicationClients.put(aSlaveServer, new ReplicationAwareServerHTTPProxy(aSlaveServer));
-		}
+        try {
+            for(String aSlaveServer : slaveServers) {
+                replicationClients.put(aSlaveServer, new ReplicationAwareServerHTTPProxy(aSlaveServer));
+            }
+        } catch (Exception ex) {
+            throw new BookStoreException(ex);
+        }
 
 		//Create the threadpool for concurrently invoking replicate rpcs
 		replicatorThreadPool = Executors.newFixedThreadPool(maxReplicatorThreads);
