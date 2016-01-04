@@ -42,11 +42,11 @@ public class ReplicationAwareServerHTTPProxy implements Replication {
 		client = new HttpClient();
 		client.setConnectorType(HttpClient.CONNECTOR_SELECT_CHANNEL);
 
-		// Can we omit this?
-		client.setMaxConnectionsPerAddress(1);
+		// max concurrent connections to every address
+		client.setMaxConnectionsPerAddress(BookStoreClientConstants.CLIENT_MAX_CONNECTION_ADDRESS);
 
-		// Can we omit this?
-		client.setThreadPool(new QueuedThreadPool(1));
+		// max threads
+		client.setThreadPool(new QueuedThreadPool(BookStoreClientConstants.CLIENT_MAX_THREADSPOOL_THREADS));
 
 		// seconds to timeout if no server reply, the request expires
 		client.setTimeout(BookStoreClientConstants.CLIENT_MAX_TIMEOUT_MILLISECS);
@@ -66,17 +66,11 @@ public class ReplicationAwareServerHTTPProxy implements Replication {
 		BookStoreResult result = null;
 
 		ContentExchange exchange = new ContentExchange();
-		String urlString = destinationServerAddress + "/"
-				+ BookStoreMessageTag.REPLICATE;
+		String urlString = destinationServerAddress + BookStoreMessageTag.REPLICATE;
 		exchange.setMethod("POST");
 		exchange.setURL(urlString);
 		exchange.setRequestContent(requestContent);
 		result = BookStoreUtility.SendAndRecv(this.client, exchange);
-
-		//this.setSnapshotId(result.getSnapshotId());
-
-
-
 	}
 
 	public void stop() {

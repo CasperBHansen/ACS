@@ -49,7 +49,7 @@ public class CertainBookStoreReplicator implements Replicator {
 
 		for (String destination : replicationClients.keySet()) {
 			Replication replication = replicationClients.get(destination);
-			resultList.add(replicatorThreadPool.submit(new CertainBookStoreReplicationTask(replication, request, new String(destination))));
+			resultList.add(replicatorThreadPool.submit(new CertainBookStoreReplicationTask(replication, request, destination)));
 		}
 
 		return resultList;

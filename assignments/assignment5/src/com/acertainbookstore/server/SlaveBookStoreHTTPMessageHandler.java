@@ -137,120 +137,25 @@ public class SlaveBookStoreHTTPMessageHandler extends AbstractHandler {
 				break;
 
             case REPLICATE:
-                break;
-
-                /* getting moved
-			case REPLICATE:
 				xml = BookStoreUtility.extractPOSTDataFromRequest(request);
 
 				ReplicationRequest replicationRequest = (ReplicationRequest) BookStoreUtility
 						.deserializeXMLStringToObject(xml);
 
-				bookStoreResponse = new BookStoreResponse();
+                bookStoreResponse = new BookStoreResponse();
 
-				switch (replicationRequest.getMessageType()) {
-				case REMOVEBOOKS:
-					Set<Integer> bookSet = (Set<Integer>) replicationRequest.getDataSet();
+                try {
+                    myBookStore.replicate(replicationRequest);
+                }
+                catch (BookStoreException ex) {
+                    bookStoreResponse.setException(ex);
+                }
 
-					bookStoreResponse = new BookStoreResponse();
-					try {
+                response.getWriter().println(
+                        BookStoreUtility
+                                .serializeObjectToXMLString(bookStoreResponse));
 
-						bookStoreResponse.setResult(myBookStore.removeBooks(bookSet));
-
-					} catch (BookStoreException ex) {
-						bookStoreResponse.setException(ex);
-					}
-					String listBooksxmlString = BookStoreUtility
-							.serializeObjectToXMLString(bookStoreResponse);
-					response.getWriter().println(listBooksxmlString);
-					break;
-
-				case REMOVEALLBOOKS:
-
-					bookStoreResponse = new BookStoreResponse();
-					try {
-						bookStoreResponse.setResult(myBookStore.removeAllBooks());
-					} catch (BookStoreException ex) {
-						bookStoreResponse.setException(ex);
-					}
-					listBooksxmlString = BookStoreUtility
-							.serializeObjectToXMLString(bookStoreResponse);
-					response.getWriter().println(listBooksxmlString);
-					break;
-
-				case ADDBOOKS:
-
-					Set<StockBook> newBooks = (Set<StockBook>) replicationRequest.getDataSet();
-
-					bookStoreResponse = new BookStoreResponse();
-					try {
-						bookStoreResponse.setResult(myBookStore.addBooks(newBooks));
-					} catch (BookStoreException ex) {
-						bookStoreResponse.setException(ex);
-					}
-
-					listBooksxmlString = BookStoreUtility
-							.serializeObjectToXMLString(bookStoreResponse);
-
-					response.getWriter().println(listBooksxmlString);
-					break;
-
-				case ADDCOPIES:
-
-					Set<BookCopy> listBookCopies = (Set<BookCopy>) replicationRequest.getDataSet();
-					bookStoreResponse = new BookStoreResponse();
-					try {
-						bookStoreResponse.setResult(myBookStore
-								.addCopies(listBookCopies));
-					} catch (BookStoreException ex) {
-						bookStoreResponse.setException(ex);
-					}
-					listBooksxmlString = BookStoreUtility
-							.serializeObjectToXMLString(bookStoreResponse);
-					response.getWriter().println(listBooksxmlString);
-					break;
-
-				case UPDATEEDITORPICKS:
-
-					Set<BookEditorPick> mapEditorPicksValues = (Set<BookEditorPick>) replicationRequest.getDataSet();
-
-					bookStoreResponse = new BookStoreResponse();
-
-					try {
-						bookStoreResponse.setResult(myBookStore
-								.updateEditorPicks(mapEditorPicksValues));
-
-					} catch (BookStoreException ex) {
-						bookStoreResponse.setException(ex);
-					}
-
-					listBooksxmlString = BookStoreUtility
-							.serializeObjectToXMLString(bookStoreResponse);
-					response.getWriter().println(listBooksxmlString);
-					break;
-
-				case BUYBOOKS:
-
-					Set<BookCopy> bookCopiesToBuy = (Set<BookCopy>) replicationRequest.getDataSet();
-
-					// Make the purchase
-					bookStoreResponse = new BookStoreResponse();
-					try {
-						bookStoreResponse.setResult(myBookStore
-								.buyBooks(bookCopiesToBuy));
-					} catch (BookStoreException ex) {
-						bookStoreResponse.setException(ex);
-					}
-					listBooksxmlString = BookStoreUtility
-							.serializeObjectToXMLString(bookStoreResponse);
-					response.getWriter().println(listBooksxmlString);
-					break;
-
-				default:
-					System.out.println("Unhandled replication message tag");
-					break;
-				}
-            */
+                break;
 
 			default:
 				System.out.println("Unhandled message tag");

@@ -7,6 +7,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Random;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
@@ -91,7 +92,20 @@ public class ReplicationAwareBookStoreHTTPProxy implements BookStore {
 	}
 
 	public String getReplicaAddress() {
-		return ""; // TODO
+        int num = (new Random()).nextInt(slaveAddresses.size());
+        
+        // if the generator did not overshoot the size
+        if (num < slaveAddresses.size()) {
+            System.out.println("Choosing a slave");
+            int i = 0;
+            for (String slave : slaveAddresses) {
+                if (i == num) { return slave; }
+                ++i;
+            }
+        }
+        
+        System.out.println("Choosing master");
+		return getMasterServerAddress();
 	}
 
 	public String getMasterServerAddress() {

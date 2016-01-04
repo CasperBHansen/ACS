@@ -98,7 +98,6 @@ public class StockManagerTest {
 	 */
 	@Test
 	public void testInitializeBooks() throws BookStoreException {
-		fail("lalalamsa");
 		List<StockBook> addedBooks = new ArrayList<StockBook>();
 		addedBooks.add(getDefaultBook());
 
@@ -116,7 +115,6 @@ public class StockManagerTest {
 	 */
 	@Test
 	public void testaddBookInvalidISBN() throws BookStoreException {
-		fail("lalalamsa");
 		List<StockBook> booksInStorePreTest = storeManager.getBooks();
 
 		Set<StockBook> booksToAdd = new HashSet<StockBook>();
@@ -146,7 +144,6 @@ public class StockManagerTest {
 	 */
 	@Test
 	public void testAddBookInvalidCopies() throws BookStoreException {
-		fail("lalalamsa");
 		List<StockBook> booksInStorePreTest = storeManager.getBooks();
 
 		Set<StockBook> booksToAdd = new HashSet<StockBook>();
@@ -176,7 +173,6 @@ public class StockManagerTest {
 	 */
 	@Test
 	public void testAddBookInvalidPrice() throws BookStoreException {
-		fail("lalalamsa");
 		List<StockBook> booksInStorePreTest = storeManager.getBooks();
 
 		Set<StockBook> booksToAdd = new HashSet<StockBook>();
@@ -206,7 +202,6 @@ public class StockManagerTest {
 	 */
 	@Test
 	public void testAddCopiesCorrectBook() throws BookStoreException {
-		fail("lalalamsa");
 		// Add a copy of a book
 		int copies_to_add = 1;
 		Set<BookCopy> bookCopiesSet = new HashSet<BookCopy>();
@@ -247,7 +242,6 @@ public class StockManagerTest {
 	 */
 	@Test
 	public void testAddCopiesInvalidNumCopies() throws BookStoreException {
-		fail("lalalamsa");
 		List<StockBook> booksInStorePreTest = storeManager.getBooks();
 
 		Set<BookCopy> bookCopiesSet = new HashSet<BookCopy>();
@@ -272,7 +266,6 @@ public class StockManagerTest {
 	 */
 	@Test
 	public void testAddCopiesInvalidISBN() throws BookStoreException {
-		fail("lalalamsa");
 		List<StockBook> booksInStorePreTest = storeManager.getBooks();
 
 		Set<BookCopy> bookCopiesSet = new HashSet<BookCopy>();
@@ -297,7 +290,6 @@ public class StockManagerTest {
 	 */
 	@Test
 	public void testAddCopiesNonExistingISBN() throws BookStoreException {
-		fail("lalalamsa");
 		List<StockBook> booksInStorePreTest = storeManager.getBooks();
 
 		Set<BookCopy> bookCopiesSet = new HashSet<BookCopy>();
@@ -333,7 +325,6 @@ public class StockManagerTest {
 	 */
 	@Test
 	public void testDefaultBookForEditorsPick() throws BookStoreException {
-		fail("lalalamsa");
 
 		// The default book should not be an editor pick
 		List<Book> editorPicks = client.getEditorPicks(1);
@@ -358,7 +349,6 @@ public class StockManagerTest {
 	 */
 	@Test
 	public void testRemoveBooks() throws BookStoreException {
-		fail("lalalamsa");
 		List<StockBook> booksAdded = new ArrayList<StockBook>();
 		StockBook book1 = getDefaultBook();
 		booksAdded.add(book1);
@@ -405,7 +395,6 @@ public class StockManagerTest {
 	 */
 	@Test
 	public void testGetBooksByISBN() throws BookStoreException {
-		fail("lalalamsa");
 		Set<StockBook> booksToAdd = new HashSet<StockBook>();
 		booksToAdd.add(new ImmutableStockBook(TEST_ISBN + 1,
 				"The Art of Computer Programming", "Donald Knuth", (float) 300,
@@ -430,7 +419,6 @@ public class StockManagerTest {
 	 */
 	@Test
 	public void testRemoveAllBooks() throws BookStoreException {
-		fail("lalalamsa");
 		Set<StockBook> booksToAdd = new HashSet<StockBook>();
 		booksToAdd.add(new ImmutableStockBook(TEST_ISBN + 1,
 				"The Art of Computer Programming", "Donald Knuth", (float) 300,

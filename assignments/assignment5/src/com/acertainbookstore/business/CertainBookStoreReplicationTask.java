@@ -33,12 +33,7 @@ public class CertainBookStoreReplicationTask implements Callable<ReplicationResu
 			successFlag = false;
 		}
 
-		// NOTE: Are we even allowed to do dis shit???
 		return new ReplicationResult(destination, successFlag); // String serverAddress, boolean replicationSuccessful
-
-		// TODO Implement this method to invoke the replicate method and flag
-		// errors using replicationSuccessful flag in ReplicationResult if any
-		// during replication
 	}
 
 }
