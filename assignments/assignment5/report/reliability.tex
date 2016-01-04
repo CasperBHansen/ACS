@@ -16,27 +16,32 @@ fail is thus the complement $1 - p$. The probability that all nodes are connecte
 is then equivalent with the case that none of links fail. Under the assumption
 that each link failure is independent, we can then simply multiply the individual
 probabilities. We then have
-
 \begin{align}
     (1 - p)^{n-1} \enspace .
 \end{align}
 
-\dots
+In our case $n = 3$.
 
-\subsection{Probability of fully connected network connectivity}
-A fully connected network consists of
-\begin{align}
-    c &= \frac{n^2 - n}{2} \enspace ,
-\end{align}
-connections.
+\subsection{Probability of fully-connected network connectivity}
+A fully connected network with 3 nodes, there's 3 links that can fail. As long
+as 2 or more links are working, the network is connected. We found it easiest
+to look at the possible ways to have a connected network and add the
+individual probabilities.
 
-In order for a fully connected network to not connect all buildings, a node
-would have to lose $n-1$ connections, which would have a probability of
-$q = p^{n-1}$ for each individual node. Applying this to the entire graph, by
-the same assumption of independence, as before, 
-\begin{align}
-\end{align}
+There's 3 ways where 1 link can fail with probability $p(1-p)^2$ and 1 way
+0 links can fail with probability $(1-p)^3$. The probability that a
+fully-connected network is working is then
+\begin{align*}
+3p(1-p)^2 + (1-p)^3 \enspace .
+\end{align*}
 
 \subsection{Hypothetical town network}
-\dots
+
+by simply computing the 2 probabilities, we get
+\begin{align*}
+p_{daisy} &= (1-0.000001)^3 = 0.999997000003\enspace , \\
+p_{full} &= 3*0.0001*(1-0.0001)**2+(1-0.0001)**3 = 0.999999970002 \enspace .
+\end{align*}
+The above shows that the less reliable links in a fully connected network
+makes a more reliable overall network than the daisy chained network.
 
