@@ -2,6 +2,7 @@ package com.acertainbookstore.business;
 
 import java.util.concurrent.Callable;
 import com.acertainbookstore.interfaces.Replication;
+import com.acertainbookstore.utils.NetworkException;
 import com.acertainbookstore.utils.BookStoreException;
 
 /**
@@ -29,7 +30,10 @@ public class CertainBookStoreReplicationTask implements Callable<ReplicationResu
 		try {
 			replicationClient.replicate(request);
 		} catch (BookStoreException ex) {
-			//System.out.println("E: CertainBookStoreReplicationTask::call: Got exception while replicating: " + ex.getMessage());
+			System.out.println("E: CertainBookStoreReplicationTask::call: Got BookStoreException while replicating: " + ex.getMessage());
+			successFlag = false;
+		} catch (NetworkException ex) {
+			System.out.println("E: CertainBookStoreReplicationTask::call: Got NetworkException while replicating: " + ex.getMessage());
 			successFlag = false;
 		}
 

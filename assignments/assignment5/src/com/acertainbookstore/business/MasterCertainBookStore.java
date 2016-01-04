@@ -20,10 +20,10 @@ import com.acertainbookstore.utils.BookStoreResult;
 /**
  * MasterCertainBookStore is a wrapper over the CertainBookStore class and
  * supports the ReplicatedBookStore and ReplicatedStockManager interfaces
- * 
+ *
  * This class also contains a Replicator which replicates updates to slaves.
- * 
- * 
+ *
+ *
  */
 public class MasterCertainBookStore extends ReadOnlyCertainBookStore
 		implements ReplicatedBookStore, ReplicatedStockManager {
@@ -59,7 +59,6 @@ public class MasterCertainBookStore extends ReadOnlyCertainBookStore
 			slaveServers.add(slave);
 		}
 		return slaveServers;
-
 	}
 
 	private void waitForSlaveUpdates(List<Future<ReplicationResult>> replicatedSlaveFutures) {
@@ -72,6 +71,7 @@ public class MasterCertainBookStore extends ReadOnlyCertainBookStore
 					// block until the future result is available
 					ReplicationResult result = slaveServer.get();
 					if (!result.isReplicationSuccessful()) {
+						System.out.println(">>> This is the sweetspot 1");
 						faultySlaveServers.add(result.getServerAddress());
 					}
 					break;
@@ -89,6 +89,7 @@ public class MasterCertainBookStore extends ReadOnlyCertainBookStore
 		}
 
 		if (faultySlaveServers.size() > 0) {
+			System.out.println(">>> This is the sweetspot 2");
 			replicator.markServersFaulty(faultySlaveServers);
 		}
 	}

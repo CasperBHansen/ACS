@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package com.acertainbookstore.utils;
 
@@ -20,7 +20,7 @@ import com.thoughtworks.xstream.io.xml.StaxDriver;
 /**
  * BookStoreUtility implements utility methods used by bookstore servers and
  * clients
- * 
+ *
  */
 public final class BookStoreUtility {
 
@@ -38,7 +38,7 @@ public final class BookStoreUtility {
 
 	/**
 	 * Checks if a string is empty or null
-	 * 
+	 *
 	 * @param str
 	 * @return
 	 */
@@ -49,7 +49,7 @@ public final class BookStoreUtility {
 	/**
 	 * Converts a string to a float if possible else it returns the signal value
 	 * for failure passed as parameter
-	 * 
+	 *
 	 * @param str
 	 * @param failureSignal
 	 * @return
@@ -70,7 +70,7 @@ public final class BookStoreUtility {
 	/**
 	 * Converts a string to a int if possible else it returns the signal value
 	 * for failure passed as parameter
-	 * 
+	 *
 	 * @param str
 	 * @param failureSignal
 	 * @return
@@ -87,7 +87,7 @@ public final class BookStoreUtility {
 
 	/**
 	 * Convert a request URI to the message tags supported in CertainBookStore
-	 * 
+	 *
 	 * @param requestURI
 	 * @return
 	 */
@@ -107,7 +107,7 @@ public final class BookStoreUtility {
 
 	/**
 	 * Serializes an object to an xml string
-	 * 
+	 *
 	 * @param object
 	 * @return
 	 */
@@ -120,7 +120,7 @@ public final class BookStoreUtility {
 
 	/**
 	 * De-serializes an xml string to object
-	 * 
+	 *
 	 * @param xmlObject
 	 * @return
 	 */
@@ -134,19 +134,20 @@ public final class BookStoreUtility {
 	/**
 	 * Manages the sending of an exchange through the client, waits for the
 	 * response and unpacks the response
-	 * 
+	 *
 	 * @param client
 	 * @param exchange
 	 * @return
 	 * @throws BookStoreException
+	 * @throws NetworkException
 	 */
 	public static BookStoreResult SendAndRecv(HttpClient client,
-			ContentExchange exchange) throws BookStoreException {
+			ContentExchange exchange) throws BookStoreException, NetworkException {
 		int exchangeState;
 		try {
 			client.send(exchange);
 		} catch (IOException ex) {
-			throw new BookStoreException(
+			throw new NetworkException(
 					BookStoreClientConstants.strERR_CLIENT_REQUEST_SENDING, ex);
 		}
 
@@ -154,7 +155,7 @@ public final class BookStoreUtility {
 			exchangeState = exchange.waitForDone(); // block until the response
 													// is available
 		} catch (InterruptedException ex) {
-			throw new BookStoreException(
+			throw new NetworkException(
 					BookStoreClientConstants.strERR_CLIENT_REQUEST_SENDING, ex);
 		}
 
@@ -164,7 +165,7 @@ public final class BookStoreUtility {
 						.deserializeXMLStringToObject(exchange
 								.getResponseContent().trim());
 				if (bookStoreResponse == null) {
-					throw new BookStoreException(
+					throw new NetworkException(
 							BookStoreClientConstants.strERR_CLIENT_RESPONSE_DECODING);
 				}
 				BookStoreException ex = bookStoreResponse.getException();
@@ -174,25 +175,25 @@ public final class BookStoreUtility {
 				return bookStoreResponse.getResult();
 
 			} catch (UnsupportedEncodingException ex) {
-				throw new BookStoreException(
+				throw new NetworkException(
 						BookStoreClientConstants.strERR_CLIENT_RESPONSE_DECODING,
 						ex);
 			}
 		} else if (exchangeState == HttpExchange.STATUS_EXCEPTED) {
-			throw new BookStoreException(
+			throw new NetworkException(
 					BookStoreClientConstants.strERR_CLIENT_REQUEST_EXCEPTION);
 		} else if (exchangeState == HttpExchange.STATUS_EXPIRED) {
-			throw new BookStoreException(
+			throw new NetworkException(
 					BookStoreClientConstants.strERR_CLIENT_REQUEST_TIMEOUT);
 		} else {
-			throw new BookStoreException(
+			throw new NetworkException(
 					BookStoreClientConstants.strERR_CLIENT_UNKNOWN);
 		}
 	}
 
 	/**
 	 * Returns the message of the request as a string
-	 * 
+	 *
 	 * @param request
 	 * @return xml string
 	 * @throws IOException

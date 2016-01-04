@@ -12,6 +12,7 @@ import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import com.acertainbookstore.business.ReplicationRequest;
 import com.acertainbookstore.interfaces.Replication;
 import com.acertainbookstore.utils.BookStoreConstants;
+import com.acertainbookstore.utils.NetworkException;
 import com.acertainbookstore.utils.BookStoreException;
 import com.acertainbookstore.utils.BookStoreMessageTag;
 import com.acertainbookstore.utils.BookStoreResult;
@@ -57,7 +58,7 @@ public class ReplicationAwareServerHTTPProxy implements Replication {
 	 *
 	 */
 	@Override
-	public void replicate(ReplicationRequest req) throws BookStoreException {
+	public void replicate(ReplicationRequest req) throws BookStoreException, NetworkException {
 
 		String replicatexmlString = BookStoreUtility
 				.serializeObjectToXMLString(req);

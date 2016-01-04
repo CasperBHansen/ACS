@@ -1,20 +1,20 @@
 /**
- * 
+ *
  */
 package com.acertainbookstore.utils;
 
 /**
  * BookStoreConstants declares the constants used in the CertainBookStore (by
  * both servers and clients)
- * 
+ *
  */
 public final class BookStoreConstants {
 
-	// Constants used when creating URLs	
+	// Constants used when creating URLs
 	public static final String BOOKISBN_PARAM = "ISBN";
 	public static final String BOOK_NUM_PARAM = "number_of_books";
 	public static final String XMLSTRINGLEN_PARAM = "len";
-	
+
 	// Used as error code when converting numbers to integer
 	public static final int INVALID_PARAMS = -1;
 
@@ -34,6 +34,7 @@ public final class BookStoreConstants {
 	public static final String KEY_MASTER = "master";
 	public static final String KEY_SLAVE = "slaves";
 	public static final String SPLIT_SLAVE_REGEX = ";";
+	public static final int HTTP_TRIES = 3;
 
 	public static final String PROPERTY_KEY_LOCAL_TEST = "localtest";
 	public static final String PROPERTY_KEY_SERVER_PORT = "port";

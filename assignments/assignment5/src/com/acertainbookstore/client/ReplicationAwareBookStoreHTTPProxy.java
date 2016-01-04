@@ -25,6 +25,7 @@ import com.acertainbookstore.business.BookRating;
 import com.acertainbookstore.interfaces.BookStore;
 import com.acertainbookstore.utils.BookStoreConstants;
 import com.acertainbookstore.utils.BookStoreException;
+import com.acertainbookstore.utils.NetworkException;
 import com.acertainbookstore.utils.BookStoreMessageTag;
 import com.acertainbookstore.utils.BookStoreResult;
 import com.acertainbookstore.utils.BookStoreUtility;
@@ -91,9 +92,37 @@ public class ReplicationAwareBookStoreHTTPProxy implements BookStore {
 
 	}
 
+	private void markReplicaServerFaulty(String address) {
+		slaveAddresses.remove(address);
+	}
+
+	private BookStoreResult sendToAvailableReplica(ContentExchange exchange,
+		String messageArgument) throws BookStoreException {
+
+		BookStoreResult result = null;
+		while (slaveAddresses.size() != 0) {
+			String replicaAddress = getReplicaAddress();
+			String urlString = replicaAddress + "/" + messageArgument;
+			exchange.setURL(urlString);
+
+			try {
+				result = BookStoreUtility.SendAndRecv(this.client, exchange);
+			} catch (NetworkException ex) {
+				// Server dead
+				markReplicaServerFaulty(replicaAddress);
+			}
+			if (result != null) {
+				return result;
+			}
+		}
+
+		// No servers was able to process the request.
+		throw new BookStoreException("Service" + BookStoreConstants.NOT_AVAILABLE);
+	}
+
 	public String getReplicaAddress() {
         int num = (new Random()).nextInt(slaveAddresses.size() + 1);
-        
+
         // if the generator did not overshoot the size
         if (num < slaveAddresses.size()) {
             int i = 0;
@@ -102,7 +131,7 @@ public class ReplicationAwareBookStoreHTTPProxy implements BookStore {
                 ++i;
             }
         }
-        
+
 		return getMasterServerAddress();
 	}
 
@@ -122,7 +151,12 @@ public class ReplicationAwareBookStoreHTTPProxy implements BookStore {
 		exchange.setMethod("POST");
 		exchange.setURL(urlString);
 		exchange.setRequestContent(requestContent);
-		result = BookStoreUtility.SendAndRecv(this.client, exchange);
+		try {
+			result = BookStoreUtility.SendAndRecv(this.client, exchange);
+		} catch (NetworkException ex) {
+			System.out.println("E: Master down");
+			// Handle master down
+		}
 		this.setSnapshotId(result.getSnapshotId());
 	}
 
@@ -135,11 +169,10 @@ public class ReplicationAwareBookStoreHTTPProxy implements BookStore {
 		BookStoreResult result = null;
 		do {
 			ContentExchange exchange = new ContentExchange();
-			String urlString = getReplicaAddress() + "/" + BookStoreMessageTag.GETBOOKS;
 			exchange.setMethod("POST");
-			exchange.setURL(urlString);
+
 			exchange.setRequestContent(requestContent);
-			result = BookStoreUtility.SendAndRecv(this.client, exchange);
+			result = sendToAvailableReplica(exchange, "" + BookStoreMessageTag.GETBOOKS);
 		} while (result.getSnapshotId() < this.getSnapshotId());
 		this.setSnapshotId(result.getSnapshotId());
 		return (List<Book>) result.getResultList();
@@ -158,10 +191,8 @@ public class ReplicationAwareBookStoreHTTPProxy implements BookStore {
 
 		BookStoreResult result = null;
 		do {
-			String urlString = getReplicaAddress() + "/" + BookStoreMessageTag.EDITORPICKS + "?"
-					+ BookStoreConstants.BOOK_NUM_PARAM + "=" + urlEncodedNumBooks;
-			exchange.setURL(urlString);
-			result = BookStoreUtility.SendAndRecv(this.client, exchange);
+			result = sendToAvailableReplica(exchange, "" + BookStoreMessageTag.EDITORPICKS + "?"
+					+ BookStoreConstants.BOOK_NUM_PARAM + "=" + urlEncodedNumBooks);
 		} while (result.getSnapshotId() < this.getSnapshotId());
 		this.setSnapshotId(result.getSnapshotId());
 
