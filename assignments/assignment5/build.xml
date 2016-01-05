@@ -126,7 +126,7 @@
           <sleep seconds="2"/>
           <junit haltonfailure="no" showoutput="true" fork="yes">
             <test name="com.acertainbookstore.client.tests.BookStoreTest" haltonfailure="no" />
-            <test name="com.acertainbookstore.client.tests.StockManagerTest" haltonfailure="no" />
+            <!--<test name="com.acertainbookstore.client.tests.StockManagerTest" haltonfailure="no" />-->
             <classpath refid="acertainbookstore.classpath"/>
             <jvmarg line="-Dlocaltest=${localtest}"/>
             <formatter usefile="false" type="brief"/>

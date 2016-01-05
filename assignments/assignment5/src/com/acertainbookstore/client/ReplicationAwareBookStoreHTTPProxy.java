@@ -93,6 +93,7 @@ public class ReplicationAwareBookStoreHTTPProxy implements BookStore {
 	}
 
 	private void markReplicaServerFaulty(String address) {
+		System.out.println("ReplicationAwareBookStoreHTTPProxy::markReplicaServerFaulty: Address: " + address);
 		slaveAddresses.remove(address);
 	}
 

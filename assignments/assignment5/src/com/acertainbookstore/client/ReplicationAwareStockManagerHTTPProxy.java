@@ -88,9 +88,14 @@ public class ReplicationAwareStockManagerHTTPProxy implements StockManager {
 
 			this.slaveAddresses.add(slave);
 		}
+
+		for (String slave : slaveAddresses) {
+			System.out.println("Slave Address" + slave);
+		}
 	}
 
 	private void markReplicaServerFaulty(String address) {
+		System.out.println("ReplicationAwareBookStoreHTTPProxy::markReplicaServerFaulty: Address: " + address);
 		slaveAddresses.remove(address);
 	}
 
