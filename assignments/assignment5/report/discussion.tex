@@ -20,7 +20,8 @@ we decide where to send the exchange, firstly based on the message tag, such
 that reads are delegated to slaves, and writes are delegated to the master. In
 the event that a slave fails, it will mark it as faulty, and retry on a different
 slave. If all slaves have failed, as a last resort, we will try to perform the
-action on the master server.
+action on the master server. These cases are being tested with {\tt slave_fail},
+{\tt slaves_fail} and {\tt master_fail} ant targets.
 
 We made a rather radical decision to extend the API to facilitate a new type of
 exception, which we felt was the right choice for handling fail-stop. The old
