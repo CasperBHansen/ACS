@@ -5,6 +5,12 @@
 \section{Discussion on Replication Mechanism}
 
 \subsection{Implementation and strategy}
+We employ the provided thread pool in
+{\tt com.acertainbookstore.business.CertainBookStoreReplicator} to submit
+{\tt com.acertainbookstore.business.CertainBookStoreReplicationTask}s concurrently,
+which allows for overlapping replication across slaves, which in turn hides
+latency.
+
 We have chosen a simple load-balancing strategy, in which is handled in two
 places; in {\tt sendToAvailableReplica} and {\tt getReplicaAddress}. The latter
 is used as a utility method for the former. In our design
@@ -16,9 +22,15 @@ the event that a slave fails, it will mark it as faulty, and retry on a differen
 slave. If all slaves have failed, as a last resort, we will try to perform the
 action on the master server.
 
+We made a rather radical decision to extend the API to facilitate a new type of
+exception, which we felt was the right choice for handling fail-stop. The old
+{\tt BookStoreException}s still serve their purpose, while the newly introced
+{\tt NetworkException} serves as an indicator as to communication failures, and
+allows us to catch those specific occurrences, such that we might handle them
+appropriately. Because we have wrapped all proxy exchanges, it is the only
+place in which we need to handle it, and we do so as described above.
+
 Added parameters?
-latency hiding
-How fail-stop is used to handle failures
 
 \subsection{Advantages and disadvantages}
 The replicated implementation first and foremost, increases concurrency on
