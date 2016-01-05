@@ -5,9 +5,18 @@
 \section{Discussion on Replication Mechanism}
 
 \subsection{Implementation and strategy}
+We have chosen a simple load-balancing strategy, in which is handled in two
+places; in {\tt sendToAvailableReplica} and {\tt getReplicaAddress}. The latter
+is used as a utility method for the former. In our design
+{\tt sendToAvailableReplica} serves as a wrapper around {\tt SendAndRecv}, such
+that we one and only one place where we control failure logic. In this wrapper
+we decide where to send the exchange, firstly based on the message tag, such
+that reads are delegated to slaves, and writes are delegated to the master. In
+the event that a slave fails, it will mark it as faulty, and retry on a different
+slave. If all slaves have failed, as a last resort, we will try to perform the
+action on the master server.
 
 Added parameters?
-Load balancing
 latency hiding
 How fail-stop is used to handle failures
 

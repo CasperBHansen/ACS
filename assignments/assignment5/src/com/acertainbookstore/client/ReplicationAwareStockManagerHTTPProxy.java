@@ -153,14 +153,10 @@ public class ReplicationAwareStockManagerHTTPProxy implements StockManager {
 
 	public String getReplicaAddress() {
         int num = (new Random()).nextInt(slaveAddresses.size() + 1);
-
-        // if the generator did not overshoot the size
-        if (num < slaveAddresses.size()) {
-            int i = 0;
-            for (String slave : slaveAddresses) {
-                if (i == num) { return slave; }
-                ++i;
-            }
+        int i = 0;
+        for (String slave : slaveAddresses) {
+            if (i == num) { return slave; }
+            ++i;
         }
 
 		return getMasterServerAddress();
