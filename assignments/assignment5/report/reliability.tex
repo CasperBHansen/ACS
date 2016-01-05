@@ -39,8 +39,8 @@ fully-connected network is working is then
 
 by simply computing the 2 probabilities, we get
 \begin{align*}
-p_{daisy} &= (1-0.000001)^3 = 0.999997000003\enspace , \\
-p_{full} &= 3*0.0001*(1-0.0001)**2+(1-0.0001)**3 = 0.999999970002 \enspace .
+p_{daisy} &= (1-0.000001)^{3-1} \approx 99.9998\enspace \% , \\
+p_{full} &= 3 \cdot 0.0001 \cdot (1-0.0001)^2+(1-0.0001)^3 \approx 99.999997 \% \enspace .
 \end{align*}
 The above shows that the less reliable links in a fully connected network
 makes a more reliable overall network than the daisy chained network.
