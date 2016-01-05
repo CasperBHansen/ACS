@@ -88,32 +88,60 @@ public class ReplicationAwareStockManagerHTTPProxy implements StockManager {
 
 			this.slaveAddresses.add(slave);
 		}
+	}
 
-		for (String slave : slaveAddresses) {
-			System.out.println("Slave Address" + slave);
+	public long getSnapshotId() {
+		return snapshotId;
+	}
+
+	public void setSnapshotId(long snapshotId) {
+		this.snapshotId = snapshotId;
+	}
+
+	public void stop() {
+		try {
+			client.stop();
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 
 	private void markReplicaServerFaulty(String address) {
-		System.out.println("ReplicationAwareBookStoreHTTPProxy::markReplicaServerFaulty: Address: " + address);
 		slaveAddresses.remove(address);
 	}
 
 	private BookStoreResult sendToAvailableReplica(ContentExchange exchange,
-		String messageArgument) throws BookStoreException {
+		BookStoreMessageTag tag, String arg) throws BookStoreException {
 
 		BookStoreResult result = null;
-		while (slaveAddresses.size() != 0) {
-			String replicaAddress = getReplicaAddress();
-			String urlString = replicaAddress + "/" + messageArgument;
-			exchange.setURL(urlString);
+        
+        boolean masterIsUp = true;
+		while (slaveAddresses.size() > 0 || masterIsUp) {
+            // if it's a write operation, we might as well send it directly to master
+			String replicaAddress = (BookStoreUtility.isWriteOperation(tag)) ? getMasterServerAddress() : getReplicaAddress();
+			String urlString = replicaAddress + "/" + tag + arg;
+
+            ContentExchange exchangeTry = new ContentExchange();
+            exchangeTry.setMethod(exchange.getMethod());
+            exchangeTry.setRequestContent(exchange.getRequestContent());
+			exchangeTry.setURL(urlString);
 
 			try {
-				result = BookStoreUtility.SendAndRecv(this.client, exchange);
+				result = BookStoreUtility.SendAndRecv(this.client, exchangeTry);
 			} catch (NetworkException ex) {
 				// Server dead
-				markReplicaServerFaulty(replicaAddress);
+				if (slaveAddresses.contains(replicaAddress)) {
+                    markReplicaServerFaulty(replicaAddress);
+                }
+                
+                if (replicaAddress == getMasterServerAddress()) {
+                    masterIsUp = false;
+                    if (BookStoreUtility.isWriteOperation(tag)) {
+		                throw new BookStoreException("Master server" + BookStoreConstants.NOT_AVAILABLE);
+                    }
+                }
 			}
+            
 			if (result != null) {
 				return result;
 			}
@@ -143,48 +171,35 @@ public class ReplicationAwareStockManagerHTTPProxy implements StockManager {
 	}
 
 	public void addBooks(Set<StockBook> bookSet) throws BookStoreException {
-		ContentExchange exchange = new ContentExchange();
-		String urlString;
-		urlString = getMasterServerAddress() + "/"
-				+ BookStoreMessageTag.ADDBOOKS;
-		exchange.setMethod("POST");
-		exchange.setURL(urlString);
-
-		String listBooksxmlString = BookStoreUtility
-				.serializeObjectToXMLString(bookSet);
-		Buffer requestContent = new ByteArrayBuffer(listBooksxmlString);
-		exchange.setRequestContent(requestContent);
 
 		BookStoreResult result = null;
-		try {
-			result = BookStoreUtility.SendAndRecv(this.client, exchange);
-		} catch (NetworkException ex) {
-			System.out.println("E: Master down");
-			// Handle master down
-		}
+		
+        String listBooksxmlString = BookStoreUtility
+				.serializeObjectToXMLString(bookSet);
+		Buffer requestContent = new ByteArrayBuffer(listBooksxmlString);
+		
+        ContentExchange exchange = new ContentExchange();
+		exchange.setMethod("POST");
+		exchange.setRequestContent(requestContent);
+
+        result = sendToAvailableReplica(exchange, BookStoreMessageTag.ADDBOOKS, "");
 		this.setSnapshotId(result.getSnapshotId());
 	}
 
 	public void addCopies(Set<BookCopy> bookCopiesSet)
 			throws BookStoreException {
 
-		String listBookCopiesxmlString = BookStoreUtility
+		BookStoreResult result = null;
+		
+        String listBookCopiesxmlString = BookStoreUtility
 				.serializeObjectToXMLString(bookCopiesSet);
 		Buffer requestContent = new ByteArrayBuffer(listBookCopiesxmlString);
-		BookStoreResult result = null;
 
 		ContentExchange exchange = new ContentExchange();
-		String urlString = getMasterServerAddress() + "/"
-				+ BookStoreMessageTag.ADDCOPIES;
 		exchange.setMethod("POST");
-		exchange.setURL(urlString);
 		exchange.setRequestContent(requestContent);
-		try {
-			result = BookStoreUtility.SendAndRecv(this.client, exchange);
-		} catch (NetworkException ex) {
-			System.out.println("E: Master down");
-			// Handle master down
-		}
+		
+        result = sendToAvailableReplica(exchange, BookStoreMessageTag.ADDCOPIES, "");
 		this.setSnapshotId(result.getSnapshotId());
 	}
 
@@ -193,10 +208,8 @@ public class ReplicationAwareStockManagerHTTPProxy implements StockManager {
 		BookStoreResult result = null;
 
 		do {
-
 			ContentExchange exchange = new ContentExchange();
-
-			result = sendToAvailableReplica(exchange, "" + BookStoreMessageTag.LISTBOOKS);
+			result = sendToAvailableReplica(exchange, BookStoreMessageTag.LISTBOOKS, "");
 
 		} while ( result.getSnapshotId() < this.getSnapshotId() );
 		this.setSnapshotId(result.getSnapshotId());
@@ -212,37 +225,11 @@ public class ReplicationAwareStockManagerHTTPProxy implements StockManager {
 
 		BookStoreResult result = null;
 		ContentExchange exchange = new ContentExchange();
-
-		String urlString = getMasterServerAddress() + "/"
-				+ BookStoreMessageTag.UPDATEEDITORPICKS + "?";
 		exchange.setMethod("POST");
-		exchange.setURL(urlString);
 		exchange.setRequestContent(requestContent);
 
-		try {
-			result = BookStoreUtility.SendAndRecv(this.client, exchange);
-		} catch (NetworkException ex) {
-			System.out.println("E: Master down");
-			// Handle master down
-		}
+		result = sendToAvailableReplica(exchange, BookStoreMessageTag.UPDATEEDITORPICKS, "?");
 		this.setSnapshotId(result.getSnapshotId());
-	}
-
-	public long getSnapshotId() {
-		return snapshotId;
-	}
-
-	public void setSnapshotId(long snapshotId) {
-		this.snapshotId = snapshotId;
-	}
-
-	public void stop() {
-		try {
-			client.stop();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
 	@Override
@@ -253,45 +240,27 @@ public class ReplicationAwareStockManagerHTTPProxy implements StockManager {
 	public void removeAllBooks() throws BookStoreException {
 		BookStoreResult result = null;
 		ContentExchange exchange = new ContentExchange();
-		String urlString;
-		urlString = getMasterServerAddress() + "/"
-				+ BookStoreMessageTag.REMOVEALLBOOKS;
-
-		String test = "test";
 		exchange.setMethod("POST");
-		exchange.setURL(urlString);
+		
+        // meh, why sent this?
+        String test = "test";
 		Buffer requestContent = new ByteArrayBuffer(test);
 		exchange.setRequestContent(requestContent);
 
-		try {
-			result = BookStoreUtility.SendAndRecv(this.client, exchange);
-		} catch (NetworkException ex) {
-			System.out.println("E: Master down");
-			// Handle master down
-		}
+		result = sendToAvailableReplica(exchange, BookStoreMessageTag.REMOVEALLBOOKS, "");
 		this.setSnapshotId(result.getSnapshotId());
 	}
 
 	public void removeBooks(Set<Integer> isbnSet) throws BookStoreException {
 		BookStoreResult result = null;
 		ContentExchange exchange = new ContentExchange();
-		String urlString;
-		urlString = getMasterServerAddress() + "/"
-				+ BookStoreMessageTag.REMOVEBOOKS;
 
 		String listBooksxmlString = BookStoreUtility
 				.serializeObjectToXMLString(isbnSet);
 		exchange.setMethod("POST");
-		exchange.setURL(urlString);
 		Buffer requestContent = new ByteArrayBuffer(listBooksxmlString);
 		exchange.setRequestContent(requestContent);
-
-		try {
-			result = BookStoreUtility.SendAndRecv(this.client, exchange);
-		} catch (NetworkException ex) {
-			System.out.println("E: Master down");
-			// Handle master down
-		}
+		result = sendToAvailableReplica(exchange, BookStoreMessageTag.REMOVEBOOKS, "");
 		this.setSnapshotId(result.getSnapshotId());
 
 	}
@@ -311,7 +280,7 @@ public class ReplicationAwareStockManagerHTTPProxy implements StockManager {
 			Buffer requestContent = new ByteArrayBuffer(listBooksxmlString);
 			exchange.setRequestContent(requestContent);
 
-			result = sendToAvailableReplica(exchange, "" + BookStoreMessageTag.GETSTOCKBOOKSBYISBN);
+			result = sendToAvailableReplica(exchange, BookStoreMessageTag.GETSTOCKBOOKSBYISBN, "");
 		} while (result.getSnapshotId() < this.getSnapshotId());
 		this.setSnapshotId(result.getSnapshotId());
 		return (List<StockBook>) result.getResultList();

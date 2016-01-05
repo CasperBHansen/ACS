@@ -24,6 +24,16 @@ import com.thoughtworks.xstream.io.xml.StaxDriver;
  */
 public final class BookStoreUtility {
 
+    public static boolean isWriteOperation(BookStoreMessageTag tag) {
+        return (tag == BookStoreMessageTag.ADDBOOKS ||
+                tag == BookStoreMessageTag.ADDCOPIES ||
+                tag == BookStoreMessageTag.BUYBOOKS ||
+                tag == BookStoreMessageTag.UPDATEEDITORPICKS ||
+                tag == BookStoreMessageTag.REMOVEALLBOOKS ||
+                tag == BookStoreMessageTag.REMOVEBOOKS ||
+                tag == BookStoreMessageTag.REPLICATE);
+    }
+
 	public static boolean isInvalidISBN(int isbn) {
 		return (isbn < 1);
 	}

@@ -101,7 +101,7 @@
         </sequential>
       </parallel>
     </target>
-    <target name="test2">
+    <target name="slave_fail">
       <parallel>
           <if>
             <equals arg1="${localtest}" arg2="false"/>
@@ -126,7 +126,7 @@
           <sleep seconds="2"/>
           <junit haltonfailure="no" showoutput="true" fork="yes">
             <test name="com.acertainbookstore.client.tests.BookStoreTest" haltonfailure="no" />
-            <!--<test name="com.acertainbookstore.client.tests.StockManagerTest" haltonfailure="no" />-->
+            <test name="com.acertainbookstore.client.tests.StockManagerTest" haltonfailure="no" />
             <classpath refid="acertainbookstore.classpath"/>
             <jvmarg line="-Dlocaltest=${localtest}"/>
             <formatter usefile="false" type="brief"/>
@@ -140,12 +140,51 @@
         </sequential>
       </parallel>
     </target>
-    <target name="test3">
+    <target name="slaves_fail">
       <parallel>
           <if>
             <equals arg1="${localtest}" arg2="false"/>
             <then>
               <parallel>
+                <sequential>
+                  <java classname="com.acertainbookstore.server.MasterBookStoreHTTPServer" failonerror="true" fork="yes">
+                    <jvmarg line="-Dport=8081"/>
+                    <classpath refid="acertainbookstore.classpath"/>
+                  </java>
+                </sequential>
+              </parallel>
+            </then>
+          </if>
+        <sequential>
+          <sleep seconds="2"/>
+          <junit haltonfailure="no" showoutput="true" fork="yes">
+            <test name="com.acertainbookstore.client.tests.BookStoreTest" haltonfailure="no" />
+            <test name="com.acertainbookstore.client.tests.StockManagerTest" haltonfailure="no" />
+            <classpath refid="acertainbookstore.classpath"/>
+            <jvmarg line="-Dlocaltest=${localtest}"/>
+            <formatter usefile="false" type="brief"/>
+          </junit>
+          <if>
+            <equals arg1="${localtest}" arg2="false"/>
+            <then>
+              <echo message="End of test run, hit Ctrl-C to exit if you are running remote tests" />
+            </then>
+          </if>
+        </sequential>
+      </parallel>
+    </target>
+    <target name="master_fail">
+      <parallel>
+          <if>
+            <equals arg1="${localtest}" arg2="false"/>
+            <then>
+              <parallel>
+                <sequential>
+                  <java classname="com.acertainbookstore.server.MasterBookStoreHTTPServer" failonerror="true" fork="yes" timeout="5000">
+                    <jvmarg line="-Dport=8081"/>
+                    <classpath refid="acertainbookstore.classpath"/>
+                  </java>
+                </sequential>
                 <sequential>
                   <java classname="com.acertainbookstore.server.SlaveBookStoreHTTPServer" failonerror="true" fork="yes">
                     <jvmarg line="-Dport=8082"/>
@@ -164,8 +203,7 @@
         <sequential>
           <sleep seconds="2"/>
           <junit haltonfailure="no" showoutput="true" fork="yes">
-            <test name="com.acertainbookstore.client.tests.BookStoreTest" haltonfailure="no" />
-            <test name="com.acertainbookstore.client.tests.StockManagerTest" haltonfailure="no" />
+            <test name="com.acertainbookstore.client.tests.MasterFailTest" haltonfailure="no" />
             <classpath refid="acertainbookstore.classpath"/>
             <jvmarg line="-Dlocaltest=${localtest}"/>
             <formatter usefile="false" type="brief"/>

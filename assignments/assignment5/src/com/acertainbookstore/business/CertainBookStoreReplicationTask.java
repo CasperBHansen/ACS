@@ -29,11 +29,7 @@ public class CertainBookStoreReplicationTask implements Callable<ReplicationResu
 
 		try {
 			replicationClient.replicate(request);
-		} catch (BookStoreException ex) {
-			System.out.println("E: CertainBookStoreReplicationTask::call: Got BookStoreException while replicating: " + ex.getMessage());
-			successFlag = false;
-		} catch (NetworkException ex) {
-			System.out.println("E: CertainBookStoreReplicationTask::call: Got NetworkException while replicating: " + ex.getMessage());
+		} catch (Exception ex) {
 			successFlag = false;
 		}
 

@@ -71,7 +71,6 @@ public class MasterCertainBookStore extends ReadOnlyCertainBookStore
 					// block until the future result is available
 					ReplicationResult result = slaveServer.get();
 					if (!result.isReplicationSuccessful()) {
-						System.out.println(">>> This is the sweetspot 1");
 						faultySlaveServers.add(result.getServerAddress());
 					}
 					break;
@@ -89,7 +88,6 @@ public class MasterCertainBookStore extends ReadOnlyCertainBookStore
 		}
 
 		if (faultySlaveServers.size() > 0) {
-			System.out.println(">>> This is the sweetspot 2");
 			replicator.markServersFaulty(faultySlaveServers);
 		}
 	}

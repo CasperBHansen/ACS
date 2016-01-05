@@ -93,25 +93,41 @@ public class ReplicationAwareBookStoreHTTPProxy implements BookStore {
 	}
 
 	private void markReplicaServerFaulty(String address) {
-		System.out.println("ReplicationAwareBookStoreHTTPProxy::markReplicaServerFaulty: Address: " + address);
 		slaveAddresses.remove(address);
 	}
 
 	private BookStoreResult sendToAvailableReplica(ContentExchange exchange,
-		String messageArgument) throws BookStoreException {
+		BookStoreMessageTag tag, String arg) throws BookStoreException {
 
 		BookStoreResult result = null;
-		while (slaveAddresses.size() != 0) {
-			String replicaAddress = getReplicaAddress();
-			String urlString = replicaAddress + "/" + messageArgument;
-			exchange.setURL(urlString);
+        boolean masterIsUp = true;
+		while (slaveAddresses.size() > 0 || masterIsUp) {
+            // if it's a write operation, we might as well send it directly to master
+			String replicaAddress = (BookStoreUtility.isWriteOperation(tag)) ? getMasterServerAddress() : getReplicaAddress();
+			String urlString = replicaAddress + "/" + tag + arg;
+
+            ContentExchange exchangeTry = new ContentExchange();
+            exchangeTry.setMethod(exchange.getMethod());
+            exchangeTry.setRequestContent(exchange.getRequestContent());
+			exchangeTry.setURL(urlString);
 
 			try {
-				result = BookStoreUtility.SendAndRecv(this.client, exchange);
+                exchange.reset();
+				result = BookStoreUtility.SendAndRecv(this.client, exchangeTry);
 			} catch (NetworkException ex) {
 				// Server dead
-				markReplicaServerFaulty(replicaAddress);
+				if (slaveAddresses.contains(replicaAddress)) {
+                    markReplicaServerFaulty(replicaAddress);
+                }
+                
+                if (replicaAddress == getMasterServerAddress()) {
+                    masterIsUp = false;
+                    if (BookStoreUtility.isWriteOperation(tag)) {
+		                throw new BookStoreException("Master server" + BookStoreConstants.NOT_AVAILABLE);
+                    }
+                }
 			}
+            
 			if (result != null) {
 				return result;
 			}
@@ -148,16 +164,10 @@ public class ReplicationAwareBookStoreHTTPProxy implements BookStore {
 		BookStoreResult result = null;
 
 		ContentExchange exchange = new ContentExchange();
-		String urlString = getMasterServerAddress() + "/" + BookStoreMessageTag.BUYBOOKS;
 		exchange.setMethod("POST");
-		exchange.setURL(urlString);
 		exchange.setRequestContent(requestContent);
-		try {
-			result = BookStoreUtility.SendAndRecv(this.client, exchange);
-		} catch (NetworkException ex) {
-			System.out.println("E: Master down");
-			// Handle master down
-		}
+		
+        result = sendToAvailableReplica(exchange, BookStoreMessageTag.BUYBOOKS, "");
 		this.setSnapshotId(result.getSnapshotId());
 	}
 
@@ -173,7 +183,7 @@ public class ReplicationAwareBookStoreHTTPProxy implements BookStore {
 			exchange.setMethod("POST");
 
 			exchange.setRequestContent(requestContent);
-			result = sendToAvailableReplica(exchange, "" + BookStoreMessageTag.GETBOOKS);
+			result = sendToAvailableReplica(exchange, BookStoreMessageTag.GETBOOKS, "");
 		} while (result.getSnapshotId() < this.getSnapshotId());
 		this.setSnapshotId(result.getSnapshotId());
 		return (List<Book>) result.getResultList();
@@ -192,7 +202,7 @@ public class ReplicationAwareBookStoreHTTPProxy implements BookStore {
 
 		BookStoreResult result = null;
 		do {
-			result = sendToAvailableReplica(exchange, "" + BookStoreMessageTag.EDITORPICKS + "?"
+			result = sendToAvailableReplica(exchange, BookStoreMessageTag.EDITORPICKS, "?"
 					+ BookStoreConstants.BOOK_NUM_PARAM + "=" + urlEncodedNumBooks);
 		} while (result.getSnapshotId() < this.getSnapshotId());
 		this.setSnapshotId(result.getSnapshotId());
